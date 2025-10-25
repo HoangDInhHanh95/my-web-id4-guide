@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID4 Image MHDPT Component with Backgrounds</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <style>
+        /* CSS được gói gọn trong class cha "id4-image-MHDPT" */
+        
+        .id4-image-MHDPT {
+            --progress-bar-color: #fff;
+            --inactive-bar-color: rgba(255, 255, 255, 0.5);
+            --control-icon-color: #f0f0f0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            padding: 40px 0;
+            width: 100%;
+            overflow-x: hidden;
+        }
+        
+        .id4-image-MHDPT__swiper {
+            width: 100%;
+            padding: 40px 0;
+        }
+        
+        .id4-image-MHDPT .swiper-wrapper {
+            will-change: transform;
+        }
+        
+        .id4-image-MHDPT .swiper-slide {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #333;
+            /* Màu nền dự phòng */
+            border-radius: 24px;
+            box-shadow: 0 8px M30px rgba(0, 0, 0, 0.1);
+            width: 88%;
+            max-width: 950px;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            will-change: transform;
+            /* === CẬP NHẬT: Thêm overflow hidden để bo góc ảnh nền === */
+            overflow: hidden;
+        }
+        
+        .id4-image-MHDPT__slide-inner {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 40px 60px;
+            box-sizing: border-box;
+            /* === CẬP NHẬT: Thêm CSS cho ảnh nền và lớp phủ === */
+            position: relative;
+            z-index: 1;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        /* Lớp phủ tối màu để làm nổi bật chữ */
+        
+        .id4-image-MHDPT__slide-inner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            /* Độ tối của lớp phủ */
+            z-index: -1;
+        }
+        /* === KẾT THÚC CẬP NHẬT === */
+        
+        .id4-image-MHDPT__slide-content {
+            flex: 1;
+            min-width: 0;
+        }
+        /* === CẬP NHẬT: Đổi màu chữ để dễ đọc trên nền tối === */
+        
+        .id4-image-MHDPT__tag {
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        
+        .id4-image-MHDPT__slide-content h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0 0 16px 0;
+            line-height: 1.2;
+        }
+        
+        .id4-image-MHDPT__slide-content p {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+            margin: 0;
+        }
+        /* === KẾT THÚC CẬP NHẬT === */
+        
+        .id4-image-MHDPT__slide-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .id4-image-MHDPT__slide-image img {
+            max-width: 100%;
+            height: auto;
+            max-height: 350px;
+            object-fit: contain;
+        }
+        
+        .id4-image-MHDPT__controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .id4-image-MHDPT__pagination.swiper-pagination-bullets {
+            position: static;
+            display: flex;
+            gap: 6px;
+            width: auto;
+        }
+        
+        .id4-image-MHDPT__pagination .swiper-pagination-bullet {
+            width: 32px;
+            height: 6px;
+            border-radius: 3px;
+            background-color: var(--inactive-bar-color);
+            opacity: 1;
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.3s;
+        }
+        
+        .id4-image-MHDPT__pagination .swiper-pagination-bullet-active {
+            background-color: var(--inactive-bar-color);
+        }
+        
+        .id4-image-MHDPT__pagination .swiper-pagination-bullet-active::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--progress-bar-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            animation: id4-image-MHDPT-progressFill 5s linear forwards;
+            animation-play-state: running;
+        }
+        
+        .id4-image-MHDPT.autoplay-paused .swiper-pagination-bullet-active::after {
+            animation-play-state: paused;
+        }
+        
+        @keyframes id4-image-MHDPT-progressFill {
+            from {
+                transform: scaleX(0);
+            }
+            to {
+                transform: scaleX(1);
+            }
+        }
+        
+        .id4-image-MHDPT__autoplay-control {
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--control-icon-color);
+        }
+        
+        .id4-image-MHDPT__autoplay-control .id4-image-MHDPT__icon {
+            display: none;
+        }
+        
+        .id4-image-MHDPT__autoplay-control.playing .id4-image-MHDPT__icon--pause {
+            display: block;
+        }
+        
+        .id4-image-MHDPT__autoplay-control.paused .id4-image-MHDPT__icon--play {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .id4-image-MHDPT .swiper-slide {
+                width: 90%;
+            }
+            .id4-image-MHDPT__slide-inner {
+                flex-direction: column;
+                padding: 30px;
+                text-align: center;
+            }
+            .id4-image-MHDPT__slide-image {
+                margin-top: 30px;
+            }
+            .id4-image-MHDPT__slide-content h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="id4-image-MHDPT">
+        <div class="id4-image-MHDPT__swiper swiper">
+            <div class="swiper-wrapper">
+
+                <div class="swiper-slide" data-background="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80">
+                    <div class="id4-image-MHDPT__slide-inner">
+                        <div class="id4-image-MHDPT__slide-content">
+                            <div class="id4-image-MHDPT__tag">UNLOAD</div>
+                            <h2>Featherweight</h2>
+                            <p>Achieving ultra-lightweight and durability with Ceraluminum™, all in under a kilogram!</p>
+                        </div>
+                        <div class="id4-image-MHDPT__slide-image">
+                            <img src="https://i.ibb.co/L95SdyD/laptop1.png" alt="Featherweight Laptop">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" data-background="https://images.unsplash.com/photo-1494438639946-1ebd1d20e895?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80">
+                    <div class="id4-image-MHDPT__slide-inner">
+                        <div class="id4-image-MHDPT__slide-content">
+                            <div class="id4-image-MHDPT__tag">UNPLUGGED</div>
+                            <h2>Power unleashed. Battery unmatched</h2>
+                            <p>It lasts up to 32 hours* of continuous video playback on a single charge.</p>
+                        </div>
+                        <div class="id4-image-MHDPT__slide-image">
+                            <img src="https://i.ibb.co/hK8bspG/laptop2.png" alt="Laptop with long battery life">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide" data-background="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80">
+                    <div class="id4-image-MHDPT__slide-inner">
+                        <div class="id4-image-MHDPT__slide-content">
+                            <div class="id4-image-MHDPT__tag">UNLEASH</div>
+                            <h2>AI-powered performance</h2>
+                            <p>Seamlessly handle demanding tasks with the latest Intel® Core™ Ultra processor.</p>
+                        </div>
+                        <div class="id4-image-MHDPT__slide-image">
+                            <img src="https://i.ibb.co/L95SdyD/laptop1.png" alt="AI Powered Laptop">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="id4-image-MHDPT__controls">
+            <div class="id4-image-MHDPT__pagination swiper-pagination"></div>
+            <div class="id4-image-MHDPT__autoplay-control playing" role="button" aria-label="Pause autoplay">
+                <svg class="id4-image-MHDPT__icon id4-image-MHDPT__icon--pause" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M5.5 3.5h1.5v9H5.5v-9zm3.5 0h1.5v9H9v-9z" />
+                </svg>
+                <svg class="id4-image-MHDPT__icon id4-image-MHDPT__icon--play" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path
+                        d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script>
+        function initId4ImageMHDPT() {
+            const container = document.querySelector('.id4-image-MHDPT');
+            if (!container) return;
+
+            // === CẬP NHẬT: Thêm script để áp dụng ảnh nền ===
+            const slides = container.querySelectorAll('.swiper-slide');
+            slides.forEach(slide => {
+                const backgroundUrl = slide.dataset.background;
+                if (backgroundUrl) {
+                    const slideInner = slide.querySelector('.id4-image-MHDPT__slide-inner');
+                    if (slideInner) {
+                        slideInner.style.backgroundImage = `url('${backgroundUrl}')`;
+                    }
+                }
+            });
+            // === KẾT THÚC CẬP NHẬT ===
+
+            const offsetLeft = window.innerWidth * 0.3;
+
+            const swiper = new Swiper('.id4-image-MHDPT__swiper', {
+                speed: 500,
+                loop: false,
+                rewind: true,
+                slidesPerView: 'auto',
+                spaceBetween: 24,
+                slidesOffsetBefore: offsetLeft,
+                slidesOffsetAfter: 30,
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+                },
+                pagination: {
+                    el: '.id4-image-MHDPT__pagination',
+                    clickable: true,
+                },
+            });
+
+            const controlButton = container.querySelector('.id4-image-MHDPT__autoplay-control');
+
+            if (controlButton) {
+                controlButton.addEventListener('click', () => {
+                    if (swiper.autoplay.running) {
+                        swiper.autoplay.stop();
+                    } else {
+                        swiper.autoplay.start();
+                    }
+                });
+
+                swiper.on('autoplayStart', () => {
+                    controlButton.classList.remove('paused');
+                    controlButton.classList.add('playing');
+                    container.classList.remove('autoplay-paused');
+                });
+
+                swiper.on('autoplayStop', () => {
+                    controlButton.classList.remove('playing');
+                    controlButton.classList.add('paused');
+                    container.classList.add('autoplay-paused');
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initId4ImageMHDPT);
+    </script>
+</body>
+
+</html>

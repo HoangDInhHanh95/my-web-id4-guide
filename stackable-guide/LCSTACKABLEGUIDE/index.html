@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Horizontal Scroll</title>
+    <style>
+         :root {
+            --id4-font-size-title: 2rem;
+            --id4-font-size-title-left: 40px;
+            --font-size-des: 16px;
+            --color-tilet: #02518a;
+            --id4-color-bg-section: #f9fdfe;
+            --id4-text-color: #fff;
+            --id4-font-family: "SVN-Effra";
+            /* width 820px */
+            --max-width-section: 820px;
+            --maxw: 1200px;
+            /* background pop-up */
+            --id4-bg-card: rgba(239, 240, 241, 0.2);
+            --id4-dot-inactive-color: #555;
+            --id4-border-radius: 28px;
+            /* bg card */
+            --id4-url-bg-card: url("./bg-03.png");
+        }
+        
+        .LC-id4-stackable-guide-container {
+            margin: 0;
+            font-family: var(--id4-font-family);
+            color: var(--id4-text-color);
+            transition: background-color 0.4s ease;
+            background-color: var(--id4-color-bg-sectin);
+        }
+        
+        .LC-id4-stackable-guide-container.LC-id4-stackable-guide-modal-open {
+            overflow: hidden;
+        }
+        
+        .LC-id4-stackable-guide-section {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+        
+        .LC-id4-stackable-guide-section h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+        }
+        
+        .LC-id4-stackable-guide-horizontal-track {
+            height: 400vh;
+            position: relative;
+        }
+        
+        .LC-id4-stackable-guide-sticky-container {
+            position: sticky;
+            top: 5vh;
+            height: 100vh;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+        
+        .LC-id4-stackable-guide-horizontal-content {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            padding: 0 calc(50vw - 340px);
+        }
+        
+        .LC-id4-stackable-guide-card {
+            width: clamp(300px, 60vw, 980px);
+            height: 600px;
+            max-height: 600px;
+            margin: 0 clamp(10px, 3vw, 30px);
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 20px;
+            border-radius: 20px;
+            border: 1px solid var(--id4-dot-inactive-color);
+            padding: clamp(20px, 5vw, 40px);
+            box-sizing: border-box;
+            flex-shrink: 0;
+            cursor: pointer;
+            transform: scale(1);
+            opacity: 1;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            position: relative;
+            background-size: cover;
+            background-position: center center;
+        }
+        /* Lớp phủ cho card để chữ dễ đọc hơn */
+        
+        .LC-id4-stackable-guide-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--id4-bg-card);
+            border-radius: 20px;
+            z-index: 1;
+        }
+        /* Đẩy nội dung lên trên lớp phủ */
+        
+        .LC-id4-stackable-guide-card-text,
+        .LC-id4-stackable-guide-card-image {
+            position: relative;
+            z-index: 2;
+        }
+        /* Thêm ảnh nền cho từng card */
+        
+        .LC-id4-stackable-guide-card:nth-child(1) {
+            background-image: var(--id4-url-bg-card);
+        }
+        
+        .LC-id4-stackable-guide-card:nth-child(2) {
+            background-image: var(--id4-url-bg-card);
+        }
+        
+        .LC-id4-stackable-guide-card:nth-child(3) {
+            background-image: var(--id4-url-bg-card);
+        }
+        
+        .LC-id4-stackable-guide-card:nth-child(4) {
+            background-image: var(--id4-url-bg-card);
+        }
+        
+        .LC-id4-stackable-guide-card:nth-child(5) {
+            background-image: var(--id4-url-bg-card);
+        }
+        
+        .LC-id4-stackable-guide-card-text {
+            flex: 1 1 55%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .LC-id4-stackable-guide-card-image {
+            flex: 1 1 45%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        /* chỉnh kích thước ảnh */
+        
+        .LC-id4-stackable-guide-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+            /* transition: transform 0.5s ease-out; */
+        }
+        
+        .LC-id4-stackable-guide-card h2 {
+            font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+            margin-top: 0;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        
+        .LC-id4-stackable-guide-card p {
+            font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+            line-height: 1.6;
+            opacity: 0.8;
+            text-align: left;
+            color: #000;
+        }
+        
+        .LC-id4-stackable-guide-pagination-dots {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            flex-direction: row;
+            justify-content: center;
+            gap: 12px;
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .LC-id4-stackable-guide-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--id4-dot-inactive-color);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .LC-id4-stackable-guide-dot.LC-id4-stackable-guide-active {
+            background-color: var(--id4-text-color);
+            transform: scale(1.2);
+        }
+        
+        .LC-id4-stackable-guide-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: rgba(26, 26, 26, 0.3);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .LC-id4-stackable-guide-modal-overlay.LC-id4-stackable-guide-active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .LC-id4-stackable-guide-modal-content {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transform: scale(0.9);
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .LC-id4-stackable-guide-modal-content .LC-id4-stackable-guide-card-text {
+            flex: 1 1 55%;
+        }
+        
+        .LC-id4-stackable-guide-modal-content .LC-id4-stackable-guide-card-image {
+            flex: 1 1 45%;
+        }
+        
+        .LC-id4-stackable-guide-modal-content .LC-id4-stackable-guide-card-image img {
+            width: 100%;
+            border-radius: 15px;
+        }
+        
+        .LC-id4-stackable-guide-modal-content h2,
+        .LC-id4-stackable-guide-modal-content p {
+            text-align: left;
+        }
+        
+        .LC-id4-stackable-guide-modal-overlay.LC-id4-stackable-guide-active .LC-id4-stackable-guide-modal-content {
+            transform: scale(1);
+        }
+        
+        .LC-id4-stackable-guide-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 3rem;
+            line-height: 1;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        
+        .LC-id4-stackable-guide-modal-close:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        /* Responsive cho Tablet */
+        
+        @media (max-width: 1024px) {
+            .LC-id4-stackable-guide-card {
+                width: clamp(350px, 70vw, 570px);
+                height: 440px;
+                max-height: 440px;
+                padding: clamp(30px, 4vw, 35px);
+                gap: 20px;
+            }
+            .LC-id4-stackable-guide-card h2 {
+                font-size: clamp(1.4rem, 4vw, 2rem);
+            }
+        }
+        /* Responsive cho Mobile */
+        
+        @media (max-width: 768px) {
+            .LC-id4-stackable-guide-pagination-dots {
+                display: flex;
+            }
+            .LC-id4-stackable-guide-card,
+            .LC-id4-stackable-guide-modal-content {
+                flex-direction: column;
+                text-align: center;
+                height: auto;
+                max-height: 80vh;
+                padding: 30px;
+                width: 90vw;
+            }
+            .LC-id4-stackable-guide-card-image,
+            .LC-id4-stackable-guide-modal-content .LC-id4-stackable-guide-card-image {
+                order: -1;
+                width: 100%;
+                height: 200px;
+                margin-bottom: 20px;
+            }
+            .LC-id4-stackable-guide-card h2,
+            .LC-id4-stackable-guide-card p,
+            .LC-id4-stackable-guide-modal-content h2,
+            .LC-id4-stackable-guide-modal-content p {
+                text-align: center;
+            }
+            .LC-id4-stackable-guide-modal-content {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="LC-id4-stackable-guide-container">
+        <div class="LC-id4-stackable-guide-horizontal-track">
+            <div class="LC-id4-stackable-guide-sticky-container">
+                <div class="LC-id4-stackable-guide-horizontal-content"></div>
+            </div>
+        </div>
+
+        <div class="LC-id4-stackable-guide-pagination-dots"></div>
+
+        <div class="LC-id4-stackable-guide-modal-overlay">
+            <div class="LC-id4-stackable-guide-modal-content"></div>
+            <button class="LC-id4-stackable-guide-modal-close" aria-label="Đóng">
+          &times;
+        </button>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // nơi chưa link và nội dung
+            const LC_id4_stackable_guide_image1 = "./text-thu-do.png";
+
+            const LC_id4_stackable_guide_cardData = [{
+                title: "",
+                description: "Vị trí hạ mào xương/ Vị trí Implant/ Abutment / Phục hình: Tất cả đều được phân tích lên kế hoạch và thiết kế chính xác.",
+                imageUrl: LC_id4_stackable_guide_image1,
+            }, {
+                title: "🚀 Hiệu năng cao",
+                description: "Sử dụng Intersection Observer và các kỹ thuật hiện đại để đảm bảo độ mượt tối đa.",
+                imageUrl: LC_id4_stackable_guide_image1,
+            }, {
+                title: "🎨 Giàu tương tác",
+                description: "Phản hồi với thao tác di chuột, click và điều hướng bàn phím một cách thông minh.",
+                imageUrl: LC_id4_stackable_guide_image1,
+            }, {
+                title: "♿ Dễ tiếp cận",
+                description: "Hỗ trợ điều hướng bằng bàn phím, giúp mọi người dùng đều có thể trải nghiệm trọn vẹn.",
+                imageUrl: LC_id4_stackable_guide_image1,
+            }, {
+                title: "📱 Đồng nhất",
+                description: "Trải nghiệm cuộn dọc-ngang độc đáo được đồng bộ trên mọi thiết bị, từ lớn đến nhỏ.",
+                imageUrl: LC_id4_stackable_guide_image1,
+            }, ];
+
+            const LC_id4_stackable_guide_contentContainer = document.querySelector(
+                ".LC-id4-stackable-guide-horizontal-content"
+            );
+            LC_id4_stackable_guide_contentContainer.innerHTML =
+                LC_id4_stackable_guide_cardData
+                .map(
+                    (data) => `
+                                <div class="LC-id4-stackable-guide-card">
+                                    <div class="LC-id4-stackable-guide-card-text">
+                                        <h2>${data.title}</h2>
+                                        <p>${data.description}</p>
+                                    </div>
+                                    <div class="LC-id4-stackable-guide-card-image">
+                                        <img src="${data.imageUrl}" alt="${data.title}" loading="lazy">
+                                    </div>
+                                </div>
+                            `
+                )
+                .join("");
+
+            const LC_id4_stackable_guide_cards = Array.from(
+                LC_id4_stackable_guide_contentContainer.children
+            );
+            const LC_id4_stackable_guide_track = document.querySelector(
+                ".LC-id4-stackable-guide-horizontal-track"
+            );
+
+            const LC_id4_stackable_guide_modalOverlay = document.querySelector(
+                ".LC-id4-stackable-guide-modal-overlay"
+            );
+            const LC_id4_stackable_guide_modalContent = document.querySelector(
+                ".LC-id4-stackable-guide-modal-content"
+            );
+            const LC_id4_stackable_guide_modalClose = document.querySelector(
+                ".LC-id4-stackable-guide-modal-close"
+            );
+            const LC_id4_stackable_guide_mainContainer = document.querySelector(
+                ".LC-id4-stackable-guide-container"
+            );
+
+            function LC_id4_stackable_guide_openModal(contentHTML) {
+                LC_id4_stackable_guide_modalContent.innerHTML = contentHTML;
+                LC_id4_stackable_guide_modalOverlay.classList.add(
+                    "LC-id4-stackable-guide-active"
+                );
+                LC_id4_stackable_guide_mainContainer.classList.add(
+                    "LC-id4-stackable-guide-modal-open"
+                );
+            }
+
+            function LC_id4_stackable_guide_closeModal() {
+                LC_id4_stackable_guide_modalOverlay.classList.remove(
+                    "LC-id4-stackable-guide-active"
+                );
+                LC_id4_stackable_guide_mainContainer.classList.remove(
+                    "LC-id4-stackable-guide-modal-open"
+                );
+            }
+
+            LC_id4_stackable_guide_cards.forEach((card) =>
+                card.addEventListener("click", () =>
+                    LC_id4_stackable_guide_openModal(card.innerHTML)
+                )
+            );
+            LC_id4_stackable_guide_modalClose.addEventListener(
+                "click",
+                LC_id4_stackable_guide_closeModal
+            );
+            LC_id4_stackable_guide_modalOverlay.addEventListener("click", (e) => {
+                if (e.target === LC_id4_stackable_guide_modalOverlay)
+                    LC_id4_stackable_guide_closeModal();
+            });
+            window.addEventListener("keydown", (e) => {
+                if (
+                    e.key === "Escape" &&
+                    LC_id4_stackable_guide_modalOverlay.classList.contains(
+                        "LC-id4-stackable-guide-active"
+                    )
+                )
+                    LC_id4_stackable_guide_closeModal();
+            });
+
+            const LC_id4_stackable_guide_paginationContainer =
+                document.querySelector(".LC-id4-stackable-guide-pagination-dots");
+            let LC_id4_stackable_guide_dots = [];
+
+            if (LC_id4_stackable_guide_paginationContainer) {
+                LC_id4_stackable_guide_cards.forEach((card, index) => {
+                    const dot = document.createElement("div");
+                    dot.classList.add("LC-id4-stackable-guide-dot");
+                    dot.addEventListener("click", () => {
+                        const scrollableDistance =
+                            LC_id4_stackable_guide_track.offsetHeight - window.innerHeight;
+                        const progressPerCard =
+                            1 / (LC_id4_stackable_guide_cards.length - 1);
+                        const targetScrollTop =
+                            LC_id4_stackable_guide_track.offsetTop +
+                            scrollableDistance * progressPerCard * index;
+                        window.scrollTo({
+                            top: targetScrollTop,
+                            behavior: "smooth",
+                        });
+                    });
+                    LC_id4_stackable_guide_paginationContainer.appendChild(dot);
+                });
+                LC_id4_stackable_guide_dots = Array.from(
+                    LC_id4_stackable_guide_paginationContainer.children
+                );
+            }
+
+            let LC_id4_stackable_guide_currentX = 0,
+                LC_id4_stackable_guide_targetX = 0,
+                LC_id4_stackable_guide_easingFactor = 0.08,
+                LC_id4_stackable_guide_isTrackInView = false;
+
+            function LC_id4_stackable_guide_lerp(start, end, t) {
+                return start * (1 - t) + end * t;
+            }
+
+            function LC_id4_stackable_guide_updateActiveDot(progress) {
+                if (LC_id4_stackable_guide_dots.length > 0) {
+                    const activeIndex = Math.min(
+                        LC_id4_stackable_guide_dots.length - 1,
+                        Math.round(progress * (LC_id4_stackable_guide_cards.length - 1))
+                    );
+                    LC_id4_stackable_guide_dots.forEach((dot, index) =>
+                        dot.classList.toggle(
+                            "LC-id4-stackable-guide-active",
+                            index === activeIndex
+                        )
+                    );
+                }
+            }
+
+            function LC_id4_stackable_guide_updatePositions() {
+                const trackRect =
+                    LC_id4_stackable_guide_track.getBoundingClientRect();
+                if (trackRect.top <= 0 && trackRect.bottom >= window.innerHeight) {
+                    const scrollInTrack = -trackRect.top;
+                    const scrollableDistance = trackRect.height - window.innerHeight;
+                    const scrollProgress = Math.max(
+                        0,
+                        Math.min(1, scrollInTrack / scrollableDistance)
+                    );
+
+                    const firstCard = LC_id4_stackable_guide_cards[0],
+                        lastCard =
+                        LC_id4_stackable_guide_cards[
+                            LC_id4_stackable_guide_cards.length - 1
+                        ];
+                    const contentScrollWidth =
+                        lastCard.offsetLeft - firstCard.offsetLeft;
+
+                    LC_id4_stackable_guide_targetX = -contentScrollWidth * scrollProgress;
+                    LC_id4_stackable_guide_updateActiveDot(scrollProgress);
+
+                    const activeIndex = Math.round(
+                        scrollProgress * (LC_id4_stackable_guide_cards.length - 1)
+                    );
+                    LC_id4_stackable_guide_cards.forEach((card, index) => {
+                        card.classList.toggle(
+                            "LC-id4-stackable-guide-active",
+                            index === activeIndex
+                        );
+                    });
+                } else {
+                    LC_id4_stackable_guide_cards.forEach((card) =>
+                        card.classList.remove("LC-id4-stackable-guide-active")
+                    );
+                }
+                LC_id4_stackable_guide_currentX = LC_id4_stackable_guide_lerp(
+                    LC_id4_stackable_guide_currentX,
+                    LC_id4_stackable_guide_targetX,
+                    LC_id4_stackable_guide_easingFactor
+                );
+                LC_id4_stackable_guide_contentContainer.style.transform = `translateX(${LC_id4_stackable_guide_currentX}px)`;
+            }
+
+            function LC_id4_stackable_guide_applyParallax() {
+                const windowCenterX = window.innerWidth / 2;
+                LC_id4_stackable_guide_cards.forEach((card) => {
+                    const rect = card.getBoundingClientRect();
+                    const cardCenterX = rect.left + rect.width / 2;
+                    const distance = (cardCenterX - windowCenterX) / windowCenterX;
+                    const parallaxOffset = -distance * 30;
+                    const img = card.querySelector(
+                        ".LC-id4-stackable-guide-card-image img"
+                    );
+                    if (img) {
+                        img.style.transform = `translateX(${parallaxOffset}px)`;
+                    }
+                });
+            }
+
+            function LC_id4_stackable_guide_animationLoop() {
+                if (LC_id4_stackable_guide_isTrackInView) {
+                    LC_id4_stackable_guide_updatePositions();
+                    LC_id4_stackable_guide_applyParallax();
+                }
+                requestAnimationFrame(LC_id4_stackable_guide_animationLoop);
+            }
+
+            const LC_id4_stackable_guide_trackObserver = new IntersectionObserver(
+                (entries) =>
+                (LC_id4_stackable_guide_isTrackInView = entries[0].isIntersecting)
+            );
+            LC_id4_stackable_guide_trackObserver.observe(
+                LC_id4_stackable_guide_track
+            );
+            LC_id4_stackable_guide_animationLoop();
+
+            window.addEventListener("keydown", (e) => {
+                if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+                    if (
+                        LC_id4_stackable_guide_modalOverlay.classList.contains(
+                            "LC-id4-stackable-guide-active"
+                        )
+                    )
+                        return;
+                    const trackRect =
+                        LC_id4_stackable_guide_track.getBoundingClientRect();
+                    if (trackRect.top > 0 || trackRect.bottom < window.innerHeight)
+                        return;
+                    e.preventDefault();
+                    const scrollableDistance =
+                        LC_id4_stackable_guide_track.offsetHeight - window.innerHeight;
+                    const progressPerCard =
+                        1 / (LC_id4_stackable_guide_cards.length - 1);
+                    const currentProgress = -trackRect.top / scrollableDistance;
+                    const currentIndex = Math.round(currentProgress / progressPerCard);
+                    let targetIndex = currentIndex;
+                    if (e.key === "ArrowRight")
+                        targetIndex = Math.min(
+                            LC_id4_stackable_guide_cards.length - 1,
+                            currentIndex + 1
+                        );
+                    else if (e.key === "ArrowLeft")
+                        targetIndex = Math.max(0, currentIndex - 1);
+                    if (targetIndex !== currentIndex) {
+                        const targetScrollTop =
+                            LC_id4_stackable_guide_track.offsetTop +
+                            scrollableDistance * progressPerCard * targetIndex;
+                        window.scrollTo({
+                            top: targetScrollTop,
+                            behavior: "smooth",
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

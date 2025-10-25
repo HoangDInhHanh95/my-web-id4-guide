@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMPLANT ALL ON X</title>
+    <style>
+        :root {
+            /* Biến CSS mẫu, bạn cần định nghĩa chúng */
+            --id4-bg-khoa-hoc: url('http://localhost/iD4Center/wp-content/uploads/2025/10/bg-7.png');
+            /* URL ảnh nền mặc định */
+            --max-width-section: 1200px;
+            /* Chiều rộng tối đa của container */
+            --color-tilet: #020a1e;
+            /* Màu chữ cho button */
+        }
+
+        .id4-implant-all-on-4-hero-banner {
+            background-image: var(--id4-bg-khoa-hoc);
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            padding: 40px 20px;
+            position: relative;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 250px;
+        }
+
+        .id4-implant-all-on-4-hero-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* background: linear-gradient(to right, rgba(2, 10, 30, 0.8), rgba(2, 10, 30, 0.5), rgba(2, 10, 30, 0.8)); */
+            z-index: 1;
+        }
+
+        .id4-implant-all-on-4-container {
+            max-width: var(--max-width-section) !important;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            text-align: center;
+        }
+
+        .id4-implant-all-on-4-logo img {
+            width: 100px;
+            filter: drop-shadow(0 0 10px rgba(0, 191, 255, 0.8));
+            transition: width 0.3s ease;
+        }
+
+        .id4-implant-all-on-4-text-content {
+            padding: 0 20px;
+        }
+
+        .id4-implant-all-on-4-training-program {
+            font-size: 1.2em;
+            letter-spacing: 2px;
+            color: #ffffff;
+            text-shadow: 0 0 5px rgba(0, 191, 255, 0.7);
+        }
+
+        .id4-implant-all-on-4-hero-banner h1 {
+            font-size: 3.2em;
+            font-weight: 900;
+            margin: 10px 0;
+            text-shadow: 0 0 15px rgba(0, 191, 255, 1);
+            transition: font-size 0.3s ease;
+            color: #ffffff;
+        }
+
+        .id4-implant-all-on-4-slogan {
+            font-size: 1.2em;
+            font-weight: 700;
+            margin: 10px 0 30px 0;
+            color: #ffffff;
+            transition: font-size 0.3s ease;
+            text-shadow: 0 0 5px rgba(0, 191, 255, 0.7);
+        }
+
+        .id4-implant-all-on-4-cta-button {
+            background-color: #ffffff;
+            color: var(--color-tilet);
+            padding: 15px 35px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1em;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        .id4-implant-all-on-4-cta-button:hover {
+            background-color: #ffffff;
+            transform: scale(1.05);
+        }
+
+        .id4-implant-all-on-4-portrait img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid #ffffff;
+            box-shadow: 0 0 20px rgba(0, 191, 255, 0.8);
+            transition: width 0.3s ease, height 0.3s ease;
+        }
+
+        @media (max-width: 1024px) {
+            .id4-implant-all-on-4-container {
+                max-width: 90%;
+            }
+
+            .id4-implant-all-on-4-hero-banner h1 {
+                font-size: 3.2em;
+            }
+
+            .id4-implant-all-on-4-slogan {
+                font-size: 1.3em;
+            }
+
+            .id4-implant-all-on-4-logo img,
+            .id4-implant-all-on-4-portrait img {
+                width: 120px;
+            }
+
+            .id4-implant-all-on-4-portrait img {
+                height: 120px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .id4-implant-all-on-4-hero-banner {
+                padding: 30px 15px;
+            }
+
+            .id4-implant-all-on-4-container {
+                flex-direction: column;
+            }
+
+            .id4-implant-all-on-4-logo {
+                order: 1;
+                margin-bottom: 20px;
+            }
+
+            .id4-implant-all-on-4-portrait {
+                order: 2;
+                margin-bottom: 25px;
+            }
+
+            .id4-implant-all-on-4-text-content {
+                order: 3;
+            }
+
+            .id4-implant-all-on-4-hero-banner h1 {
+                font-size: 2.5em;
+            }
+
+            .id4-implant-all-on-4-slogan {
+                font-size: 1.1em;
+                margin-bottom: 25px;
+            }
+
+            .id4-implant-all-on-4-logo img,
+            .id4-implant-all-on-4-portrait img {
+                width: 100px;
+            }
+
+            .id4-implant-all-on-4-portrait img {
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="id4-implant-all-on-4-hero-banner">
+
+        <div class="id4-implant-all-on-4-container">
+
+            <div class="id4-implant-all-on-4-logo">
+                <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/bieu-tuong-hoc@4x.png" alt="Logo">
+            </div>
+
+            <div class="id4-implant-all-on-4-text-content">
+
+                <p class="id4-implant-all-on-4-training-program">CHƯƠNG TRÌNH ĐÀO TẠO</p>
+
+                <h1>IMPLANT ALL ON X</h1>
+
+                <p class="id4-implant-all-on-4-slogan">DÁM HỌC - DÁM TƯ VẤN - DÁM LÀM</p>
+                <a href="#" class="id4-implant-all-on-4-cta-button">ĐĂNG KÝ NGAY</a>
+            </div>
+
+            <div class="id4-implant-all-on-4-portrait">
+                <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/image-teacher-1@4x.png" alt="Portrait">
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

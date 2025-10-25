@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID4 Image MHDPT Component</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <style>
+         :root {
+            --progress-bar-color: #333;
+            --inactive-bar-color: #d8d8d8;
+            --control-icon-color: #a0a0a0;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --id4-bg-section-STACKABLE-GUIDE: url('http://localhost/iD4Center/wp-content/uploads/2025/09/bg-ID-4-STACKABLE-GUIDE-1@4x.png');
+        }
+        
+        .id4-bs-info {
+            font-family: var(--font-family);
+            background-image: var(--id4-bg-section-STACKABLE-GUIDE);
+            /* padding: 40px 0; */
+            width: 100%;
+            /* height: 1001; */
+            overflow-x: hidden;
+        }
+        
+        .id4-bs-info__swiper {
+            width: 100%;
+            padding: 20px 0;
+            overflow: visible;
+        }
+        
+        .id4-bs-info .swiper-wrapper {
+            will-change: transform;
+        }
+        
+        .id4-bs-info .swiper-slide {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 1000px;
+            height: 562px;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            will-change: transform;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .id4-bs-info .swiper-slide {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        
+        .id4-bs-info .swiper-slide:nth-child(1) {
+            background-image: url('http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-1@4x.png');
+        }
+        
+        .id4-bs-info .swiper-slide:nth-child(2) {
+            background-image: url('http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-2@4x.png');
+        }
+        
+        .id4-bs-info .swiper-slide:nth-child(3) {
+            background-image: url('http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-3@4x.png');
+        }
+        
+        .id4-bs-info .swiper-slide:nth-child(4) {
+            background-image: url('http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-4@4x.png');
+        }
+        
+        .id4-bs-info .swiper-slide:nth-child(5) {
+            background-image: url('http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-5@4x.png');
+        }
+        
+        .id4-bs-info__slide-inner {
+            box-sizing: border-box;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 40px 50px;
+        }
+        
+        .id4-bs-info__text-content {
+            max-width: 55%;
+            color: #333;
+        }
+        
+        .id4-bs-info__doctor-name {
+            font-size: 28px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+        
+        .id4-bs-info__doctor-title {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        
+        .id4-bs-info__doctor-details ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .id4-bs-info__doctor-details li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            font-size: 16px;
+        }
+        
+        .id4-bs-info__doctor-details li::before {
+            content: '•';
+            color: #007bff;
+            position: absolute;
+            left: 0;
+            font-size: 20px;
+            line-height: 1;
+        }
+        
+        .id4-bs-info__doctor-image {
+            width: 340px;
+            height: auto;
+            object-fit: contain;
+            margin-left: 30px;
+        }
+        
+        .id4-bs-info__controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+            margin-top: 20px;
+        }
+        
+        .id4-bs-info__pagination.swiper-pagination-bullets {
+            position: static;
+            display: flex;
+            gap: 6px;
+            width: auto;
+        }
+        
+        .id4-bs-info__pagination .swiper-pagination-bullet {
+            width: 60px;
+            height: 6px;
+            border-radius: 3px;
+            background-color: var(--inactive-bar-color);
+            opacity: 1;
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.3s;
+        }
+        
+        .id4-bs-info__pagination .swiper-pagination-bullet-active {
+            background-color: var(--inactive-bar-color);
+        }
+        
+        .id4-bs-info__pagination .swiper-pagination-bullet-active::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--progress-bar-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            animation-name: id4-bs-info-progressFill;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+            animation-duration: var(--id4-bs-info-autoplay-delay, 5s);
+            animation-play-state: running;
+        }
+        
+        .id4-bs-info.autoplay-paused .swiper-pagination-bullet-active::after {
+            animation-play-state: paused;
+        }
+        
+        @keyframes id4-bs-info-progressFill {
+            from {
+                transform: scaleX(0);
+            }
+            to {
+                transform: scaleX(1);
+            }
+        }
+        /* SỬA LẠI: Nút Play/Pause */
+        
+        .id4-bs-info__autoplay-control {
+            cursor: pointer;
+            width: 30px;
+            /* Phóng to nút điều khiển */
+            height: 30px;
+            /* Phóng to nút điều khiển */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--control-icon-color);
+            border: 1px solid var(--inactive-bar-color);
+            /* Thêm viền như hình */
+            border-radius: 3px;
+            /* Bo góc nhẹ */
+        }
+        
+        .id4-bs-info__autoplay-control .id4-bs-info__icon {
+            display: none;
+            width: 18px;
+            /* Phóng to icon */
+            height: 18px;
+            /* Phóng to icon */
+        }
+        
+        .id4-bs-info__autoplay-control.playing .id4-bs-info__icon--pause {
+            display: block;
+        }
+        
+        .id4-bs-info__autoplay-control.paused .id4-bs-info__icon--play {
+            display: block;
+        }
+        /* Giao diện Mobile */
+        
+        @media (max-width: 768px) {
+            .id4-bs-info .swiper-slide {
+                width: 90%;
+                height: auto;
+                max-height: 90vh;
+            }
+            .id4-bs-info__slide-inner {
+                flex-direction: column;
+                text-align: center;
+                padding: 30px 20px;
+            }
+            .id4-bs-info__text-content {
+                max-width: 100%;
+                margin-bottom: 25px;
+            }
+            .id4-bs-info__doctor-image {
+                margin-left: 0;
+                width: 200px;
+                height: auto;
+            }
+            .id4-bs-info__doctor-details li {
+                text-align: left;
+            }
+        }
+        /* CSS cho Pop-up */
+        
+        .id4-bs-info__popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        
+        .id4-bs-info__popup-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .id4-bs-info__popup-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            max-width: 700px;
+            width: 90%;
+            position: relative;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .id4-bs-info__popup-overlay.active .id4-bs-info__popup-content {
+            transform: translateY(0);
+        }
+        
+        .id4-bs-info__popup-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 28px;
+            color: #888;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        
+        .id4-bs-info__popup-image {
+            width: 180px;
+            height: auto;
+            object-fit: contain;
+            margin-bottom: 20px;
+        }
+        
+        .id4-bs-info__popup-name {
+            font-size: 26px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+        
+        .id4-bs-info__popup-title {
+            font-size: 17px;
+            color: #555;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .id4-bs-info__popup-details ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: left;
+            width: 100%;
+        }
+        
+        .id4-bs-info__popup-details li {
+            position: relative;
+            padding-left: 25px;
+            margin-bottom: 8px;
+            line-height: 1.5;
+            font-size: 15px;
+            color: #444;
+        }
+        
+        .id4-bs-info__popup-details li::before {
+            content: '•';
+            color: #007bff;
+            position: absolute;
+            left: 0;
+            font-size: 20px;
+            line-height: 1;
+            top: -2px;
+            /* Điều chỉnh vị trí dấu chấm cho phù hợp */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="id4-bs-info">
+        <div class="id4-bs-info__swiper swiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <div class="id4-bs-info__slide-inner" data-name="ThS.BS. Lê Văn Điềm" data-title="Giám đốc trung tâm" data-img="https://i.ibb.co/L5191jS/doctor-le-van-diem.png" data-details='["Tốt nghiệp Đại học Y Dược TP. HCM.", "30 năm kinh nghiệm trong việc khám và điều trị các loại hình như: nha khoa thẩm mỹ, cấy ghép implant, nha khoa tổng quát.", "Tham gia nhiều chương trình báo cáo chuyên đề về nha khoa thẩm mỹ, phẫu thuật cấy ghép implant, tổ chức các lớp đào tạo chuyên sâu."]'>
+                        <div class="id4-bs-info__text-content">
+                            <h3 class="id4-bs-info__doctor-name">ThS.BS. Lê Văn Điềm</h3>
+                            <p class="id4-bs-info__doctor-title">Giám đốc trung tâm</p>
+                            <ul class="id4-bs-info__doctor-details">
+                                <li>Tốt nghiệp Đại học Y Dược TP. HCM.</li>
+                                <li>30 năm kinh nghiệm trong việc khám và điều trị các loại hình như: nha khoa thẩm mỹ, cấy ghép implant, nha khoa tổng quát.</li>
+                                <li>Tham gia nhiều chương trình báo cáo chuyên đề về nha khoa thẩm mỹ, phẫu thuật cấy ghép implant, tổ chức các lớp đào tạo chuyên sâu.</li>
+                            </ul>
+                        </div>
+                        <img class="id4-bs-info__doctor-image" src="https://i.ibb.co/L5191jS/doctor-le-van-diem.png" alt="Bác sĩ Lê Văn Điềm">
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="id4-bs-info__slide-inner" data-name="ThS.BS. Nguyễn Thị A" data-title="Trưởng khoa Răng Hàm Mặt" data-img="https://i.ibb.co/hK713m7/doctor-female.png" data-details='["Tốt nghiệp Đại học Y Hà Nội.", "15 năm kinh nghiệm chuyên sâu về chỉnh nha, niềng răng trong suốt Invisalign.", "Đạt nhiều chứng chỉ quốc tế về chỉnh nha hiện đại."]'>
+                        <div class="id4-bs-info__text-content">
+                            <h3 class="id4-bs-info__doctor-name">ThS.BS. Nguyễn Thị A</h3>
+                            <p class="id4-bs-info__doctor-title">Trưởng khoa Răng Hàm Mặt</p>
+                            <ul class="id4-bs-info__doctor-details">
+                                <li>Tốt nghiệp Đại học Y Hà Nội.</li>
+                                <li>15 năm kinh nghiệm chuyên sâu về chỉnh nha, niềng răng trong suốt Invisalign.</li>
+                                <li>Đạt nhiều chứng chỉ quốc tế về chỉnh nha hiện đại.</li>
+                            </ul>
+                        </div>
+                        <img class="id4-bs-info__doctor-image" src="https://i.ibb.co/hK713m7/doctor-female.png" alt="Bác sĩ Nguyễn Thị A">
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="id4-bs-info__slide-inner" data-name="BS. Trần Văn B" data-title="Bác sĩ chuyên khoa Phục hình" data-img="https://i.ibb.co/rQf1zP4/doctor-male.png" data-details='["Tốt nghiệp Đại học Y Khoa Phạm Ngọc Thạch.", "10 năm kinh nghiệm trong lĩnh vực phục hình răng sứ, làm cầu răng và mão răng.", "Cập nhật liên tục các kỹ thuật mới nhất trong nha khoa phục hình."]'>
+                        <div class="id4-bs-info__text-content">
+                            <h3 class="id4-bs-info__doctor-name">BS. Trần Văn B</h3>
+                            <p class="id4-bs-info__doctor-title">Bác sĩ chuyên khoa Phục hình</p>
+                            <ul class="id4-bs-info__doctor-details">
+                                <li>Tốt nghiệp Đại học Y Khoa Phạm Ngọc Thạch.</li>
+                                <li>10 năm kinh nghiệm trong lĩnh vực phục hình răng sứ, làm cầu răng và mão răng.</li>
+                                <li>Cập nhật liên tục các kỹ thuật mới nhất trong nha khoa phục hình.</li>
+                            </ul>
+                        </div>
+                        <img class="id4-bs-info__doctor-image" src="https://i.ibb.co/rQf1zP4/doctor-male.png" alt="Bác sĩ Trần Văn B">
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="id4-bs-info__slide-inner" data-name="BS. Hoàng Thị C" data-title="Bác sĩ chuyên khoa Nội nha" data-img="https://i.ibb.co/Wf2Y1f5/doctor-female2.png" data-details='["Tốt nghiệp Đại học Y Dược Cần Thơ.", "8 năm kinh nghiệm điều trị tủy răng, chữa viêm quanh chóp và bảo tồn răng.", "Thực hiện hàng trăm ca điều trị nội nha thành công với tỷ lệ thành công cao."]'>
+                        <div class="id4-bs-info__text-content">
+                            <h3 class="id4-bs-info__doctor-name">BS. Hoàng Thị C</h3>
+                            <p class="id4-bs-info__doctor-title">Bác sĩ chuyên khoa Nội nha</p>
+                            <ul class="id4-bs-info__doctor-details">
+                                <li>Tốt nghiệp Đại học Y Dược Cần Thơ.</li>
+                                <li>8 năm kinh nghiệm điều trị tủy răng, chữa viêm quanh chóp và bảo tồn răng.</li>
+                                <li>Thực hiện hàng trăm ca điều trị nội nha thành công với tỷ lệ thành công cao.</li>
+                            </ul>
+                        </div>
+                        <img class="id4-bs-info__doctor-image" src="https://i.ibb.co/Wf2Y1f5/doctor-female2.png" alt="Bác sĩ Hoàng Thị C">
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="id4-bs-info__slide-inner" data-name="BS. Phạm Văn D" data-title="Bác sĩ chuyên khoa Nhổ răng khôn" data-img="https://i.ibb.co/b3bVb4g/doctor-male2.png" data-details='["Tốt nghiệp Đại học Y Dược TP. HCM.", "7 năm kinh nghiệm nhổ răng khôn mọc lệch, mọc ngầm không đau.", "Ứng dụng công nghệ piezosurgery trong các ca tiểu phẫu phức tạp."]'>
+                        <div class="id4-bs-info__text-content">
+                            <h3 class="id4-bs-info__doctor-name">BS. Phạm Văn D</h3>
+                            <p class="id4-bs-info__doctor-title">Bác sĩ chuyên khoa Nhổ răng khôn</p>
+                            <ul class="id4-bs-info__doctor-details">
+                                <li>Tốt nghiệp Đại học Y Dược TP. HCM.</li>
+                                <li>7 năm kinh nghiệm nhổ răng khôn mọc lệch, mọc ngầm không đau.</li>
+                                <li>Ứng dụng công nghệ piezosurgery trong các ca tiểu phẫu phức tạp.</li>
+                            </ul>
+                        </div>
+                        <img class="id4-bs-info__doctor-image" src="https://i.ibb.co/b3bVb4g/doctor-male2.png" alt="Bác sĩ Phạm Văn D">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="id4-bs-info__controls">
+            <div class="id4-bs-info__pagination swiper-pagination"></div>
+            <div class="id4-bs-info__autoplay-control playing" role="button" aria-label="Pause autoplay">
+                <svg class="id4-bs-info__icon id4-bs-info__icon--pause" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 3.5h1.5v9H5.5v-9zm3.5 0h1.5v9H9v-9z" /></svg>
+                <svg class="id4-bs-info__icon id4-bs-info__icon--play" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/></svg>
+            </div>
+        </div>
+    </div>
+
+    <div class="id4-bs-info__popup-overlay">
+        <div class="id4-bs-info__popup-content">
+            <button class="id4-bs-info__popup-close">&times;</button>
+            <img class="id4-bs-info__popup-image" src="" alt="Doctor Image">
+            <h3 class="id4-bs-info__popup-name"></h3>
+            <p class="id4-bs-info__popup-title"></p>
+            <ul class="id4-bs-info__popup-details"></ul>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script>
+        function initId4BsInfo() {
+            const container = document.querySelector('.id4-bs-info');
+            if (!container) return;
+
+            const autoplayDelay = 3000;
+            container.style.setProperty('--id4-bs-info-autoplay-delay', (autoplayDelay / 1000) + 's');
+
+            const swiper = new Swiper('.id4-bs-info__swiper', {
+                speed: 500,
+                loop: true,
+                centeredSlides: true,
+                slidesPerView: 'auto',
+                spaceBetween: 24,
+
+                autoplay: {
+                    delay: autoplayDelay,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+                },
+                pagination: {
+                    el: '.id4-bs-info__pagination',
+                    clickable: true,
+                },
+            });
+
+            const controlButton = container.querySelector('.id4-bs-info__autoplay-control');
+
+            if (controlButton) {
+                controlButton.addEventListener('click', () => {
+                    if (swiper.autoplay.running) {
+                        swiper.autoplay.stop();
+                    } else {
+                        swiper.autoplay.start();
+                    }
+                });
+
+                swiper.on('autoplayStart', () => {
+                    controlButton.classList.remove('paused');
+                    controlButton.classList.add('playing');
+                    container.classList.remove('autoplay-paused');
+                    controlButton.setAttribute('aria-label', 'Pause autoplay');
+                });
+
+                swiper.on('autoplayStop', () => {
+                    controlButton.classList.remove('playing');
+                    controlButton.classList.add('paused');
+                    container.classList.add('autoplay-paused');
+                    controlButton.setAttribute('aria-label', 'Play autoplay');
+                });
+            }
+
+            // === Logic Pop-up ===
+            const popupOverlay = document.querySelector('.id4-bs-info__popup-overlay');
+            const popupCloseBtn = document.querySelector('.id4-bs-info__popup-close');
+            const popupImage = document.querySelector('.id4-bs-info__popup-image');
+            const popupName = document.querySelector('.id4-bs-info__popup-name');
+            const popupTitle = document.querySelector('.id4-bs-info__popup-title');
+            const popupDetails = document.querySelector('.id4-bs-info__popup-details');
+
+            document.querySelectorAll('.id4-bs-info__slide-inner').forEach(slideInner => {
+                slideInner.addEventListener('click', (e) => {
+                    // Ngăn chặn sự kiện click lan ra nếu click vào nút điều khiển autoplay
+                    if (e.target.closest('.id4-bs-info__autoplay-control')) {
+                        return;
+                    }
+
+                    // Dừng autoplay khi mở pop-up
+                    if (swiper.autoplay.running) {
+                        swiper.autoplay.stop();
+                    }
+
+                    const name = slideInner.dataset.name;
+                    const title = slideInner.dataset.title;
+                    const imgSrc = slideInner.dataset.img;
+                    const details = JSON.parse(slideInner.dataset.details);
+
+                    popupImage.src = imgSrc;
+                    popupName.textContent = name;
+                    popupTitle.textContent = title;
+
+                    popupDetails.innerHTML = ''; // Xóa nội dung cũ
+                    details.forEach(detail => {
+                        const li = document.createElement('li');
+                        li.textContent = detail;
+                        popupDetails.appendChild(li);
+                    });
+
+                    popupOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden'; // Ngăn cuộn trang
+                });
+            });
+
+            popupCloseBtn.addEventListener('click', () => {
+                popupOverlay.classList.remove('active');
+                document.body.style.overflow = ''; // Cho phép cuộn trang lại
+                swiper.autoplay.start(); // Khởi động lại autoplay khi đóng pop-up
+            });
+
+            // Đóng pop-up khi click ra ngoài overlay
+            popupOverlay.addEventListener('click', (e) => {
+                if (e.target === popupOverlay) {
+                    popupOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                    swiper.autoplay.start();
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', initId4BsInfo);
+    </script>
+</body>
+
+</html>

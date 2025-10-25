@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Gallery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: url('http://localhost/iD4Center/wp-content/uploads/2025/10/trang-tri-2.1.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        
+         :root {
+            --id4-font-size-title: 2rem;
+            --id4-font-size-title-left: 40px;
+            --font-size-des: 16px;
+            --color-tilet: #02518a;
+            --id4-color-bg-section: #f0f1f2;
+            --id4-font-family: 'SVN-Effra';
+            --max-width-section: 820px;
+            --maxw: 1200px;
+        }
+        
+        .id4-video-page-wrapper {
+            box-sizing: border-box;
+            font-family: var(--id4-font-family);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 10px;
+            background-color: transparent;
+        }
+        
+        .id4-video-gallery-container {
+            box-sizing: border-box;
+            width: 140px;
+            max-width: 1400px;
+            padding: 20px;
+        }
+        
+        .id4-video-video-gallery {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .id4-video-col,
+        .id4-video-columns,
+        .id4-video-gallery-item {
+            margin: 0;
+            padding: 0 !important;
+            position: relative;
+            width: 100%;
+        }
+        
+        .id4-video-gallery-item {
+            position: relative;
+            width: 125px;
+            height: 250px;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform var(--transition-speed) ease;
+            flex-shrink: 0;
+        }
+        
+        .id4-video-gallery-item:hover {
+            transform: scale(1.01);
+        }
+        
+        .id4-video-gallery-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .id4-video-item-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 0px 5px 15px 5px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8em;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            text-align: center;
+            pointer-events: none;
+        }
+        
+        .id4-video-play-button-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            transition: transform var(--transition-speed) ease;
+        }
+        
+        .id4-video-play-icon,
+        .id4-video-expand-icon {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: opacity var(--transition-speed) ease;
+            display: flex;
+            justify-content: center;
+            align-items: center
+        }
+        
+        .id4-video-play-icon::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-left: 18px solid #333;
+        }
+        
+        .id4-video-expand-icon {
+            opacity: 0;
+        }
+        
+        .id4-video-expand-icon::before,
+        .id4-video-expand-icon::after {
+            content: '';
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-color: #333;
+            border-style: solid;
+        }
+        
+        .id4-video-expand-icon::before {
+            top: 16px;
+            left: 16px;
+            border-width: 3px 0 0 3px;
+        }
+        
+        .id4-video-expand-icon::after {
+            bottom: 16px;
+            right: 16px;
+            border-width: 0 3px 3px 0;
+        }
+        
+        .id4-video-gallery-item:hover .id4-video-play-icon {
+            opacity: 0;
+        }
+        
+        .id4-video-gallery-item:hover .id4-video-expand-icon {
+            opacity: 1;
+        }
+        
+        .id4-video-mobile-title {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .id4-video-page-wrapper {
+                padding: 0 !important;
+                align-items: flex-start;
+            }
+            .id4-video-gallery-container {
+                padding: 0px 0;
+                width: 100%;
+            }
+            .id4-video-video-gallery {
+                display: flex;
+                justify-content: flex-start;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                padding: 0 20px;
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+                align-items: flex-start;
+            }
+            .id4-video-video-gallery::-webkit-scrollbar {
+                display: none;
+            }
+            .id4-video-col,
+            .id4-video-columns,
+            .id4-video-gallery-item {
+                margin: 0;
+                padding: 0 15px 30px;
+                position: relative;
+                width: 75px !important;
+            }
+            .id4-video-gallery-item {
+                width: 90px;
+                height: auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+                border-radius: 0;
+                overflow: visible;
+                border: none;
+                scroll-snap-align: start;
+                object-fit: cover;
+            }
+            .id4-video-gallery-item video {
+                width: 75px;
+                height: 75px;
+                border-radius: 50%;
+                border: 3px solid #ccc;
+            }
+            .id4-video-item-overlay {
+                display: none;
+            }
+            .id4-video-mobile-title {
+                display: block;
+                color: #333;
+                font-weight: normal;
+                font-size: 0.8em;
+                text-align: center;
+            }
+            .id4-video-play-button-overlay {
+                width: 30px;
+                height: 30px;
+                left: 50%;
+                /* CẬP NHẬT: Định vị top theo pixel để căn giữa video 75px */
+                top: 37.5px;
+                transform: translate(-50%, -50%);
+            }
+            .id4-video-play-icon::after {
+                border-top-width: 6px;
+                border-bottom-width: 6px;
+                border-left-width: 11px;
+            }
+            .id4-video-expand-icon::before {
+                top: 10px;
+                left: 10px;
+                width: 10px;
+                height: 10px;
+            }
+            .id4-video-expand-icon::after {
+                bottom: 10px;
+                right: 10px;
+                width: 10px;
+                height: 10px;
+            }
+        }
+        
+        .id4-video-modal {
+            margin-top: 2%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity var(--transition-speed) ease, visibility var(--transition-speed) ease;
+        }
+        
+        .id4-video-modal.id4-video-show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .id4-video-modal-content {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            transition: width var(--transition-speed) ease, height var(--transition-speed) ease;
+            max-width: 80vw;
+            max-height: 70vh;
+            background: rgba(25, 25, 25, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border-radius: 15px;
+        }
+        
+        #modal-video {
+            width: 100%;
+            height: 87%;
+            border-radius: 15px;
+            display: block;
+            object-fit: cover;
+        }
+        
+        .id4-video-modal-progress-container {
+            position: absolute;
+            top: 10px;
+            width: calc(100% - 30px);
+            left: 15px;
+            display: flex;
+            gap: 4px;
+            z-index: 1002;
+        }
+        
+        .id4-video-progress-segment {
+            flex: 1;
+            height: 3px;
+            background-color: rgba(255, 255, 255, 0.4);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .id4-video-progress-fill {
+            width: 0%;
+            height: 100%;
+            background-color: white;
+            border-radius: 3px;
+            transition: width 0.1s linear;
+        }
+        
+        .id4-video-progress-segment.id4-video-active .id4-video-progress-fill {
+            background-color: #ff4500;
+        }
+        
+        .id4-video-modal-close,
+        .id4-video-modal-nav {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1001;
+            font-size: 16px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .id4-video-modal-close {
+            top: 20px;
+            right: 5px;
+        }
+        
+        .id4-video-modal-nav {
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .id4-video-modal-nav.id4-video-prev {
+            left: 15px;
+        }
+        
+        .id4-video-modal-nav.id4-video-next {
+            right: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="background-container"></div>
+
+    <div class="id4-video-page-wrapper">
+        <div class="id4-video-gallery-container">
+            <ul class="id4-video-video-gallery">
+            </ul>
+            </p>
+        </div>
+        <div id="video-modal" class="id4-video-modal">
+            <div class="id4-video-modal-content">
+                <div class="id4-video-modal-progress-container">
+                </div>
+                <p> <video id="modal-video" controls autoplay></video><br />
+                    <button class="id4-video-modal-close" onclick="closeModal()" aria-label="Đóng cửa sổ video">×</button><br />
+                    <button class="id4-video-modal-nav id4-video-prev" onclick="showPrevVideo()" aria-label="Xem video trước">&#10094;</button><br />
+                    <button class="id4-video-modal-nav id4-video-next" onclick="showNextVideo()" aria-label="Xem video tiếp theo">&#10095;</button>
+            </div>
+            </p>
+        </div>
+    </div>
+    </div>
+
+    <script>
+        const videoLink = "https://stories.join-stories.com/asus-hq/ec4c7026-99a2-4813-b330-f2e863f34f76/story.mp4";
+
+        const videoData = [{
+            thumb: videoLink,
+            full: videoLink,
+            title: "MHDPT MẤT NHIỀU RĂNG"
+        }, {
+            thumb: videoLink,
+            full: videoLink,
+            title: "MHDPT MẤT RĂNG ĐƠN LẺ"
+        }, {
+            thumb: videoLink,
+            full: videoLink,
+            title: "QUY TRÌNH CẤY IMPLANT VỚI MHDPT"
+        }, {
+            thumb: videoLink,
+            full: videoLink,
+            title: "QUY TRÌNH SẢN XUẤT MHDPT"
+        }, {
+            thumb: videoLink,
+            full: videoLink,
+            title: "HƯỚNG DẪN SỬ DỤNG"
+        }, {
+            thumb: videoLink,
+            full: videoLink,
+            title: "CÁC CA LÂM SÀNG"
+        }, {
+            thumb: videoLink,
+            full: videoLink,
+            title: "ĐÀO TẠO IMPLANT TOÀN HÀM"
+        }];
+
+        const gallery = document.querySelector('.id4-video-video-gallery');
+        const modal = document.getElementById('video-modal');
+        const modalContent = document.querySelector('.id4-video-modal-content');
+        const modalVideo = document.getElementById('modal-video');
+        const progressContainer = document.querySelector('.id4-video-modal-progress-container');
+        const galleryContainer = document.querySelector('.id4-video-gallery-container');
+        let currentVideoIndex = 0;
+
+        function createGalleryItems() {
+            videoData.forEach((data, index) => {
+                const item = document.createElement('li');
+                item.className = 'id4-video-gallery-item';
+                item.setAttribute('data-index', index);
+
+
+                const video = document.createElement('video');
+                video.src = data.thumb + '#t=0.5';
+                video.muted = true;
+                video.loop = true;
+                video.playsInline = true;
+                video.preload = "metadata";
+
+
+                if (index === 0) {
+                    video.autoplay = true;
+                }
+
+
+                const textOverlay = document.createElement('div');
+                textOverlay.className = 'id4-video-item-overlay';
+                textOverlay.innerHTML = data.title;
+
+
+                const playButton = document.createElement('div');
+                playButton.className = 'id4-video-play-button-overlay';
+                playButton.innerHTML = `<div class="id4-video-play-icon"></div><div class="id4-video-expand-icon"></div>`;
+
+
+                const mobileTitle = document.createElement('div');
+                mobileTitle.className = 'id4-video-mobile-title';
+                mobileTitle.innerHTML = data.title;
+
+
+
+                item.append(video, playButton, textOverlay, mobileTitle);
+                gallery.appendChild(item);
+
+
+                const progressSegment = document.createElement('div');
+                progressSegment.className = 'id4-video-progress-segment';
+                progressSegment.innerHTML = `<div class="id4-video-progress-fill"></div>`;
+                progressContainer.appendChild(progressSegment);
+            });
+        }
+
+        function resizeModalToFitVideo() {
+            const videoRatio = modalVideo.videoWidth / modalVideo.videoHeight;
+            const screenHeight = window.innerHeight * 0.75;
+            const screenWidth = window.innerWidth * 0.95;
+            let newWidth = screenWidth;
+            let newHeight = newWidth / videoRatio;
+            if (newHeight > screenHeight) {
+                newHeight = screenHeight;
+                newWidth = newHeight * videoRatio;
+            }
+            modalContent.style.width = `${newWidth}px`;
+            modalContent.style.height = `${newHeight}px`;
+        }
+
+        function updateProgressBar() {
+            const percent = (modalVideo.currentTime / modalVideo.duration) * 100;
+            const progressFills = document.querySelectorAll('.id4-video-progress-fill');
+            if (progressFills[currentVideoIndex]) {
+                progressFills[currentVideoIndex].style.width = `${percent}%`;
+            }
+        }
+
+        const header = document.querySelector('header');
+        let originalHeaderZIndex = '';
+
+
+        function openModal(index) {
+            document.body.appendChild(modal);
+            if (header) {
+                originalHeaderZIndex = window.getComputedStyle(header).zIndex;
+                header.style.zIndex = '0';
+            }
+
+            currentVideoIndex = index;
+            modalVideo.src = videoData[index].full;
+            modal.classList.add('id4-video-show');
+            document.body.style.overflow = 'hidden';
+
+
+            const segments = document.querySelectorAll('.id4-video-progress-segment');
+            segments.forEach((seg, i) => {
+                seg.classList.toggle('id4-video-active', i === index);
+                seg.querySelector('.id4-video-progress-fill').style.width = i < index ? '100%' : '0%';
+            });
+        }
+
+        function closeModal() {
+            modal.classList.remove('id4-video-show');
+            modalVideo.pause();
+            modalVideo.src = '';
+            document.body.style.overflow = 'auto';
+            modalContent.style.width = 'auto';
+            modalContent.style.height = 'auto';
+
+            if (header) {
+                header.style.zIndex = originalHeaderZIndex;
+            }
+        }
+
+        function showNextVideo() {
+            currentVideoIndex = (currentVideoIndex + 1) % videoData.length;
+            openModal(currentVideoIndex);
+        }
+
+        function showPrevVideo() {
+            currentVideoIndex = (currentVideoIndex - 1 + videoData.length) % videoData.length;
+            openModal(currentVideoIndex);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            createGalleryItems();
+
+
+            const items = document.querySelectorAll('.id4-video-gallery-item');
+            const firstVideo = items.length > 0 ? items[0].querySelector('video') : null;
+
+
+            if (window.innerWidth > 768 && firstVideo) {
+                items.forEach(item => {
+                    const video = item.querySelector('video');
+
+
+                    item.addEventListener('mouseenter', () => {
+                        firstVideo.pause();
+                        video.play();
+                    });
+
+
+                    item.addEventListener('mouseleave', () => {
+                        video.pause();
+                    });
+                });
+
+
+                galleryContainer.addEventListener('mouseleave', () => {
+                    firstVideo.play();
+                });
+            }
+
+
+            gallery.addEventListener('click', (e) => {
+                const item = e.target.closest('.id4-video-gallery-item');
+                if (item) {
+                    const index = parseInt(item.getAttribute('data-index'));
+                    openModal(index);
+                }
+            });
+
+
+            modalVideo.addEventListener('loadedmetadata', resizeModalToFitVideo);
+            modalVideo.addEventListener('timeupdate', updateProgressBar);
+            modalVideo.addEventListener('ended', showNextVideo);
+
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeModal();
+            });
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID4 Image MHDPT Component</title>
+
+
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <style>
+         :root {
+            --progress-bar-color: #333;
+            --inactive-bar-color: #d8d8d8;
+            --control-icon-color: #a0a0a0;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --id4-bg-section-STACKABLE-GUIDE: url('http://localhost/iD4Center/wp-content/uploads/2025/09/bg-ID-4-STACKABLE-GUIDE-1@4x.png');
+            /* New variables from the provided image layout */
+            --id4-card-bg: #fff;
+            --id4-card-border: #fde7e7;
+            /* Light red border */
+            --id4-title-color: #005baa;
+            /* Blue title color */
+            --id4-body-text: #333;
+            --id4-accent-bg: #eef7ff;
+            /* Light blue shape */
+        }
+        
+        .id-guide-container {
+            background-image: var(--id4-bg-section-STACKABLE-GUIDE);
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        
+        .id-guide {
+            font-family: var(--font-family);
+            width: 100%;
+            overflow-x: hidden;
+        }
+        
+        .id-guide__swiper {
+            width: 100%;
+            padding: 20px 0;
+            overflow: visible;
+        }
+        
+        .id-guide .swiper-wrapper {
+            will-change: transform;
+        }
+        
+        .id-guide .swiper-slide {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--id4-card-bg);
+            /* Changed from #f9f9fa */
+            border-radius: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            max-width: 800px;
+            height: 462px;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            will-change: transform;
+            overflow: hidden;
+            border: 1.5px solid var(--id4-card-border);
+            /* Added red border */
+            position: relative;
+            /* Added for pseudo-element */
+        }
+        
+        .id-guide .swiper-slide .id-guide__slide-inner {
+            border-radius: 24px;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            position: relative;
+            /* Added for stacking context */
+            z-index: 1;
+        }
+        /* Blue abstract shape from the image */
+        
+        .id-guide .swiper-slide .id-guide__slide-inner::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -80px;
+            width: 320px;
+            height: 380px;
+            background-color: var(--id4-accent-bg);
+            border-bottom-left-radius: 160px;
+            /* 50% of width */
+            z-index: 1;
+            /* Behind text and image */
+            opacity: 0.9;
+        }
+        
+        .id-guide__slide-text {
+            flex: 1 1 50%;
+            padding: 40px;
+            box-sizing: border-box;
+            color: var(--id4-body-text);
+            font-size: 18px;
+            line-height: 1.6;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: justify;
+            position: relative;
+            /* Added for stacking */
+            z-index: 3;
+            /* On top of blue shape */
+        }
+        
+        .id-guide__slide-text strong {
+            /* Styled to match the title in the image */
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--id4-title-color);
+            display: block;
+            /* Makes it stack like a title */
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+        
+        .id-guide__slide-image {
+            flex: 1 1 50%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            /* Added for stacking */
+            z-index: 2;
+            /* On top of blue shape, behind text */
+        }
+        
+        @media (min-width: 768.25px) {
+            .id-guide__slide-image img {
+                width: 82%;
+                height: 100%;
+                object-fit: contain;
+            }
+        }
+        
+        .id-guide__slide-inner {
+            box-sizing: border-box;
+        }
+        
+        .id-guide__controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .id-guide__pagination.swiper-pagination-bullets {
+            position: static;
+            display: flex;
+            gap: 6px;
+            width: auto;
+        }
+        
+        .id-guide__pagination .swiper-pagination-bullet {
+            width: 60px;
+            height: 6px;
+            border-radius: 3px;
+            background-color: var(--inactive-bar-color);
+            opacity: 1;
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.3s;
+        }
+        
+        .id-guide__pagination .swiper-pagination-bullet-active {
+            background-color: var(--inactive-bar-color);
+        }
+        
+        .id-guide__pagination .swiper-pagination-bullet-active::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--progress-bar-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            animation-name: id-guide-progressFill;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+            animation-duration: var(--id4-autoplay-delay, 5s);
+            animation-play-state: running;
+        }
+        
+        .id-guide.autoplay-paused .swiper-pagination-bullet-active::after {
+            animation-play-state: paused;
+        }
+        
+        @keyframes id-guide-progressFill {
+            from {
+                transform: scaleX(0);
+            }
+            to {
+                transform: scaleX(1);
+            }
+        }
+        
+        .id-guide__autoplay-control {
+            cursor: pointer;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--control-icon-color);
+        }
+        
+        .id-guide__autoplay-control .id-guide__icon {
+            display: none;
+        }
+        
+        .id-guide__autoplay-control.playing .id-guide__icon--pause {
+            display: block;
+        }
+        
+        .id-guide__autoplay-control.paused .id-guide__icon--play {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .id-guide__slide-image img {
+                width: 100%;
+                object-fit: contain;
+            }
+            .id-guide .swiper-slide {
+                width: 90%;
+                height: auto;
+                min-height: 450px;
+            }
+            .id-guide .swiper-slide .id-guide__slide-inner {
+                flex-direction: column;
+            }
+            /* Adjust blue shape for mobile */
+            .id-guide .swiper-slide .id-guide__slide-inner::before {
+                top: -30px;
+                right: -50px;
+                width: 200px;
+                height: 220px;
+                border-bottom-left-radius: 100px;
+            }
+            .id-guide__slide-text {
+                flex: 1 1 auto;
+                width: 100%;
+                padding: 24px;
+                font-size: 16px;
+                order: 2;
+                text-align: justify;
+            }
+            /* Adjust title style for mobile */
+            .id-guide__slide-text strong {
+                font-size: 22px;
+            }
+            .id-guide__slide-image {
+                flex: 1 1 200px;
+                width: 100%;
+                min-height: 180px;
+                order: 1;
+            }
+            .id-guide__pagination .swiper-pagination-bullet {
+                width: 40px;
+                height: 5px;
+            }
+            .id-guide__autoplay-control {
+                width: 20px;
+                height: 20px;
+            }
+            .id-guide__autoplay-control svg {
+                width: 14px;
+                height: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="id-guide-container">
+        <div class="id-guide">
+            <div class="id-guide__swiper swiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <div class="id-guide__slide-inner">
+
+                            <div class="id-guide__slide-text">
+                                <p><strong>Không bị biến dạng:</strong> iD-4 Stackable GUIDE sử dụng công nghệ in kim loại 3D (crom-cobal /titanium), từ đó khắc phục được nhược điểm của máng hướng dẫn bằng nhựa dễ gãy đem lại độ chính xác hoàn hảo.
+                                </p>
+                            </div>
+
+                            <div class="id-guide__slide-image">
+                                <img src="http://localhost/iD4Center/wp-content/uploads/2025/10/MHDPT-Img.png" alt="Slide 1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide">
+                        <div class="id-guide__slide-inner">
+                            <div class="id-guide__slide-text">
+
+                                <p><strong>Nội dung slide 2:</strong> Văn bản mô tả cho hình ảnh thứ hai, giải thích về một tính năng hoặc lợi ích khác.</p>
+                            </div>
+                            <div class="id-guide__slide-image">
+                                <img src="http://localhost/iD4Center/wp-content/uploads/2025/10/MHDPT-Img.png" alt="Slide 2">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="swiper-slide">
+                        <div class="id-guide__slide-inner">
+                            <div class="id-guide__slide-text">
+                                <p><strong>Nội dung slide 3:</strong> Trình bày chi tiết về quy trình hoặc một ứng dụng cụ thể của sản phẩm.</p>
+                            </div>
+
+                            <div class="id-guide__slide-image">
+                                <img src="http://localhost/iD4Center/wp-content/uploads/2025/10/MHDPT-Img.png" alt="Slide 2">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide">
+                        <div class="id-guide__slide-inner">
+                            <div class="id-guide__slide-text">
+                                <p><strong>Nội dung slide 4:</strong> So sánh hoặc đưa ra các thông số kỹ thuật quan trọng. </p>
+                            </div>
+                            <div class="id-guide__slide-image">
+                                <img src="http://localhost/iD4Center/wp-content/uploads/2025/10/MHDPT-Img.png" alt="Slide 4">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide">
+
+                        <div class="id-guide__slide-inner">
+                            <div class="id-guide__slide-text">
+                                <p><strong>Nội dung slide 5:</strong> Kết luận về lợi ích và độ chính xác mà công nghệ mang lại. </p>
+                            </div>
+                            <div class="id-guide__slide-image">
+                                <img src="http://localhost/iD4Center/wp-content/uploads/2025/10/MHDPT-Img.png" alt="Slide 5">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="id-guide__controls">
+                <div class="id-guide__pagination swiper-pagination"></div>
+                <div class="id-guide__autoplay-control playing" role="button" aria-label="Pause autoplay">
+                    <svg class="id-guide__icon id-guide__icon--pause" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+
+                        <path d="M5.5 3.5h1.5v9H5.5v-9zm3.5 0h1.5v9H9v-9z" />
+
+                    </svg> <svg class="id-guide__icon id-guide__icon--play" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+
+
+                        <path
+                            d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+
+    <script>
+        function init_id_4_guide() {
+            const container = document.querySelector('.id-guide');
+
+
+            if (!container) return;
+
+
+
+            const id_4_guide_autoplayDelay = 3000;
+
+
+
+            container.style.setProperty('--id4-autoplay-delay', (id_4_guide_autoplayDelay / 1000) + 's');
+            const id_4_guide_swiper = new Swiper('.id-guide__swiper', {
+                speed: 500,
+                loop: true,
+                centeredSlides: true,
+                slidesPerView: 'auto',
+                spaceBetween: 24,
+
+                autoplay: {
+                    delay: id_4_guide_autoplayDelay,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+
+
+                },
+                pagination: {
+                    el: '.id-guide__pagination',
+                    clickable: true,
+
+
+                },
+
+
+            });
+
+            const id_4_guide_controlButton = container.querySelector('.id-guide__autoplay-control');
+            if (id_4_guide_controlButton) {
+                id_4_guide_controlButton.addEventListener('click', () => {
+                    if (id_4_guide_swiper.autoplay.running) {
+                        id_4_guide_swiper.autoplay.stop();
+
+                    } else {
+                        id_4_guide_swiper.autoplay.start();
+                    }
+                });
+
+                id_4_guide_swiper.on('autoplayStart', () => {
+                    id_4_guide_controlButton.classList.remove('paused');
+                    id_4_guide_controlButton.classList.add('playing');
+                    container.classList.remove('autoplay-paused');
+                    M
+                });
+
+
+
+                id_4_guide_swiper.on('autoplayStop', () => {
+                    id_4_guide_controlButton.classList.remove('playing');
+                    id_4_guide_controlButton.classList.add('paused');
+                    container.classList.add('autoplay-paused');
+                });
+            }
+        }
+        document.addEventListener('DOMContentLoaded', init_id_4_guide);
+    </script>
+</body>
+
+</html>

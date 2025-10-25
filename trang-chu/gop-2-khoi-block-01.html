@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID4 Merged Horizontal Scroll - Updated Visibility</title>
+    <style>
+        /* --- STYLES FOR BLOCK 1 (id4-guide) --- */
+        
+         :root {
+            --id4-guide-background-color: #1a1a1a;
+            --id4-guide-card-background: #282828;
+            --id4-guide-text-color: #fff;
+            --id4-guide-border-color: #555;
+            --id4-guide-accent-color: #00aaff;
+            --id4-guide-dot-inactive-color: #555;
+            --id4-guide-bg-card: rgba(239, 240, 241, 0.2);
+            --id4-guide-color-text: #000;
+            --id4-guide-url-bg-card: url('http://localhost/iD4Center/wp-content/uploads/2025/09/bg-card-MHDPT@4x.png');
+        }
+        
+        .id4-guide-container {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--id4-guide-text-color);
+            transition: background-color 0.4s ease;
+        }
+        
+        .id4-guide-container.id4-guide-modal-open {
+            overflow: hidden;
+        }
+        /* === CHANGE: CSS FOR PROGRESS BAR VISIBILITY === */
+        
+        .id4-guide-progress-bar-container {
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background-color: var(--id4-guide-border-color);
+            z-index: 10;
+            /* Hide by default and add smooth transition */
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        /* When active, make it visible */
+        
+        .id4-guide-progress-bar-container.is-visible {
+            opacity: 1;
+        }
+        
+        .id4-guide-progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--id4-guide-accent-color);
+            transition: width 0.1s linear;
+        }
+        
+        .id4-guide-horizontal-track {
+            height: 400vh;
+            position: relative;
+        }
+        
+        .id4-guide-sticky-container {
+            position: sticky;
+            top: 5vh;
+            height: 100vh;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+        
+        .id4-guide-horizontal-content {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            padding: 0 calc(50vw - 340px);
+        }
+        
+        .id4-guide-card {
+            width: clamp(300px, 60vw, 980px);
+            height: 600px;
+            max-height: 600px;
+            margin: 0 clamp(10px, 3vw, 30px);
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 20px;
+            border-radius: 20px;
+            border: 1px solid var(--id4-guide-border-color);
+            padding: clamp(20px, 5vw, 40px);
+            box-sizing: border-box;
+            flex-shrink: 0;
+            cursor: pointer;
+            transform: scale(1);
+            opacity: 1;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            position: relative;
+            background-size: cover;
+            background-position: center center;
+        }
+        
+        .id4-guide-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--id4-guide-bg-card);
+            border-radius: 20px;
+            z-index: 1;
+        }
+        
+        .id4-guide-card-text,
+        .id4-guide-card-image {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .id4-guide-card:nth-child(1) {
+            background-image: var(--id4-guide-url-bg-card);
+        }
+        
+        .id4-guide-card:nth-child(2) {
+            background-image: var(--id4-guide-url-bg-card);
+        }
+        
+        .id4-guide-card:nth-child(3) {
+            background-image: var(--id4-guide-url-bg-card);
+        }
+        
+        .id4-guide-card:nth-child(4) {
+            background-image: var(--id4-guide-url-bg-card);
+        }
+        
+        .id4-guide-card:nth-child(5) {
+            background-image: var(--id4-guide-url-bg-card);
+        }
+        
+        .id4-guide-card-text {
+            flex: 1 1 55%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .id4-guide-card-image {
+            flex: 1 1 45%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .id4-guide-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+        
+        .id4-guide-card h2 {
+            font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+            margin-top: 0;
+            margin-bottom: 15px;
+            text-align: left;
+            color: var(--id4-guide-color-text);
+        }
+        
+        .id4-guide-card p {
+            font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+            line-height: 1.6;
+            opacity: 0.8;
+            text-align: left;
+            color: var(--id4-guide-color-text);
+        }
+        
+        .id4-guide-pagination-dots {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            flex-direction: row;
+            justify-content: center;
+            gap: 12px;
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .id4-guide-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--id4-guide-dot-inactive-color);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .id4-guide-dot.id4-guide-active {
+            background-color: var(--id4-guide-text-color);
+            transform: scale(1.2);
+        }
+        
+        .id4-guide-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: rgba(26, 26, 26, 0.3);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .id4-guide-modal-overlay.id4-guide-active {
+            display: flex;
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .id4-guide-modal-content {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transform: scale(0.9);
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .id4-guide-modal-content .id4-guide-card-text {
+            flex: 1 1 55%;
+        }
+        
+        .id4-guide-modal-content .id4-guide-card-image {
+            flex: 1 1 45%;
+        }
+        
+        .id4-guide-modal-content .id4-guide-card-image img {
+            width: 100%;
+            border-radius: 15px;
+        }
+        
+        .id4-guide-modal-content h2,
+        .id4-guide-modal-content p {
+            text-align: left;
+            color: var(--id4-guide-text-color);
+        }
+        
+        .id4-guide-modal-overlay.id4-guide-active .id4-guide-modal-content {
+            transform: scale(1);
+        }
+        
+        .id4-guide-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 3rem;
+            line-height: 1;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        
+        .id4-guide-modal-close:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        
+        @media (max-width: 1024px) {
+            .id4-guide-card {
+                width: clamp(350px, 70vw, 570px);
+                height: 440px;
+                max-height: 440px;
+                padding: clamp(30px, 4vw, 35px);
+                gap: 20px;
+            }
+            .id4-guide-card h2 {
+                font-size: clamp(1.4rem, 4vw, 2rem);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .id4-guide-pagination-dots {
+                display: flex;
+            }
+            .id4-guide-progress-bar-container {
+                display: none;
+            }
+            .id4-guide-card,
+            .id4-guide-modal-content {
+                flex-direction: column;
+                text-align: center;
+                height: auto;
+                max-height: 80vh;
+                padding: 30px;
+                width: 90vw;
+            }
+            .id4-guide-card-image,
+            .id4-guide-modal-content .id4-guide-card-image {
+                order: -1;
+                width: 100%;
+                height: 200px;
+                margin-bottom: 20px;
+            }
+            .id4-guide-card h2,
+            .id4-guide-card p,
+            .id4-guide-modal-content h2,
+            .id4-guide-modal-content p {
+                text-align: center;
+            }
+            .id4-guide-modal-content {
+                gap: 15px;
+            }
+        }
+        /* --- STYLES FOR BLOCK 2 (id4) --- */
+        
+         :root {
+            --id4-background-color: #1a1a1a;
+            --id4-card-background: #282828;
+            --id4-text-color: #fff;
+            --id4-border-color: #555;
+            --id4-accent-color: #22dd88;
+            --id4-dot-inactive-color: #555;
+            --id4-bg-card: rgba(239, 240, 241, 0.2);
+            --id4-color-text: #000;
+            --id4-url-bg-card: url('http://localhost/iD4Center/wp-content/uploads/2025/09/bg-card-MHDPT@4x.png');
+        }
+        
+        .id4-container {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--id4-text-color);
+            transition: background-color 0.4s ease;
+        }
+        
+        .id4-container.id4-modal-open {
+            overflow: hidden;
+        }
+        /* === CHANGE: CSS FOR PROGRESS BAR VISIBILITY === */
+        
+        .id4-progress-bar-container {
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background-color: var(--id4-border-color);
+            z-index: 10;
+            /* Hide by default and add smooth transition */
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        /* When active, make it visible */
+        
+        .id4-progress-bar-container.is-visible {
+            opacity: 1;
+        }
+        
+        .id4-progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--id4-accent-color);
+            transition: width 0.1s linear;
+        }
+        
+        .id4-horizontal-track {
+            height: 400vh;
+            position: relative;
+        }
+        
+        .id4-sticky-container {
+            position: sticky;
+            top: 5vh;
+            height: 100vh;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+        
+        .id4-horizontal-content {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            padding: 0 calc(50vw - 340px);
+        }
+        
+        .id4-card {
+            width: clamp(300px, 60vw, 980px);
+            height: 600px;
+            max-height: 600px;
+            margin: 0 clamp(10px, 3vw, 30px);
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 20px;
+            border-radius: 20px;
+            border: 1px solid var(--id4-border-color);
+            padding: clamp(20px, 5vw, 40px);
+            box-sizing: border-box;
+            flex-shrink: 0;
+            cursor: pointer;
+            transform: scale(1);
+            opacity: 1;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            position: relative;
+            background-size: cover;
+            background-position: center center;
+        }
+        
+        .id4-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--id4-bg-card);
+            border-radius: 20px;
+            z-index: 1;
+        }
+        
+        .id4-card-text,
+        .id4-card-image {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .id4-card:nth-child(1) {
+            background-image: var(--id4-url-bg-card);
+        }
+        
+        .id4-card:nth-child(2) {
+            background-image: var(--id4-url-bg-card);
+        }
+        
+        .id4-card:nth-child(3) {
+            background-image: var(--id4-url-bg-card);
+        }
+        
+        .id4-card:nth-child(4) {
+            background-image: var(--id4-url-bg-card);
+        }
+        
+        .id4-card:nth-child(5) {
+            background-image: var(--id4-url-bg-card);
+        }
+        
+        .id4-card-text {
+            flex: 1 1 55%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .id4-card-image {
+            flex: 1 1 45%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .id4-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+        
+        .id4-card h2 {
+            font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+            margin-top: 0;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        
+        .id4-card p {
+            font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+            line-height: 1.6;
+            opacity: 0.8;
+            text-align: left;
+            color: var(--id4-color-text);
+        }
+        
+        .id4-pagination-dots {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            flex-direction: row;
+            justify-content: center;
+            gap: 12px;
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .id4-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--id4-dot-inactive-color);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .id4-dot.id4-active {
+            background-color: var(--id4-text-color);
+            transform: scale(1.2);
+        }
+        
+        .id4-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: rgba(26, 26, 26, 0.3);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .id4-modal-overlay.id4-active {
+            display: flex;
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .id4-modal-content {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transform: scale(0.9);
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .id4-modal-content .id4-card-text {
+            flex: 1 1 55%;
+        }
+        
+        .id4-modal-content .id4-card-image {
+            flex: 1 1 45%;
+        }
+        
+        .id4-modal-content .id4-card-image img {
+            width: 100%;
+            border-radius: 15px;
+        }
+        
+        .id4-modal-content h2,
+        .id4-modal-content p {
+            text-align: left;
+        }
+        
+        .id4-modal-overlay.id4-active .id4-modal-content {
+            transform: scale(1);
+        }
+        
+        .id4-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 3rem;
+            line-height: 1;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        
+        .id4-modal-close:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        
+        @media (max-width: 1024px) {
+            .id4-card {
+                width: clamp(350px, 70vw, 570px);
+                height: 440px;
+                max-height: 440px;
+                padding: clamp(30px, 4vw, 35px);
+                gap: 20px;
+            }
+            .id4-card h2 {
+                font-size: clamp(1.4rem, 4vw, 2rem);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .id4-pagination-dots {
+                display: flex;
+            }
+            .id4-progress-bar-container {
+                display: none;
+            }
+            .id4-card,
+            .id4-modal-content {
+                flex-direction: column;
+                text-align: center;
+                height: auto;
+                max-height: 80vh;
+                padding: 30px;
+                width: 90vw;
+            }
+            .id4-card-image,
+            .id4-modal-content .id4-card-image {
+                order: -1;
+                width: 100%;
+                height: 200px;
+                margin-bottom: 20px;
+            }
+            .id4-card h2,
+            .id4-card p,
+            .id4-modal-content h2,
+            .id4-modal-content p {
+                text-align: center;
+            }
+            .id4-modal-content {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="id4-guide-container">
+        <div class="id4-guide-horizontal-track">
+            <div class="id4-guide-progress-bar-container">
+                <div class="id4-guide-progress-bar"></div>
+            </div>
+            <div class="id4-guide-sticky-container">
+                <div class="id4-guide-horizontal-content">
+                </div>
+            </div>
+        </div>
+        <div class="id4-guide-pagination-dots"></div>
+        <div class="id4-guide-modal-overlay">
+            <div class="id4-guide-modal-content"></div>
+            <button class="id4-guide-modal-close" aria-label="Đóng">&times;</button>
+        </div>
+    </div>
+
+
+    <div class="id4-container">
+        <div class="id4-horizontal-track">
+            <div class="id4-progress-bar-container">
+                <div class="id4-progress-bar"></div>
+            </div>
+            <div class="id4-sticky-container">
+                <div class="id4-horizontal-content">
+                </div>
+            </div>
+        </div>
+        <div class="id4-pagination-dots"></div>
+        <div class="id4-modal-overlay">
+            <div class="id4-modal-content"></div>
+            <button class="id4-modal-close" aria-label="Đóng">&times;</button>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            // --- SCRIPT FOR BLOCK 1 (id4-guide) ---
+            const guideContainer = document.querySelector('.id4-guide-container');
+
+            if (guideContainer) {
+                const guideImage1 = 'http://localhost/iD4Center/wp-content/uploads/2025/09/MHDPT-1.png';
+
+                const guideCardData = [{
+                    title: '✨ Lập kế hoạch chính xác',
+                    description: 'Vị trí hạ mào xương/ Vị trí Implant/ Abutment / Phục hình: Tất cả đều được phân tích lên kế hoạch và thiết kế chính xác.',
+                    imageUrl: guideImage1
+                }, {
+                    title: '🚀 Hiệu năng cao',
+                    description: 'Sử dụng Intersection Observer và các kỹ thuật hiện đại để đảm bảo độ mượt tối đa.',
+                    imageUrl: guideImage1
+                }, {
+                    title: '🎨 Giàu tương tác',
+                    description: 'Phản hồi với thao tác di chuột, click và điều hướng bàn phím một cách thông minh.',
+                    imageUrl: guideImage1
+                }, {
+                    title: '♿ Dễ tiếp cận',
+                    description: 'Hỗ trợ điều hướng bằng bàn phím, giúp mọi người dùng đều có thể trải nghiệm trọn vẹn.',
+                    imageUrl: guideImage1
+                }, {
+                    title: '📱 Đồng nhất',
+                    description: 'Trải nghiệm cuộn dọc-ngang độc đáo được đồng bộ trên mọi thiết bị, từ lớn đến nhỏ.',
+                    imageUrl: guideImage1
+                }];
+                const guideContentContainer = guideContainer.querySelector('.id4-guide-horizontal-content');
+                guideContentContainer.innerHTML = guideCardData.map(data => `<div class="id4-guide-card"><div class="id4-guide-card-text"><h2>${data.title}</h2><p>${data.description}</p></div><div class="id4-guide-card-image"><img src="${data.imageUrl}" alt="${data.title}" loading="lazy"></div></div>`).join('');
+
+                const guideCards = Array.from(guideContentContainer.children);
+                const guideTrack = guideContainer.querySelector('.id4-guide-horizontal-track');
+                const guideProgressBarContainer = guideContainer.querySelector('.id4-guide-progress-bar-container');
+                const guideProgressBar = guideContainer.querySelector('.id4-guide-progress-bar');
+                const guideModalOverlay = guideContainer.querySelector('.id4-guide-modal-overlay');
+                const guideModalContent = guideContainer.querySelector('.id4-guide-modal-content');
+                const guideModalClose = guideContainer.querySelector('.id4-guide-modal-close');
+
+                function openGuideModal(contentHTML) {
+                    guideModalContent.innerHTML = contentHTML;
+                    guideModalOverlay.classList.add('id4-guide-active');
+                    document.body.classList.add('id4-guide-modal-open');
+                }
+
+                function closeGuideModal() {
+                    guideModalOverlay.classList.remove('id4-guide-active');
+                    document.body.classList.remove('id4-guide-modal-open');
+                }
+                guideCards.forEach(card => card.addEventListener('click', () => openGuideModal(card.innerHTML)));
+                guideModalClose.addEventListener('click', closeGuideModal);
+                guideModalOverlay.addEventListener('click', (e) => {
+                    if (e.target === guideModalOverlay) closeGuideModal();
+                });
+                const guidePaginationContainer = guideContainer.querySelector('.id4-guide-pagination-dots');
+                let guideDots = [];
+                if (guidePaginationContainer) {
+                    guideCards.forEach((card, index) => {
+                        const dot = document.createElement('div');
+                        dot.classList.add('id4-guide-dot');
+                        dot.addEventListener('click', () => {
+                            const scrollableDistance = guideTrack.offsetHeight - window.innerHeight;
+                            const progressPerCard = 1 / (guideCards.length - 1);
+                            const targetScrollTop = guideTrack.offsetTop + (scrollableDistance * progressPerCard * index);
+                            window.scrollTo({
+                                top: targetScrollTop,
+                                behavior: 'smooth'
+                            });
+                        });
+                        guidePaginationContainer.appendChild(dot);
+                    });
+                    guideDots = Array.from(guidePaginationContainer.children);
+                }
+
+                let guideCurrentX = 0,
+                    guideTargetX = 0,
+                    guideEasingFactor = 0.08,
+                    isGuideTrackInView = false;
+
+                function guideLerp(start, end, t) {
+                    return start * (1 - t) + end * t;
+                }
+
+                function updateActiveGuideDot(progress) {
+                    if (guideDots.length > 0) {
+                        const activeIndex = Math.min(guideDots.length - 1, Math.round(progress * (guideCards.length - 1)));
+                        guideDots.forEach((dot, index) => dot.classList.toggle('id4-guide-active', index === activeIndex));
+                    }
+                }
+
+                function updateGuidePositions() {
+                    const trackRect = guideTrack.getBoundingClientRect();
+                    let scrollProgress = 0;
+
+                    // This is the active scrolling zone
+                    const isActive = trackRect.top <= 0 && trackRect.bottom >= window.innerHeight;
+
+                    if (isActive) {
+                        // Show progress bar
+                        if (guideProgressBarContainer) guideProgressBarContainer.classList.add('is-visible');
+
+                        const scrollInTrack = -trackRect.top;
+                        const scrollableDistance = trackRect.height - window.innerHeight;
+                        scrollProgress = Math.max(0, Math.min(1, scrollInTrack / scrollableDistance));
+                    } else {
+                        // Hide progress bar
+                        if (guideProgressBarContainer) guideProgressBarContainer.classList.remove('is-visible');
+
+                        if (trackRect.top > 0) {
+                            scrollProgress = 0;
+                        } else {
+                            scrollProgress = 1;
+                        }
+                    }
+
+                    if (guideProgressBar) guideProgressBar.style.width = (scrollProgress * 100) + '%';
+                    updateActiveGuideDot(scrollProgress);
+
+                    const firstCard = guideCards[0];
+                    const lastCard = guideCards[guideCards.length - 1];
+                    const contentScrollWidth = lastCard.offsetLeft - firstCard.offsetLeft;
+                    guideTargetX = -contentScrollWidth * scrollProgress;
+
+                    guideCurrentX = guideLerp(guideCurrentX, guideTargetX, guideEasingFactor);
+                    guideContentContainer.style.transform = `translateX(${guideCurrentX}px)`;
+                }
+
+                function guideAnimationLoop() {
+                    if (isGuideTrackInView) {
+                        updateGuidePositions();
+                    }
+                    requestAnimationFrame(guideAnimationLoop);
+                }
+                const guideTrackObserver = new IntersectionObserver((entries) => {
+                    isGuideTrackInView = entries[0].isIntersecting;
+                }, {
+                    threshold: 0
+                });
+                if (guideTrack) {
+                    guideTrackObserver.observe(guideTrack);
+                    guideAnimationLoop();
+                }
+            }
+
+
+            // --- SCRIPT FOR BLOCK 2 (id4) ---
+            const id4Container = document.querySelector('.id4-container');
+
+            if (id4Container) {
+                const id4Image1 = 'http://localhost/iD4Center/wp-content/uploads/2025/09/MHDPT-1.png';
+
+                const id4CardData = [{
+                    title: 'Khối 2 - Thẻ 1',
+                    description: 'Đây là nội dung của khối thứ hai để phân biệt.',
+                    imageUrl: id4Image1
+                }, {
+                    title: '🚀 Hiệu năng cao',
+                    description: 'Sử dụng Intersection Observer và các kỹ thuật hiện đại để đảm bảo độ mượt tối đa.',
+                    imageUrl: id4Image1
+                }, {
+                    title: '🎨 Giàu tương tác',
+                    description: 'Phản hồi với thao tác di chuột, click và điều hướng bàn phím một cách thông minh.',
+                    imageUrl: id4Image1
+                }, {
+                    title: '♿ Dễ tiếp cận',
+                    description: 'Hỗ trợ điều hướng bằng bàn phím, giúp mọi người dùng đều có thể trải nghiệm trọn vẹn.',
+                    imageUrl: id4Image1
+                }, {
+                    title: '📱 Đồng nhất',
+                    description: 'Trải nghiệm cuộn dọc-ngang độc đáo được đồng bộ trên mọi thiết bị, từ lớn đến nhỏ.',
+                    imageUrl: id4Image1
+                }];
+                const id4ContentContainer = id4Container.querySelector('.id4-horizontal-content');
+                id4ContentContainer.innerHTML = id4CardData.map(data => `<div class="id4-card"><div class="id4-card-text"><h2>${data.title}</h2><p>${data.description}</p></div><div class="id4-card-image"><img src="${data.imageUrl}" alt="${data.title}" loading="lazy"></div></div>`).join('');
+
+                const id4Cards = Array.from(id4ContentContainer.children);
+                const id4Track = id4Container.querySelector('.id4-horizontal-track');
+                const id4ProgressBarContainer = id4Container.querySelector('.id4-progress-bar-container');
+                const id4ProgressBar = id4Container.querySelector('.id4-progress-bar');
+                const id4ModalOverlay = id4Container.querySelector('.id4-modal-overlay');
+                const id4ModalContent = id4Container.querySelector('.id4-modal-content');
+                const id4ModalClose = id4Container.querySelector('.id4-modal-close');
+
+                function openId4Modal(contentHTML) {
+                    id4ModalContent.innerHTML = contentHTML;
+                    id4ModalOverlay.classList.add('id4-active');
+                    id4Container.classList.add('id4-modal-open');
+                }
+
+                function closeId4Modal() {
+                    id4ModalOverlay.classList.remove('id4-active');
+                    id4Container.classList.remove('id4-modal-open');
+                }
+                id4Cards.forEach(card => card.addEventListener('click', () => openId4Modal(card.innerHTML)));
+                id4ModalClose.addEventListener('click', closeId4Modal);
+                id4ModalOverlay.addEventListener('click', (e) => {
+                    if (e.target === id4ModalOverlay) closeId4Modal();
+                });
+                const id4PaginationContainer = id4Container.querySelector('.id4-pagination-dots');
+                let id4Dots = [];
+                if (id4PaginationContainer) {
+                    id4Cards.forEach((card, index) => {
+                        const dot = document.createElement('div');
+                        dot.classList.add('id4-dot');
+                        dot.addEventListener('click', () => {
+                            const scrollableDistance = id4Track.offsetHeight - window.innerHeight;
+                            const progressPerCard = 1 / (id4Cards.length - 1);
+                            const targetScrollTop = id4Track.offsetTop + (scrollableDistance * progressPerCard * index);
+                            window.scrollTo({
+                                top: targetScrollTop,
+                                behavior: 'smooth'
+                            });
+                        });
+                        id4PaginationContainer.appendChild(dot);
+                    });
+                    id4Dots = Array.from(id4PaginationContainer.children);
+                }
+
+                let id4CurrentX = 0,
+                    id4TargetX = 0,
+                    id4EasingFactor = 0.08,
+                    isId4TrackInView = false;
+
+                function id4Lerp(start, end, t) {
+                    return start * (1 - t) + end * t;
+                }
+
+                function updateActiveId4Dot(progress) {
+                    if (id4Dots.length > 0) {
+                        const activeIndex = Math.min(id4Dots.length - 1, Math.round(progress * (id4Cards.length - 1)));
+                        id4Dots.forEach((dot, index) => dot.classList.toggle('id4-active', index === activeIndex));
+                    }
+                }
+
+                function applyId4Parallax() {
+                    const windowCenterX = window.innerWidth / 2;
+                    id4Cards.forEach(card => {
+                        const rect = card.getBoundingClientRect();
+                        const cardCenterX = rect.left + rect.width / 2;
+                        const distance = (cardCenterX - windowCenterX) / windowCenterX;
+                        const parallaxOffset = -distance * 30;
+                        const img = card.querySelector('.id4-card-image img');
+                        if (img) {
+                            img.style.transform = `translateX(${parallaxOffset}px)`;
+                        }
+                    });
+                }
+
+                function updateId4Positions() {
+                    const trackRect = id4Track.getBoundingClientRect();
+                    let scrollProgress = 0;
+
+                    const isActive = trackRect.top <= 0 && trackRect.bottom >= window.innerHeight;
+
+                    if (isActive) {
+                        if (id4ProgressBarContainer) id4ProgressBarContainer.classList.add('is-visible');
+                        const scrollInTrack = -trackRect.top;
+                        const scrollableDistance = trackRect.height - window.innerHeight;
+                        scrollProgress = Math.max(0, Math.min(1, scrollInTrack / scrollableDistance));
+                    } else {
+                        if (id4ProgressBarContainer) id4ProgressBarContainer.classList.remove('is-visible');
+                        if (trackRect.top > 0) {
+                            scrollProgress = 0;
+                        } else {
+                            scrollProgress = 1;
+                        }
+                    }
+
+                    if (id4ProgressBar) id4ProgressBar.style.width = (scrollProgress * 100) + '%';
+                    updateActiveId4Dot(scrollProgress);
+
+                    const firstCard = id4Cards[0],
+                        lastCard = id4Cards[id4Cards.length - 1];
+                    const contentScrollWidth = lastCard.offsetLeft - firstCard.offsetLeft;
+                    id4TargetX = -contentScrollWidth * scrollProgress;
+
+                    id4CurrentX = id4Lerp(id4CurrentX, id4TargetX, id4EasingFactor);
+                    id4ContentContainer.style.transform = `translateX(${id4CurrentX}px)`;
+                }
+
+                function id4AnimationLoop() {
+                    if (isId4TrackInView) {
+                        updateId4Positions();
+                        applyId4Parallax();
+                    }
+                    requestAnimationFrame(id4AnimationLoop);
+                }
+                const id4TrackObserver = new IntersectionObserver((entries) => isId4TrackInView = entries[0].isIntersecting);
+                if (id4Track) {
+                    id4TrackObserver.observe(id4Track);
+                    id4AnimationLoop();
+                }
+            }
+
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    const activeGuideModal = document.querySelector('.id4-guide-modal-overlay.id4-guide-active');
+                    if (activeGuideModal) activeGuideModal.querySelector('.id4-guide-modal-close').click();
+
+                    const activeId4Modal = document.querySelector('.id4-modal-overlay.id4-active');
+                    if (activeId4Modal) activeId4Modal.querySelector('.id4-modal-close').click();
+                }
+                if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                    if (document.querySelector('.id4-guide-modal-overlay.id4-guide-active') || document.querySelector('.id4-modal-overlay.id4-active')) {
+                        return;
+                    }
+                    const guideTrack = document.querySelector('.id4-guide-horizontal-track');
+                    if (guideTrack) {
+                        const guideTrackRect = guideTrack.getBoundingClientRect();
+                        if (guideTrackRect.top <= 0 && guideTrackRect.bottom >= window.innerHeight) {
+                            e.preventDefault();
+                            const guideCards = document.querySelectorAll('.id4-guide-card');
+                            const scrollableDistance = guideTrack.offsetHeight - window.innerHeight;
+                            const progressPerCard = 1 / (guideCards.length - 1);
+                            const currentScroll = window.scrollY - guideTrack.offsetTop;
+                            const currentProgress = currentScroll / scrollableDistance;
+                            const currentIndex = Math.round(currentProgress / progressPerCard);
+                            let targetIndex = currentIndex;
+                            if (e.key === 'ArrowRight') {
+                                targetIndex = Math.min(guideCards.length - 1, currentIndex + 1);
+                            } else if (e.key === 'ArrowLeft') {
+                                targetIndex = Math.max(0, currentIndex - 1);
+                            }
+                            if (targetIndex !== currentIndex) {
+                                const targetScrollTop = guideTrack.offsetTop + (scrollableDistance * progressPerCard * targetIndex);
+                                window.scrollTo({
+                                    top: targetScrollTop,
+                                    behavior: 'smooth'
+                                });
+                            }
+                            return;
+                        }
+                    }
+                    const id4Track = document.querySelector('.id4-horizontal-track');
+                    if (id4Track) {
+                        const id4TrackRect = id4Track.getBoundingClientRect();
+                        if (id4TrackRect.top <= 0 && id4TrackRect.bottom >= window.innerHeight) {
+                            e.preventDefault();
+                            const id4Cards = document.querySelectorAll('.id4-card');
+                            const scrollableDistance = id4Track.offsetHeight - window.innerHeight;
+                            const progressPerCard = 1 / (id4Cards.length - 1);
+                            const currentProgress = -id4TrackRect.top / scrollableDistance;
+                            const currentIndex = Math.round(currentProgress / progressPerCard);
+                            let targetIndex = currentIndex;
+                            if (e.key === 'ArrowRight') targetIndex = Math.min(id4Cards.length - 1, currentIndex + 1);
+                            else if (e.key === 'ArrowLeft') targetIndex = Math.max(0, currentIndex - 1);
+                            if (targetIndex !== currentIndex) {
+                                const targetScrollTop = id4Track.offsetTop + (scrollableDistance * progressPerCard * targetIndex);
+                                window.scrollTo({
+                                    top: targetScrollTop,
+                                    behavior: 'smooth'
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>

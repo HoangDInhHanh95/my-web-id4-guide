@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thư Viện Ảnh - Đã Sửa Lỗi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <style>
+        .id4-product-gallery-wrapper {
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f1f2;
+            padding: 20px;
+        }
+        
+        .id4-product-gallery-container {
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+        
+        .id4-gallery-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            width: 100%;
+            /* SỬA LỖI: Đảm bảo container chiếm đủ chiều rộng */
+        }
+        
+        .id4-control-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 44px;
+            height: 44px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            font-size: 18px;
+            color: #333;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .id4-control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+        }
+        
+        .id4-nav-arrows {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .id4-main-image-wrapper {
+            margin-bottom: 25px;
+            cursor: zoom-in;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        #id4-main-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+        
+        .thumbnails-scroll-container {
+            overflow-x: scroll;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 10px;
+            /* cursor: grab; */
+            /* SỬA LỖI: Thay đổi con trỏ để báo hiệu có thể kéo */
+            user-select: none;
+            /* Ngăn bôi đen ảnh khi kéo */
+        }
+        
+        .thumbnails-scroll-container.active {
+            cursor: grabbing;
+            /* Thay đổi con trỏ khi đang kéo */
+        }
+        
+        .thumbnails-scroll-container::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .thumbnails-scroll-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .thumbnails-list {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 15px;
+            padding: 0 10px;
+        }
+        
+        .thumbnails {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: border-color 0.3s ease, transform 0.2s ease;
+            padding: 5px;
+            background-color: transparent;
+            flex-shrink: 0;
+            pointer-events: none;
+            /* Ngăn sự kiện kéo mặc định của trình duyệt trên ảnh */
+        }
+        
+        .thumbnails.active {
+            border-color: #000;
+        }
+        
+        .thumbnails:hover {
+            transform: scale(1.05);
+        }
+        
+        .light_box {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            inset: 0;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            background-color: rgba(255, 255, 255, 1);
+        }
+        
+        .light_box.show {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .light_box-close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            font-size: 40px;
+            font-weight: 300;
+            color: #333;
+            cursor: pointer;
+        }
+        
+        #light_box-image {
+            max-width: 90%;
+            max-height: 85%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        
+        .light_box-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 24px;
+            color: #333;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, transform 0.3s;
+            user-select: none;
+        }
+        
+        .light_box-nav-btn:hover {
+            background-color: #fff;
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .light_box-nav-btn.prev-light_box {
+            left: 20px;
+        }
+        
+        .light_box-nav-btn.next-light_box {
+            right: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .thumbnails {
+                width: 70px;
+                height: 70px;
+            }
+            .id4-control-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+            .light_box-close {
+                top: 15px;
+                right: 20px;
+            }
+            .light_box-nav-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+                /* left: 10px;
+                right: 10px; */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="id4-product-gallery-wrapper">
+        <div class="id4-product-gallery-container">
+            <div class="id4-gallery-controls">
+                <div id="zoom-icon" class="id4-control-btn">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <div class="id4-nav-arrows ">
+                    <div id="prev-btn" class="id4-control-btn">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </div>
+                    <div id="next-btn" class="id4-control-btn">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="id4-main-image-wrapper">
+                <img id="id4-main-image" src="" alt="Hình ảnh sản phẩm chính">
+            </div>
+
+            <div class="thumbnails-scroll-container" id="thumbnails-scroll-container">
+                <div class="thumbnails-list" id="thumbnails-list">
+                </div>
+            </div>
+        </div>
+
+        <div id="my-light_box" class="light_box">
+            <span class="light_box-close" id="light_box-close">&times;</span>
+            <div class="light_box-nav-btn prev-light_box" id="light_box-prev-btn">
+                <i class="fa-solid fa-chevron-left"></i>
+            </div>
+            <img id="light_box-image" src="" alt="Hình ảnh phóng to">
+            <div class="light_box-nav-btn next-light_box" id="light_box-next-btn">
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const link = 'https://dlcdnwebimgs.asus.com/gain/1f2b04d8-c06a-449e-aed9-18bb5d36b76e/w800';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const imageSources = [
+                link, link,
+                "https://dlcdnwebimgs.asus.com/gain/14c6be57-e7d1-462c-a109-4f93c353d93c/w800",
+                "https://dlcdnwebimgs.asus.com/gain/1f2b04d8-c06a-449e-aed9-18bb5d36b76e/w800",
+                "https://dlcdnwebimgs.asus.com/gain/14c6be57-e7d1-462c-a109-4f93c353d93c/w800",
+                "https://dlcdnwebimgs.asus.com/gain/1f2b04d8-c06a-449e-aed9-18bb5d36b76e/w800",
+                "https://dlcdnwebimgs.asus.com/gain/14c6be57-e7d1-462c-a109-4f93c353d93c/w800",
+                "https://dlcdnwebimgs.asus.com/gain/1f2b04d8-c06a-449e-aed9-18bb5d36b76e/w800",
+                "https://dlcdnwebimgs.asus.com/gain/14c6be57-e7d1-462c-a109-4f93c353d93c/w800",
+
+            ];
+
+            let currentImageIndex = 0;
+            const mainImage = document.getElementById('id4-main-image');
+            const thumbnailsList = document.getElementById('thumbnails-list');
+            const thumbnailsScrollContainer = document.getElementById('thumbnails-scroll-container');
+            const light_box = document.getElementById('my-light_box');
+            // ... (các biến khác giữ nguyên)
+            const light_boxImage = document.getElementById('light_box-image');
+            const closeButton = document.getElementById('light_box-close');
+            const zoomIcon = document.getElementById('zoom-icon');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const light_boxPrevBtn = document.getElementById('light_box-prev-btn');
+            const light_boxNextBtn = document.getElementById('light_box-next-btn');
+
+
+            function generatethumbnailss() {
+                thumbnailsList.innerHTML = '';
+                imageSources.forEach((src, index) => {
+                    const thumb = document.createElement('img');
+                    thumb.src = src;
+                    thumb.alt = `Ảnh thu nhỏ ${index + 1}`;
+                    thumb.className = 'thumbnails';
+                    thumb.dataset.index = index;
+                    // Bọc img trong một div để xử lý click dễ dàng hơn khi đang kéo
+                    const thumbWrapper = document.createElement('div');
+                    thumbWrapper.dataset.index = index;
+                    thumbWrapper.appendChild(thumb);
+                    thumbnailsList.appendChild(thumbWrapper);
+                });
+            }
+
+            function updateMainImage(index) {
+                currentImageIndex = index;
+                mainImage.src = imageSources[currentImageIndex];
+                document.querySelectorAll('.thumbnails').forEach(thumb => {
+                    const isActive = parseInt(thumb.dataset.index) === currentImageIndex;
+                    thumb.classList.toggle('active', isActive);
+                    if (isActive) {
+                        thumb.parentElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }
+                });
+            }
+
+            // ... (các hàm khác giữ nguyên)
+            function navigateGallery(direction) {
+                let newIndex = currentImageIndex + direction;
+                if (newIndex < 0) newIndex = imageSources.length - 1;
+                else if (newIndex >= imageSources.length) newIndex = 0;
+                updateMainImage(newIndex);
+            }
+
+            function openlight_box() {
+                light_boxImage.src = imageSources[currentImageIndex];
+                light_box.classList.add('show');
+            }
+
+            function closelight_box() {
+                light_box.classList.remove('show');
+            }
+
+            function navigatelight_box(direction) {
+                let newIndex = currentImageIndex + direction;
+                if (newIndex < 0) newIndex = imageSources.length - 1;
+                else if (newIndex >= imageSources.length) newIndex = 0;
+
+                currentImageIndex = newIndex;
+                light_boxImage.src = imageSources[currentImageIndex];
+                updateMainImage(currentImageIndex);
+            }
+
+
+            // Xử lý sự kiện click trên thumbnails (đã thay đổi để hoạt động tốt với chức năng kéo)
+            thumbnailsList.addEventListener('click', e => {
+                const target = e.target.closest('div[data-index]');
+                if (target) {
+                    // Chỉ cập nhật ảnh nếu không có hành động kéo
+                    if (!thumbnailsScrollContainer.classList.contains('is-dragging')) {
+                        updateMainImage(parseInt(target.dataset.index));
+                    }
+                }
+            });
+
+            // ... (các sự kiện click khác giữ nguyên)
+            prevBtn.addEventListener('click', () => navigateGallery(-1));
+            nextBtn.addEventListener('click', () => navigateGallery(1));
+            zoomIcon.addEventListener('click', openlight_box);
+            mainImage.addEventListener('click', openlight_box);
+            closeButton.addEventListener('click', closelight_box);
+            light_box.addEventListener('click', e => (e.target === light_box) && closelight_box());
+            document.addEventListener('keydown', e => (e.key === "Escape") && closelight_box());
+            light_boxPrevBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                navigatelight_box(-1);
+            });
+            light_boxNextBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                navigatelight_box(1);
+            });
+
+
+            // SỬA LỖI: Thêm chức năng kéo-để-cuộn trên máy tính
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            thumbnailsScrollContainer.addEventListener('mousedown', (e) => {
+                isDown = true;
+                thumbnailsScrollContainer.classList.add('active');
+                thumbnailsScrollContainer.classList.remove('is-dragging');
+                startX = e.pageX - thumbnailsScrollContainer.offsetLeft;
+                scrollLeft = thumbnailsScrollContainer.scrollLeft;
+            });
+            thumbnailsScrollContainer.addEventListener('mouseleave', () => {
+                isDown = false;
+                thumbnailsScrollContainer.classList.remove('active');
+            });
+            thumbnailsScrollContainer.addEventListener('mouseup', () => {
+                isDown = false;
+                thumbnailsScrollContainer.classList.remove('active');
+                // Reset trạng thái kéo sau một khoảng trễ nhỏ
+                setTimeout(() => thumbnailsScrollContainer.classList.remove('is-dragging'), 50);
+            });
+            thumbnailsScrollContainer.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                thumbnailsScrollContainer.classList.add('is-dragging');
+                const x = e.pageX - thumbnailsScrollContainer.offsetLeft;
+                const walk = (x - startX) * 2; // Tăng tốc độ kéo
+                thumbnailsScrollContainer.scrollLeft = scrollLeft - walk;
+            });
+
+
+            generatethumbnailss();
+            updateMainImage(0);
+        });
+    </script>
+</body>
+
+</html>

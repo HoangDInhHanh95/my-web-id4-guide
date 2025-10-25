@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Coolingscrollframe - Final Version</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        .id4-guide-section-before,
+        .id4-guide-section-after {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 2rem;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        
+        .id4-guide-section-before h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .id4-guide-section-after h2 {
+            font-size: 3rem;
+        }
+        
+        .id4-guide-pin-container {
+            /* MỚI: Chiều cao mặc định là 80% viewport height */
+            height: 80vh;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            /* MỚI: Thêm transition để hiệu ứng thay đổi chiều cao mượt mà */
+            transition: height 0.4s ease-in-out;
+        }
+        
+        .id4-guide-panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5%;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 0;
+        }
+        
+        .id4-guide-panel-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 40px;
+            width: 100%;
+            max-width: 900px;
+        }
+        
+        .id4-guide-image-content {
+            width: 100%;
+        }
+        
+        .id4-guide-panel img {
+            max-width: 100%;
+            max-height: 45vh;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .id4-guide-panel h2 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .id4-guide-panel p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            opacity: 0.8;
+            max-width: 650px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 1024px) {
+            .id4-guide-section-before h2,
+            .id4-guide-section-after h2 {
+                font-size: 2.5rem;
+            }
+            .id4-guide-panel h2 {
+                font-size: 2.2rem;
+            }
+            .id4-guide-panel p {
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .id4-guide-section-before h2,
+            .id4-guide-section-after h2 {
+                font-size: 2rem;
+            }
+            .id4-guide-panel h2 {
+                font-size: 1.8rem;
+            }
+            .id4-guide-panel-content {
+                gap: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <section class="id4-guide-section-before">
+        <h2>Bắt đầu Demo</h2>
+        <p>Cuộn xuống để trải nghiệm hiệu ứng</p>
+    </section>
+
+    <div class="id4-guide-pin-container">
+        <section class="id4-guide-panel">
+            <div class="id4-guide-panel-content">
+                <div class="id4-guide-text-content">
+                    <h2>Hiệu Năng Vượt Trội</h2>
+                    <p>Trang bị bộ xử lý AMD Ryzen™ AI 9 mới nhất, sẵn sàng cho mọi tác vụ từ gaming cường độ cao đến các ứng dụng AI sáng tạo.</p>
+                </div>
+                <div class="id4-guide-image-content">
+                    <img src="https://dlcdnwebimgs.asus.com/files/media/ffe21fc5-81ba-48f2-b1f8-99f5886a3711/v1/images/large/1x/cooling_8.webp" alt="Hệ thống tản nhiệt">
+                </div>
+            </div>
+        </section>
+        <section class="id4-guide-panel">
+            <div class="id4-guide-panel-content">
+                <div class="id4-guide-text-content">
+                    <h2>Màn Hình Nebula Sắc Nét</h2>
+                    <p>Trải nghiệm hình ảnh sống động trên màn hình 14 inch 2.5K 165Hz với công nghệ G-SYNC cho chuyển động mượt mà tuyệt đối.</p>
+                </div>
+                <div class="id4-guide-image-content">
+                    <img src="https://dlcdnwebimgs.asus.com/files/media/ffe21fc5-81ba-48f2-b1f8-99f5886a3711/v1/images/large/1x/cooling_8.webp" alt="Hệ thống tản nhiệt">
+                </div>
+            </div>
+        </section>
+        <section class="id4-guide-panel">
+            <div class="id4-guide-panel-content">
+                <div class="id4-guide-text-content">
+                    <h2>Bàn Phím Chính Xác</h2>
+                    <p>Bàn phím kích thước đầy đủ với hành trình phím 1.7mm và các phím nóng chuyên dụng, giúp điều khiển dễ dàng và chính xác.</p>
+                </div>
+                <div class="id4-guide-image-content">
+                    <img src="https://dlcdnwebimgs.asus.com/files/media/ffe21fc5-81ba-48f2-b1f8-99f5886a3711/v1/images/large/1x/cooling_8.webp" alt="Hệ thống tản nhiệt">
+                </div>
+            </div>
+        </section>
+        <section class="id4-guide-panel">
+            <div class="id4-guide-panel-content">
+                <div class="id4-guide-text-content">
+                    <h2>Độ Bền Chuẩn Quân Đội</h2>
+                    <p>Vượt qua các bài kiểm tra độ bền MIL-STD-810H khắc nghiệt, đảm bảo máy luôn bền bỉ trước những va đập và môi trường sử dụng hàng ngày.</p>
+                </div>
+                <div class="id4-guide-image-content">
+                    <img src="https://dlcdnwebimgs.asus.com/files/media/ffe21fc5-81ba-48f2-b1f8-99f5886a3711/v1/images/large/1x/cooling_8.webp" alt="Hệ thống tản nhiệt">
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <section class="id4-guide-section-after">
+        <h2>Kết thúc Demo</h2>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        const panels = gsap.utils.toArray(".id4-guide-panel");
+        /* MỚI: Lấy tham chiếu đến container để sử dụng trong JS */
+        const pinContainer = document.querySelector(".id4-guide-pin-container");
+
+        gsap.set(panels[0], {
+            autoAlpha: 1,
+            zIndex: panels.length
+        });
+
+        const timeline = gsap.timeline({
+            scrollTrigger: {
+                trigger: pinContainer, // Sử dụng biến đã khai báo
+                pin: true,
+                scrub: 0.1,
+                snap: {
+                    snapTo: "labels",
+                    duration: {
+                        min: 0.1,
+                        max: 0.2
+                    },
+                    ease: "power1.inOut"
+                },
+                end: () => "+=" + (panels.length - 1) * window.innerHeight,
+
+                /* ================================================== */
+                /* MỚI: Thêm callback onToggle để xử lý chiều cao      */
+                /* ================================================== */
+                onToggle: self => {
+                    if (self.isActive) {
+                        // Khi hiệu ứng ghim BẮT ĐẦU, đổi height thành 100vh
+                        pinContainer.style.height = '100vh';
+                    } else {
+                        // Khi hiệu ứng ghim KẾT THÚC, trả height về 80vh
+                        pinContainer.style.height = '80vh';
+                    }
+                }
+
+
+
+
+            }
+        });
+
+        panels.forEach((panel, i) => {
+            if (i > 0) {
+                timeline.addLabel(`slide${i}`);
+                timeline.to(panels[i - 1], {
+                        autoAlpha: 0,
+                        zIndex: 0,
+                        duration: 0.1,
+                        ease: "power1.in"
+                    })
+                    .to(panel, {
+                        autoAlpha: 1,
+                        zIndex: panels.length - i + 1,
+                        duration: 0.1,
+                        ease: "power1.out"
+                    }, "<");
+            }
+        });
+
+        timeline.addLabel(`slide${panels.length}`);
+    </script>
+</body>
+
+</html>

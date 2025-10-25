@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID4 Image MHDPT Component</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <style>
+        /* CSS được gói gọn trong class cha "id4-image-MHDPT" 
+        khung chưa toàn bộ và thanh tiến trình => ngoài cùng
+        */
+        
+        .id4-image-MHDPT {
+            --progress-bar-color: #333;
+            --inactive-bar-color: #d8d8d8;
+            --control-icon-color: #a0a0a0;
+            --id4-border-radius: 28px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #c60000;
+            /* padding: 40px 0; */
+            width: 100%;
+            overflow-x: hidden;
+        }
+        
+        .title_ca_lam_sang h2 {
+            font-size: 2rem;
+            color: #000;
+            font-family: 'Courier New', Courier, monospace;
+            text-align: center;
+        }
+        /* Container chính của Swiper 
+            khung toàn bộ card
+        */
+        
+        .id4-image-MHDPT__swiper {
+            /* background-color: #00a79d; */
+            width: 100%;
+            /* padding: 40px 0; */
+            overflow: visible;
+        }
+        /* Tối ưu hóa hiệu năng cho wrapper */
+        
+        .id4-image-MHDPT .swiper-wrapper {
+            will-change: transform;
+        }
+        /* hiệu chỉnh Từng slide (card)*/
+        
+        .id4-image-MHDPT .swiper-slide {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            border-radius: var(--id4-border-radius);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            width: 88%;
+            max-width: 750px;
+            height: auto;
+            /* Cập nhật: Chiều cao tự động */
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            will-change: transform;
+            opacity: 0.4;
+            transform: scale(0.92);
+            padding: 20px 36px;
+            /* Thêm padding cho nội dung card */
+            box-sizing: border-box;
+        }
+        
+        .id4-image-MHDPT .swiper-slide-active {
+            opacity: 1;
+            transform: scale(1);
+        }
+        /* === BẮT ĐẦU GIAO DIỆN CARD MỚI === */
+        
+        .id4-image-MHDPT__card {
+            /* background-color: #ff00e1; */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            gap: 24px;
+            /* Khoảng cách giữa các phần tử */
+        }
+        
+        .id4-image-MHDPT__logo {
+            font-size: 28px;
+            font-weight: 900;
+            color: #2c3e50;
+            letter-spacing: 1px;
+        }
+        
+        .id4-image-MHDPT__logo .guide-text {
+            color: #00a79d;
+            font-weight: 500;
+        }
+        
+        .id4-image-MHDPT__logo sup {
+            font-size: 0.5em;
+            vertical-align: super;
+            font-weight: 500;
+        }
+        
+        .id4-image-MHDPT__image-container {
+            width: 100%;
+            border-radius: var(--id4-border-radius);
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .id4-image-MHDPT__image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .id4-image-MHDPT__button {
+            display: inline-block;
+            font-size: 16px;
+            background: linear-gradient(to right, #04a44c, #158698);
+            color: #ffffff;
+            padding: 10px 42px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            /* box-shadow: 0 4px 15px rgba(0, 167, 157, 0.3); */
+            margin-top: auto;
+            /* Đẩy nút xuống dưới cùng nếu card có chiều cao cố định */
+        }
+        
+        .id4-image-MHDPT__button:hover {
+            background-color: #008c82;
+            transform: translateY(-2px);
+        }
+        /* === KẾT THÚC GIAO DIỆN CARD MỚI === */
+        
+        .id4-image-MHDPT__controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .id4-image-MHDPT__pagination.swiper-pagination-bullets {
+            position: static;
+            display: flex;
+            gap: 6px;
+            width: auto;
+        }
+        
+        .id4-image-MHDPT__pagination .swiper-pagination-bullet {
+            width: 32px;
+            height: 6px;
+            border-radius: 3px;
+            background-color: var(--inactive-bar-color);
+            opacity: 1;
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.3s;
+        }
+        
+        .id4-image-MHDPT__pagination .swiper-pagination-bullet-active {
+            background-color: var(--inactive-bar-color);
+        }
+        
+        .id4-image-MHDPT__pagination .swiper-pagination-bullet-active::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--progress-bar-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            animation: id4-image-MHDPT-progressFill 5s linear forwards;
+            animation-play-state: running;
+        }
+        
+        .id4-image-MHDPT.autoplay-paused .swiper-pagination-bullet-active::after {
+            animation-play-state: paused;
+        }
+        
+        @keyframes id4-image-MHDPT-progressFill {
+            from {
+                transform: scaleX(0);
+            }
+            to {
+                transform: scaleX(1);
+            }
+        }
+        
+        .id4-image-MHDPT__autoplay-control {
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--control-icon-color);
+        }
+        
+        .id4-image-MHDPT__autoplay-control .id4-image-MHDPT__icon {
+            display: none;
+        }
+        
+        .id4-image-MHDPT__autoplay-control.playing .id4-image-MHDPT__icon--pause {
+            display: block;
+        }
+        
+        .id4-image-MHDPT__autoplay-control.paused .id4-image-MHDPT__icon--play {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .id4-image-MHDPT .swiper-slide {
+                width: 90%;
+                padding: 24px;
+            }
+            .id4-image-MHDPT__logo {
+                font-size: 24px;
+            }
+            .id4-image-MHDPT__button {
+                padding: 10px 24px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="title_ca_lam_sang">
+        <h2>CÁC CA LÂM SÀNG</h2>
+    </div>
+
+    <div class="id4-image-MHDPT">
+        <div class="id4-image-MHDPT__swiper swiper">
+            <div class="swiper-wrapper">
+                <!-- Slide 1 -->
+                <div class="swiper-slide">
+                    <div class="id4-image-MHDPT__card">
+                        <div class="id4-image-MHDPT__logo">iD-4 <span class="guide-text">GUIDE</span><sup>TM</sup></div>
+                        <div class="id4-image-MHDPT__image-container">
+                            <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/ca-lam-san.png" alt="Case study before and after images">
+                        </div>
+                        <a href="#" class="id4-image-MHDPT__button">Xem chi tiết</a>
+                    </div>
+                </div>
+                <!-- Slide 2 -->
+                <div class="swiper-slide">
+                    <div class="id4-image-MHDPT__card">
+                        <div class="id4-image-MHDPT__logo">iD-4 <span class="guide-text">GUIDE</span><sup>TM</sup></div>
+                        <div class="id4-image-MHDPT__image-container">
+                            <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/ca-lam-san.png" alt="Case study before and after images">
+                        </div>
+                        <a href="#" class="id4-image-MHDPT__button">Xem chi tiết</a>
+                    </div>
+                </div>
+                <!-- Slide 3 -->
+                <div class="swiper-slide">
+                    <div class="id4-image-MHDPT__card">
+                        <div class="id4-image-MHDPT__logo">iD-4 <span class="guide-text">GUIDE</span><sup>TM</sup></div>
+                        <div class="id4-image-MHDPT__image-container">
+                            <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/ca-lam-san.png" alt="Case study before and after images">
+                        </div>
+                        <a href="#" class="id4-image-MHDPT__button">Xem chi tiết</a>
+                    </div>
+                </div>
+                <!-- Slide 4 -->
+                <div class="swiper-slide">
+                    <div class="id4-image-MHDPT__card">
+                        <div class="id4-image-MHDPT__logo">iD-4 <span class="guide-text">GUIDE</span><sup>TM</sup></div>
+                        <div class="id4-image-MHDPT__image-container">
+                            <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/ca-lam-san.png" alt="Case study before and after images">
+                        </div>
+                        <a href="#" class="id4-image-MHDPT__button">Xem chi tiết</a>
+                    </div>
+                </div>
+                <!-- Slide 5 -->
+                <div class="swiper-slide">
+                    <div class="id4-image-MHDPT__card">
+                        <div class="id4-image-MHDPT__logo">iD-4 <span class="guide-text">GUIDE</span><sup>TM</sup></div>
+                        <div class="id4-image-MHDPT__image-container">
+                            <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/ca-lam-san.png" alt="Case study before and after images">
+                        </div>
+                        <a href="#" class="id4-image-MHDPT__button">Xem chi tiết</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="id4-image-MHDPT__controls">
+            <div class="id4-image-MHDPT__pagination swiper-pagination"></div>
+            <div class="id4-image-MHDPT__autoplay-control playing" role="button" aria-label="Pause autoplay">
+                <svg class="id4-image-MHDPT__icon id4-image-MHDPT__icon--pause" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M5.5 3.5h1.5v9H5.5v-9zm3.5 0h1.5v9H9v-9z" />
+                </svg>
+                <svg class="id4-image-MHDPT__icon id4-image-MHDPT__icon--play" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script>
+        function initId4ImageMHDPT() {
+            const container = document.querySelector('.id4-image-MHDPT');
+            if (!container) return;
+
+            const swiper = new Swiper('.id4-image-MHDPT__swiper', {
+                speed: 500,
+                loop: true,
+                centeredSlides: true,
+                slidesPerView: 'auto',
+                spaceBetween: 24,
+
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+                },
+                pagination: {
+                    el: '.id4-image-MHDPT__pagination',
+                    clickable: true,
+                },
+            });
+
+            const controlButton = container.querySelector('.id4-image-MHDPT__autoplay-control');
+
+            if (controlButton) {
+                controlButton.addEventListener('click', () => {
+                    if (swiper.autoplay.running) {
+                        swiper.autoplay.stop();
+                    } else {
+                        swiper.autoplay.start();
+                    }
+                });
+
+                swiper.on('autoplayStart', () => {
+                    controlButton.classList.remove('paused');
+                    controlButton.classList.add('playing');
+                    container.classList.remove('autoplay-paused');
+                });
+
+                swiper.on('autoplayStop', () => {
+                    controlButton.classList.remove('playing');
+                    controlButton.classList.add('paused');
+                    container.classList.add('autoplay-paused');
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initId4ImageMHDPT);
+    </script>
+</body>
+
+</html>

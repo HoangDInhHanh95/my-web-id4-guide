@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Interactive Video Gallery</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="page-wrapper">
+        <div class="gallery-container">
+            <ul class="video-gallery"></ul>
+        </div>
+
+        <div id="video-modal" class="modal">
+            <div class="modal-content">
+                <div class="loading-spinner"></div>
+                <div class="modal-progress-container"></div>
+                <video id="modal-video" controls autoplay></video>
+                <button class="modal-close" onclick="closeModal()" aria-label="Đóng cửa sổ video">×</button>
+                <button class="modal-nav prev" onclick="showPrevVideo()" aria-label="Xem video trước">&#10094;</button>
+                <button class="modal-nav next" onclick="showNextVideo()" aria-label="Xem video tiếp theo">&#10095;</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyên gia nói về ID-4 Solution</title>
+
+    <style>
+        /* --- CÀI ĐẶT CHUNG --- */
+        
+         :root {
+            --primary-color: #007bff;
+            --primary-dark-color: #005aab;
+            --light-bg-color: #f8fcff;
+            --text-color: #555;
+            --card-bg-color: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--card-bg-color);
+        }
+        /* --- COMPONENT TESTIMONIALS --- */
+        
+        .id4-guide-cg-noi-gi-testimonials-section {
+            width: 100%;
+            padding: 80px 20px;
+            background-color: var(--light-bg-color);
+            text-align: center;
+        }
+        
+        .id4-guide-cg-noi-gi-testimonials-section__title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-dark-color);
+            text-transform: uppercase;
+            margin-bottom: 60px;
+        }
+        
+        .id4-guide-cg-noi-gi-testimonials-section__container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            /* CẬP NHẬT: Thêm position relative cho việc định vị nút */
+        }
+        
+        .id4-guide-cg-noi-gi-testimonial-slider {
+            /* Vùng chứa slider, sẽ được kích hoạt trên mobile */
+        }
+        
+        .id4-guide-cg-noi-gi-testimonials-section__grid {
+            /* Mặc định là layout grid cho desktop */
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 50px;
+        }
+        
+        .id4-guide-cg-noi-gi-testimonial-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+        }
+        
+        .id4-guide-cg-noi-gi-testimonial-item__card {
+            width: 100%;
+            border: 2px solid var(--primary-color);
+            border-radius: 16px;
+            padding: 40px 25px 35px;
+            position: relative;
+            background-color: var(--card-bg-color);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        
+        .id4-guide-cg-noi-gi-testimonial-item__card::after {
+            content: '';
+            position: absolute;
+            bottom: -34px;
+            left: 75%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 35px;
+            background-image: url("data:image/svg+xml,%3Csvg width='40' height='35' viewBox='0 0 40 35' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0L20 35L40 0H0Z' fill='%23007bff'/%3E%3Cpath d='M2.5 0L20 31.5L37.5 0H2.5Z' fill='white'/%3E%3C/svg%3E");
+        }
+        
+        .id4-guide-cg-noi-gi-testimonial-item__quote-icon {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 6rem;
+            color: #dbe9fa;
+            z-index: 0;
+        }
+        
+        .id4-guide-cg-noi-gi-testimonial-item__text {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--text-color);
+            position: relative;
+            z-index: 2;
+            text-align: justify;
+        }
+        
+        .id4-guide-cg-noi-gi-testimonial-item__author {
+            margin-top: 35px;
+        }
+        
+        .id4-guide-cg-noi-gi-testimonial-item__avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            background-color: #e9efff;
+        }
+        
+        .id4-guide-cg-noi-gi-testimonial-item__name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-dark-color);
+        }
+        /* --- SLIDER CONTROLS (NAVIGATION & PAGINATION) --- */
+        
+        .id4-guide-cg-noi-gi-slider-controls {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin-top: 40px;
+        }
+        
+        .id4-guide-cg-noi-gi-slider-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            flex-shrink: 0;
+        }
+        
+        .id4-guide-cg-noi-gi-slider-btn:hover {
+            background-color: var(--primary-dark-color);
+        }
+        
+        .id4-guide-cg-noi-gi-slider-pagination {
+            display: flex;
+            gap: 10px;
+            margin: 0 20px;
+        }
+        
+        .id4-guide-cg-noi-gi-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #ccc;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .id4-guide-cg-noi-gi-dot.id4-guide-cg-noi-gi-active {
+            background-color: var(--primary-color);
+        }
+        /* --- RESPONSIVE --- */
+        /* CẬP NHẬT: Giao diện mobile (slider 1 cột) */
+        
+        @media (max-width: 767px) {
+            .id4-guide-cg-noi-gi-testimonials-section {
+                padding: 50px 15px;
+            }
+            .id4-guide-cg-noi-gi-testimonials-section__title {
+                font-size: 1.8rem;
+                margin-bottom: 40px;
+            }
+            .id4-guide-cg-noi-gi-testimonial-slider {
+                overflow: hidden;
+                width: 100%;
+            }
+            .id4-guide-cg-noi-gi-testimonials-section__grid {
+                display: flex;
+                grid-template-columns: none;
+                gap: 0;
+            }
+            .id4-guide-cg-noi-gi-testimonials-section__grid.id4-guide-cg-noi-gi-is-transitioning {
+                transition: transform 0.4s ease-in-out;
+            }
+            .id4-guide-cg-noi-gi-testimonial-item {
+                flex: 0 0 100%;
+                padding: 0 5px;
+            }
+            .id4-guide-cg-noi-gi-slider-controls {
+                display: block;
+                /* CẬP NHẬT: Cho phép định vị lại các thành phần con */
+                text-align: center;
+                /* Căn giữa pagination */
+            }
+            .id4-guide-cg-noi-gi-slider-pagination {
+                display: inline-flex;
+                /* Giữ các dot trên một hàng */
+            }
+            .id4-guide-cg-noi-gi-slider-btn {
+                position: absolute;
+                top: 40%;
+                /* CẬP NHẬT: Di chuyển nút lên và căn giữa theo chiều dọc */
+                transform: translateY(-50%);
+                z-index: 10;
+            }
+            .id4-guide-cg-noi-gi-slider-btn.id4-guide-cg-noi-gi-prev {
+                left: 0;
+            }
+            .id4-guide-cg-noi-gi-slider-btn.id4-guide-cg-noi-gi-next {
+                right: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <section class="id4-guide-cg-noi-gi-testimonials-section">
+        <h2 class="id4-guide-cg-noi-gi-testimonials-section__title">Chuyên gia nói gì về ID-4 Solution</h2>
+
+        <div class="id4-guide-cg-noi-gi-testimonials-section__container">
+            <div class="id4-guide-cg-noi-gi-testimonial-slider">
+                <div class="id4-guide-cg-noi-gi-testimonials-section__grid">
+                    <div class="id4-guide-cg-noi-gi-testimonial-item">
+                        <div class="id4-guide-cg-noi-gi-testimonial-item__card">
+                            <div class="id4-guide-cg-noi-gi-testimonial-item__quote-icon">“</div>
+                            <p class="id4-guide-cg-noi-gi-testimonial-item__text">Tôi đã sử dụng hệ thống màng hướng dẫn phẫu thuật của trung tâm ID4 từ năm 2020 cho đến nay và vô cùng hài lòng với chất lượng của sản phẩm. Nhờ hệ thống màng hướng dẫn chính xác, việc thực hiện các ca phẫu thuật cấy ghép Implant
+                                đã trở nên nhanh chóng và an toàn hơn rất nhiều.</p>
+                        </div>
+                        <div class="id4-guide-cg-noi-gi-testimonial-item__author">
+                            <img src="https://placehold.co/100x100/E9EFFF/3B82F6" alt="Bác sĩ Xuân" class="id4-guide-cg-noi-gi-testimonial-item__avatar">
+                            <p class="id4-guide-cg-noi-gi-testimonial-item__name">Bác sĩ Xuân</p>
+                        </div>
+                    </div>
+                    <div class="id4-guide-cg-noi-gi-testimonial-item">
+                        <div class="id4-guide-cg-noi-gi-testimonial-item__card">
+                            <div class="id4-guide-cg-noi-gi-testimonial-item__quote-icon">“</div>
+                            <p class="id4-guide-cg-noi-gi-testimonial-item__text">Chất lượng sản phẩm vượt trội, dịch vụ hỗ trợ của ID4 Solution rất chuyên nghiệp. Tôi hoàn toàn tin tưởng khi giới thiệu cho các đồng nghiệp của mình. Các ca cấy ghép phức tạp trở nên đơn giản hơn rất nhiều.</p>
+                        </div>
+                        <div class="id4-guide-cg-noi-gi-testimonial-item__author">
+                            <img src="https://placehold.co/100x100/E9EFFF/3B82F6" alt="Bác sĩ An" class="id4-guide-cg-noi-gi-testimonial-item__avatar">
+                            <p class="id4-guide-cg-noi-gi-testimonial-item__name">Bác sĩ An</p>
+                        </div>
+                    </div>
+                    <div class="id4-guide-cg-noi-gi-testimonial-item">
+                        <div class="id4-guide-cg-noi-gi-testimonial-item__card">
+                            <div class="id4-guide-cg-noi-gi-testimonial-item__quote-icon">“</div>
+                            <p class="id4-guide-cg-noi-gi-testimonial-item__text">Hệ thống màng hướng dẫn phẫu thuật của ID4 không chỉ chính xác mà còn giúp rút ngắn đáng kể thời gian phẫu thuật, mang lại sự thoải mái tối đa cho bệnh nhân. Đây là một bước tiến lớn trong ngành.</p>
+                        </div>
+                        <div class="id4-guide-cg-noi-gi-testimonial-item__author">
+                            <img src="https://placehold.co/100x100/E9EFFF/3B82F6" alt="Bác sĩ Minh" class="id4-guide-cg-noi-gi-testimonial-item__avatar">
+                            <p class="id4-guide-cg-noi-gi-testimonial-item__name">Bác sĩ Minh</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="id4-guide-cg-noi-gi-slider-controls">
+                <button class="id4-guide-cg-noi-gi-slider-btn id4-guide-cg-noi-gi-prev" aria-label="Previous testimonial">&#8249;</button>
+                <div class="id4-guide-cg-noi-gi-slider-pagination"></div>
+                <button class="id4-guide-cg-noi-gi-slider-btn id4-guide-cg-noi-gi-next" aria-label="Next testimonial">&#8250;</button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sliderContainer = document.querySelector('.id4-guide-cg-noi-gi-testimonial-slider');
+            if (!sliderContainer) return;
+
+            const grid = sliderContainer.querySelector('.id4-guide-cg-noi-gi-testimonials-section__grid');
+            const nextBtn = document.querySelector('.id4-guide-cg-noi-gi-slider-btn.id4-guide-cg-noi-gi-next');
+            const prevBtn = document.querySelector('.id4-guide-cg-noi-gi-slider-btn.id4-guide-cg-noi-gi-prev');
+            const paginationContainer = document.querySelector('.id4-guide-cg-noi-gi-slider-pagination');
+
+            let originalItems = Array.from(grid.querySelectorAll('.id4-guide-cg-noi-gi-testimonial-item'));
+            if (originalItems.length <= 1) return;
+
+            const AUTOPLAY_DELAY = 4000;
+            let currentIndex = 1;
+            let autoPlayInterval;
+            let isTransitioning = false;
+            let sliderInitialized = false;
+
+            function setupSlider() {
+                const firstClone = originalItems[0].cloneNode(true);
+                const lastClone = originalItems[originalItems.length - 1].cloneNode(true);
+                grid.appendChild(firstClone);
+                grid.prepend(lastClone);
+
+                grid.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+                originalItems.forEach((_, index) => {
+                    const dot = document.createElement('div');
+                    dot.classList.add('id4-guide-cg-noi-gi-dot');
+                    dot.addEventListener('click', () => {
+                        if (isTransitioning) return;
+                        currentIndex = index + 1;
+                        moveToSlide();
+                        resetAutoplay();
+                    });
+                    paginationContainer.appendChild(dot);
+                });
+
+                nextBtn.addEventListener('click', () => {
+                    if (isTransitioning) return;
+                    moveToNext();
+                    resetAutoplay();
+                });
+                prevBtn.addEventListener('click', () => {
+                    if (isTransitioning) return;
+                    moveToPrev();
+                    resetAutoplay();
+                });
+                grid.addEventListener('transitionend', handleTransitionEnd);
+
+                startAutoplay();
+                sliderContainer.addEventListener('mouseenter', stopAutoplay);
+                sliderContainer.addEventListener('mouseleave', startAutoplay);
+
+                updatePagination();
+            }
+
+            function moveToSlide() {
+                isTransitioning = true;
+                grid.classList.add('id4-guide-cg-noi-gi-is-transitioning');
+                grid.style.transform = `translateX(-${currentIndex * 100}%)`;
+                updatePagination();
+            }
+
+            function moveToNext() {
+                currentIndex++;
+                moveToSlide();
+            }
+
+            function moveToPrev() {
+                currentIndex--;
+                moveToSlide();
+            }
+
+            function handleTransitionEnd() {
+                isTransitioning = false;
+                if (currentIndex === 0) {
+                    grid.classList.remove('id4-guide-cg-noi-gi-is-transitioning');
+                    currentIndex = originalItems.length;
+                    grid.style.transform = `translateX(-${currentIndex * 100}%)`;
+                }
+                if (currentIndex === originalItems.length + 1) {
+                    grid.classList.remove('id4-guide-cg-noi-gi-is-transitioning');
+                    currentIndex = 1;
+                    grid.style.transform = `translateX(-${currentIndex * 100}%)`;
+                }
+            }
+
+            function updatePagination() {
+                let activeIndex = currentIndex - 1;
+                if (currentIndex === 0) {
+                    activeIndex = originalItems.length - 1;
+                } else if (currentIndex === originalItems.length + 1) {
+                    activeIndex = 0;
+                }
+
+                const dots = paginationContainer.querySelectorAll('.id4-guide-cg-noi-gi-dot');
+                dots.forEach((dot, index) => {
+                    dot.classList.toggle('id4-guide-cg-noi-gi-active', index === activeIndex);
+                });
+            }
+
+            function startAutoplay() {
+                stopAutoplay();
+                autoPlayInterval = setInterval(() => {
+                    if (!isTransitioning) moveToNext();
+                }, AUTOPLAY_DELAY);
+            }
+
+            function stopAutoplay() {
+                clearInterval(autoPlayInterval);
+            }
+
+            function resetAutoplay() {
+                stopAutoplay();
+                startAutoplay();
+            }
+
+            function destroySlider() {
+                stopAutoplay();
+
+                const newNextBtn = nextBtn.cloneNode(true);
+                nextBtn.parentNode.replaceChild(newNextBtn, nextBtn);
+                const newPrevBtn = prevBtn.cloneNode(true);
+                prevBtn.parentNode.replaceChild(newPrevBtn, prevBtn);
+
+                grid.removeEventListener('transitionend', handleTransitionEnd);
+                sliderContainer.removeEventListener('mouseenter', stopAutoplay);
+                sliderContainer.removeEventListener('mouseleave', startAutoplay);
+
+                grid.innerHTML = '';
+                originalItems.forEach(item => grid.appendChild(item));
+                paginationContainer.innerHTML = '';
+
+                grid.style.transform = '';
+                grid.classList.remove('id4-guide-cg-noi-gi-is-transitioning');
+            }
+
+            const mobileMediaQuery = window.matchMedia('(max-width: 767px)');
+
+            function handleDeviceChange(e) {
+                if (e.matches) {
+                    if (!sliderInitialized) {
+                        setupSlider();
+                        sliderInitialized = true;
+                    }
+                } else {
+                    if (sliderInitialized) {
+                        destroySlider();
+                        sliderInitialized = false;
+                    }
+                }
+            }
+
+            mobileMediaQuery.addEventListener('change', handleDeviceChange);
+            handleDeviceChange(mobileMediaQuery);
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,520 @@
+:root {
+    --id4-background-color: #1a1a1a;
+    --id4-card-background: #282828;
+    --id4-text-color: #fff;
+    --id4-border-color: #444;
+    --id4-accent-color: #00aaff;
+    --id4-dot-inactive-color: #555;
+}
+
+.id4-container {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--id4-background-color);
+    color: var(--id4-text-color);
+    transition: background-color 0.4s ease;
+}
+
+.id4-container.id4-modal-open {
+    overflow: hidden;
+}
+
+.id4-section {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.id4-section h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+}
+
+.id4-progress-bar-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background-color: var(--id4-border-color);
+    z-index: 10;
+}
+
+.id4-progress-bar {
+    height: 100%;
+    width: 0%;
+    background-color: var(--id4-accent-color);
+    transition: width 0.1s linear;
+}
+
+.id4-horizontal-track {
+    height: 400vh;
+    position: relative;
+}
+
+.id4-sticky-container {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+    perspective: 1000px;
+}
+
+.id4-horizontal-content {
+    display: flex;
+    align-items: center;
+    height: 60%;
+}
+
+.id4-card {
+    width: clamp(300px, 85vw, 700px);
+    /* Tối ưu hóa cho mobile và tablet */
+    height: 60vh;
+    max-height: 450px;
+    margin: 0 clamp(10px, 3vw, 40px);
+    /* Tối ưu hóa khoảng cách */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    background-color: var(--id4-card-background);
+    border-radius: 20px;
+    border: 1px solid var(--id4-border-color);
+    padding: clamp(20px, 5vw, 40px);
+    /* Tối ưu hóa padding */
+    box-sizing: border-box;
+    flex-shrink: 0;
+    cursor: pointer;
+    transform: scale(0.9);
+    opacity: 0.7;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.id4-card.id4-active {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.id4-card-text {
+    flex: 1 1 55%;
+}
+
+.id4-card-image {
+    flex: 1 1 45%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.id4-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+    transition: transform 0.5s ease-out;
+}
+
+.id4-card h2 {
+    font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+    /* Tối ưu hóa font size */
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.id4-card p {
+    font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+    /* Tối ưu hóa font size */
+    line-height: 1.6;
+    opacity: 0.8;
+    text-align: left;
+}
+
+.id4-pagination-dots {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    flex-direction: row;
+    justify-content: center;
+    gap: 12px;
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 8px 15px;
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+}
+
+.id4-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--id4-dot-inactive-color);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
+}
+
+.id4-dot.id4-active {
+    background-color: var(--id4-text-color);
+    transform: scale(1.2);
+}
+
+.id4-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: rgba(26, 26, 26, 0.5);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.id4-modal-overlay.id4-active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.id4-modal-content {
+    background: rgba(40, 40, 40, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 800px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    transform: scale(0.9);
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 30px;
+}
+
+.id4-modal-content .id4-card-text {
+    flex: 1 1 55%;
+}
+
+.id4-modal-content .id4-card-image {
+    flex: 1 1 45%;
+}
+
+.id4-modal-content .id4-card-image img {
+    width: 100%;
+    border-radius: 15px;
+}
+
+.id4-modal-content h2,
+.id4-modal-content p {
+    text-align: left;
+}
+
+.id4-modal-overlay.id4-active .id4-modal-content {
+    transform: scale(1);
+}
+
+.id4-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 3rem;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.id4-modal-close:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+
+/* Responsive cho Tablet */
+
+@media (max-width: 1024px) {
+    .id4-card {
+        width: clamp(350px, 90vw, 750px);
+        max-height: 400px;
+        padding: clamp(30px, 4vw, 35px);
+        gap: 20px;
+    }
+
+    .id4-card h2 {
+        font-size: clamp(1.4rem, 4vw, 2rem);
+    }
+}
+
+
+/* Responsive cho Mobile */
+
+@media (max-width: 768px) {
+    .id4-pagination-dots {
+        display: flex;
+    }
+
+    .id4-progress-bar-container {
+        display: none;
+    }
+
+    .id4-card,
+    .id4-modal-content {
+        flex-direction: column;
+        text-align: center;
+        height: auto;
+        max-height: 80vh;
+        padding: 30px;
+        width: 90vw;
+    }
+
+    .id4-card-image,
+    .id4-modal-content .id4-card-image {
+        order: -1;
+        width: 100%;
+        height: 200px;
+        margin-bottom: 20px;
+    }
+
+    .id4-card h2,
+    .id4-card p,
+    .id4-modal-content h2,
+    .id4-modal-content p {
+        text-align: center;
+    }
+
+    .id4-modal-content {
+        gap: 15px;
+    }
+}
+
+
+/* slider */
+
+.id4-product-gallery-wrapper {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f1f2;
+    padding: 36px 20px 20px 20px;
+}
+
+.id4-product-gallery-container {
+    width: 100%;
+    max-width: 820px;
+    text-align: center;
+}
+
+.id4-gallery-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 100%;
+    /* SỬA LỖI: Đảm bảo container chiếm đủ chiều rộng */
+}
+
+.id4-control-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 44px;
+    height: 44px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    font-size: 18px;
+    color: #333;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.id4-control-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+}
+
+.id4-nav-arrows {
+    display: flex;
+    gap: 12px;
+}
+
+.id4-main-image-wrapper {
+    margin-bottom: 25px;
+    cursor: zoom-in;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#id4-main-image {
+    width: 55%;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    border-radius: 8px;
+}
+
+.thumbnails-scroll-container {
+    overflow-x: scroll;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 10px;
+    /* cursor: grab; */
+    /* SỬA LỖI: Thay đổi con trỏ để báo hiệu có thể kéo */
+    user-select: none;
+    /* Ngăn bôi đen ảnh khi kéo */
+}
+
+.thumbnails-scroll-container.active {
+    cursor: grabbing;
+    /* Thay đổi con trỏ khi đang kéo */
+}
+
+.thumbnails-scroll-container::-webkit-scrollbar {
+    display: none;
+}
+
+.thumbnails-scroll-container {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.thumbnails-list {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 15px;
+    padding: 0 10px;
+}
+
+.thumbnails {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color 0.3s ease, transform 0.2s ease;
+    padding: 5px;
+    background-color: transparent;
+    flex-shrink: 0;
+    pointer-events: none;
+    /* Ngăn sự kiện kéo mặc định của trình duyệt trên ảnh */
+}
+
+.thumbnails.active {
+    border-color: #000;
+}
+
+.thumbnails:hover {
+    transform: scale(1.05);
+}
+
+.light_box {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    inset: 0;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background-color: rgba(255, 255, 255, 1);
+}
+
+.light_box.show {
+    display: flex;
+    opacity: 1;
+}
+
+.light_box-close {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    font-size: 40px;
+    font-weight: 300;
+    color: #333;
+    cursor: pointer;
+}
+
+#light_box-image {
+    max-width: 90%;
+    max-height: 85%;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.light_box-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 24px;
+    color: #333;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, transform 0.3s;
+    user-select: none;
+}
+
+.light_box-nav-btn:hover {
+    background-color: #fff;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.light_box-nav-btn.prev-light_box {
+    left: 20px;
+}
+
+.light_box-nav-btn.next-light_box {
+    right: 20px;
+}
+
+@media (max-width: 768px) {
+    .thumbnails {
+        width: 70px;
+        height: 70px;
+    }
+
+    .id4-control-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+
+    .light_box-close {
+        top: 15px;
+        right: 20px;
+    }
+
+    .light_box-nav-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+        /* left: 10px;
+                right: 10px; */
+    }
+}

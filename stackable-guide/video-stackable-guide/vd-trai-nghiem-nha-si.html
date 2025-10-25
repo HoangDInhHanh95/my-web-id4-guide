@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Video Player Giao Diện (Refactored)</title>
+
+    <style>
+        /* --- BỘ BAO BỌC TRANG DEMO --- */
+        /* Các style trước đây của thẻ BODY đã được chuyển vào đây  f9fdfe*/
+        
+        .TNNSKD-id4-stackable-guide-page-wrapper {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f9fdfe;
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        /* --- PHẦN CODE CỦA COMPONENT GIỮ NGUYÊN --- */
+        
+        .TNNSKD-id4-stackable-guide-video-section-container {
+            width: 100%;
+            max-width: 900px;
+            text-align: center;
+        }
+        
+        .TNNSKD-id4-stackable-guide-video-main-title {
+            color: #0d2a4e;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .TNNSKD-id4-stackable-guide-custom-video-player {
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .TNNSKD-id4-stackable-guide-video-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%;
+            background-color: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        
+        .TNNSKD-id4-stackable-guide-video-wrapper video,
+        .TNNSKD-id4-stackable-guide-video-wrapper .TNNSKD-id4-stackable-guide-video-thumbnail {
+            position: absolute;
+            transition: opacity 0.3s ease;
+        }
+        /* Class riêng cho thumbnail để tùy chỉnh */
+        
+        .TNNSKD-id4-stackable-guide-video-thumbnail {
+            /* CHỈNH SỬA Ở ĐÂY: Thay đổi các giá trị để điều chỉnh kích thước và vị trí */
+            width: 100%;
+            height: 100%;
+            top: 50%;
+            left: 50%;
+            object-fit: cover;
+            border-radius: 8px;
+            transform: translate(-50%, -50%);
+        }
+        /* TẠO LỚP BACKGROUND MỜ PHỦ ĐẦY (FULL) */
+        
+        .TNNSKD-id4-stackable-guide-video-thumbnail::before {
+            content: "";
+            /* Bắt buộc phải có cho phần tử giả */
+            position: absolute;
+            /* Đảm bảo phần tử giả phủ đầy 100% kích thước của phần tử cha */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Thiết lập màu nền hoặc hình ảnh nền. Ở đây ta dùng màu đen hơi trong suốt */
+            /* Áp dụng hiệu ứng mờ cho lớp nền này */
+            filter: blur(10px);
+            /* Điều chỉnh giá trị 10px để thay đổi độ mờ */
+            /* Đảm bảo lớp mờ nằm dưới nội dung chính của hình thu nhỏ */
+            z-index: -1;
+            /* 1. Thêm màu nền hơi trong suốt để thấy hiệu ứng */
+            background-color: rgba(255, 255, 255, 0.2);
+            /* 2. Thêm hiệu ứng mờ (blur) vào nền của phần tử */
+            backdrop-filter: blur(5px);
+            /* Điều chỉnh giá trị '5px' để thay đổi độ mờ */
+            /* Thuộc tính dự phòng cho trình duyệt cũ (đã lỗi thời) */
+            -webkit-backdrop-filter: blur(5px);
+        }
+        
+        .TNNSKD-id4-stackable-guide-video-wrapper video {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .TNNSKD-id4-stackable-guide-video-wrapper video:focus {
+            outline: none;
+        }
+        
+        .TNNSKD-id4-stackable-guide-hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .TNNSKD-id4-stackable-guide-play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            z-index: 10;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.3s ease;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        .TNNSKD-id4-stackable-guide-play-button:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .TNNSKD-id4-stackable-guide-play-button-icon {
+            width: 40%;
+            height: 40%;
+            /* fill: #ffffff; */
+            margin-left: 5px;
+            filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.4));
+        }
+        
+        .TNNSKD-id4-stackable-guide-video-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        
+        .TNNSKD-id4-stackable-guide-modal-content {
+            position: relative;
+            width: 95%;
+            max-width: 800px;
+        }
+        
+        .TNNSKD-id4-stackable-guide-close-modal-button {
+            position: absolute;
+            top: -35px;
+            right: 0px;
+            color: #ffffff;
+            font-size: 35px;
+            font-weight: bold;
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+        }
+        
+        @media (max-width: 767px) {
+            .TNNSKD-id4-stackable-guide-video-main-title {
+                font-size: 22px;
+            }
+            .TNNSKD-id4-stackable-guide-play-button {
+                width: 70px;
+                height: 70px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="TNNSKD-id4-stackable-guide-page-wrapper">
+        <div class="TNNSKD-id4-stackable-guide-video-section-container">
+            <h2 class="TNNSKD-id4-stackable-guide-video-main-title">
+                NHỮNG LÝ DO NÊN LỰA CHỌN ID-4 STACKABLE GUIDE
+            </h2>
+
+            <div class="TNNSKD-id4-stackable-guide-custom-video-player" id="TNNSKD-id4-stacktable-guide-videoPlayer">
+                <div class="TNNSKD-id4-stackable-guide-video-wrapper">
+                    <video class="TNNSKD-id4-stackable-guide-main-video" src="https://www.w3schools.com/html/mov_bbb.mp4" playsinline preload="metadata"></video>
+                    <img src="http://localhost/iD4Center/wp-content/uploads/2025/10/thumbnail-10@4x.png" alt="ID-4 Stackable Guide Thumbnail" class="TNNSKD-id4-stackable-guide-video-thumbnail" />
+
+                    <button class="TNNSKD-id4-stackable-guide-play-button" aria-label="Play Video">
+
+                        <svg class="TNNSKD-id4-stackable-guide-play-button-icon" viewBox="0 0 24 24">
+
+                            <path d="M8 5v14l11-7z"  fill="#ffffff"></path>
+
+                        </svg>
+
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="TNNSKD-id4-stackable-guide-video-modal" id="TNNSKD-id4-stacktable-guide-videoModal">
+        <div class="TNNSKD-id4-stackable-guide-modal-content">
+            <button class="TNNSKD-id4-stackable-guide-close-modal-button">
+                &times;
+            </button>
+            <div class="TNNSKD-id4-stackable-guide-modal-video-wrapper"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const TNNSKD_d4_stackable_guide_player = document.getElementById(
+                "TNNSKD-id4-stacktable-guide-videoPlayer"
+            );
+            const TNNSKD_d4_stackable_guide_videoWrapper =
+                TNNSKD_d4_stackable_guide_player.querySelector(
+                    ".TNNSKD-id4-stackable-guide-video-wrapper"
+                );
+            const TNNSKD_d4_stackable_guide_video =
+                TNNSKD_d4_stackable_guide_player.querySelector(
+                    ".TNNSKD-id4-stackable-guide-main-video"
+                );
+            const TNNSKD_d4_stackable_guide_thumbnail =
+                TNNSKD_d4_stackable_guide_player.querySelector(
+                    ".TNNSKD-id4-stackable-guide-video-thumbnail"
+                );
+            const TNNSKD_d4_stackable_guide_playButton =
+                TNNSKD_d4_stackable_guide_player.querySelector(
+                    ".TNNSKD-id4-stackable-guide-play-button"
+                );
+            const TNNSKD_d4_stackable_guide_modal = document.getElementById(
+                "TNNSKD-id4-stacktable-guide-videoModal"
+            );
+            const TNNSKD_d4_stackable_guide_modalVideoWrapper =
+                TNNSKD_d4_stackable_guide_modal.querySelector(
+                    ".TNNSKD-id4-stackable-guide-modal-video-wrapper"
+                );
+            const TNNSKD_d4_stackable_guide_closeModalButton =
+                TNNSKD_d4_stackable_guide_modal.querySelector(
+                    ".TNNSKD-id4-stackable-guide-close-modal-button"
+                );
+            const TNNSKD_d4_stackable_guide_isMobile = () =>
+                window.innerWidth <= 767;
+
+            function TNNSKD_d4_stackable_guide_initiatePlay() {
+                if (TNNSKD_d4_stackable_guide_isMobile()) {
+                    TNNSKD_d4_stackable_guide_modalVideoWrapper.appendChild(
+                        TNNSKD_d4_stackable_guide_video
+                    );
+                    TNNSKD_d4_stackable_guide_modal.style.display = "flex";
+                }
+                TNNSKD_d4_stackable_guide_video.controls = true;
+                TNNSKD_d4_stackable_guide_video.play();
+            }
+
+            function TNNSKD_d4_stackable_guide_resetPlayerUI() {
+                TNNSKD_d4_stackable_guide_video.controls = false;
+                TNNSKD_d4_stackable_guide_thumbnail.classList.remove(
+                    "TNNSKD-id4-stackable-guide-hidden"
+                );
+                TNNSKD_d4_stackable_guide_playButton.classList.remove(
+                    "TNNSKD-id4-stackable-guide-hidden"
+                );
+                TNNSKD_d4_stackable_guide_videoWrapper.style.cursor = "pointer";
+            } // SỬA LẠI: Khi video chạy, ẩn thumbnail và nút play đi
+
+            TNNSKD_d4_stackable_guide_video.addEventListener("play", () => {
+                TNNSKD_d4_stackable_guide_playButton.classList.add(
+                    "TNNSKD-id4-stackable-guide-hidden"
+                );
+                TNNSKD_d4_stackable_guide_thumbnail.classList.add(
+                    "TNNSKD-id4-stackable-guide-hidden"
+                );
+                TNNSKD_d4_stackable_guide_videoWrapper.style.cursor = "default";
+            }); // SỬA LẠI: Khi video dừng, hiện lại thumbnail và nút play
+
+            TNNSKD_d4_stackable_guide_video.addEventListener("pause", () => {
+                if (!TNNSKD_d4_stackable_guide_video.ended) {
+                    TNNSKD_d4_stackable_guide_playButton.classList.remove(
+                        "TNNSKD-id4-stackable-guide-hidden"
+                    );
+                    TNNSKD_d4_stackable_guide_thumbnail.classList.remove(
+                        "TNNSKD-id4-stackable-guide-hidden"
+                    );
+                    TNNSKD_d4_stackable_guide_videoWrapper.style.cursor = "pointer";
+                }
+            });
+
+            TNNSKD_d4_stackable_guide_video.addEventListener("ended", () => {
+                if (!TNNSKD_d4_stackable_guide_isMobile()) {
+                    TNNSKD_d4_stackable_guide_resetPlayerUI();
+                }
+            });
+
+            function TNNSKD_d4_stackable_guide_closeModal() {
+                TNNSKD_d4_stackable_guide_modal.style.display = "none";
+                TNNSKD_d4_stackable_guide_video.pause();
+                TNNSKD_d4_stackable_guide_player.querySelector(
+                    ".TNNSKD-id4-stackable-guide-video-wrapper"
+                ).prepend(TNNSKD_d4_stackable_guide_video);
+                TNNSKD_d4_stackable_guide_resetPlayerUI();
+            }
+
+            TNNSKD_d4_stackable_guide_closeModalButton.addEventListener(
+                "click",
+                TNNSKD_d4_stackable_guide_closeModal
+            );
+            TNNSKD_d4_stackable_guide_modal.addEventListener("click", (e) => {
+                if (e.target === TNNSKD_d4_stackable_guide_modal) {
+                    TNNSKD_d4_stackable_guide_closeModal();
+                }
+            });
+
+            TNNSKD_d4_stackable_guide_playButton.addEventListener("click", () => {
+                // Nếu video đang dừng thì chạy, ngược lại thì dừng
+                if (TNNSKD_d4_stackable_guide_video.paused) {
+                    TNNSKD_d4_stackable_guide_initiatePlay();
+                } else {
+                    TNNSKD_d4_stackable_guide_video.pause();
+                }
+            });
+            TNNSKD_d4_stackable_guide_thumbnail.addEventListener(
+                "click",
+                TNNSKD_d4_stackable_guide_initiatePlay
+            );
+        });
+    </script>
+</body>
+
+</html>

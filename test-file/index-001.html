@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiệu ứng Cuộn Ngang Hoàn Chỉnh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="id4-container">
+        <!-- thêm phần html -->
+
+        <!--  -->
+        <div class="id4-product-gallery-wrapper">
+            <div class="id4-product-gallery-container">
+                <div class="id4-gallery-controls">
+                    <div id="zoom-icon" class="id4-control-btn">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                    <div class="id4-nav-arrows ">
+                        <div id="prev-btn" class="id4-control-btn">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </div>
+                        <div id="next-btn" class="id4-control-btn">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="id4-main-image-wrapper">
+                    <img id="id4-main-image" src="" alt="Hình ảnh sản phẩm chính">
+                </div>
+
+                <div class="thumbnails-scroll-container" id="thumbnails-scroll-container">
+                    <div class="thumbnails-list" id="thumbnails-list">
+                    </div>
+                </div>
+            </div>
+
+            <div id="my-light_box" class="light_box">
+                <span class="light_box-close" id="light_box-close">&times;</span>
+                <div class="light_box-nav-btn prev-light_box" id="light_box-prev-btn">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </div>
+                <img id="light_box-image" src="" alt="Hình ảnh phóng to">
+                <div class="light_box-nav-btn next-light_box" id="light_box-next-btn">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </div>
+            </div>
+        </div>
+        <!--  -->
+
+        <!-- end them phần htm -->
+        <div class="id4-progress-bar-container">
+            <div class="id4-progress-bar"></div>
+        </div>
+
+        <div class="id4-horizontal-track">
+            <div class="id4-sticky-container">
+                <div class="id4-horizontal-content">
+                </div>
+            </div>
+        </div>
+
+        <div class="id4-pagination-dots"></div>
+
+        <section class="id4-section">
+            <h1>Thật ấn tượng! 🤯</h1>
+        </section>
+
+        <div class="id4-modal-overlay">
+            <div class="id4-modal-content"></div>
+            <button class="id4-modal-close" aria-label="Đóng">&times;</button>
+        </div>
+    </div>
+
+    <script src="scrtipt.js"></script>
+</body>
+
+</html>

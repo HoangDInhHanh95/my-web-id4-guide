@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Video Gallery</title>
+    <style>
+        /*
+         * KHỐI 2.1: KHAI BÁO BIẾN CSS (VARIABLES)
+         * Chức năng: Định nghĩa các giá trị có thể tái sử dụng trong toàn bộ file CSS, giúp việc thay đổi thiết kế sau này trở nên dễ dàng hơn.
+        */
+        
+         :root {
+            --transition-speed: 0.3s;
+            /* Khai báo một biến tên là '--transition-speed' với giá trị là 0.3 giây, dùng cho các hiệu ứng chuyển động. */
+        }
+        /*
+         * KHỐI 2.2: RESET CSS CƠ BẢN
+         * Chức năng: Xóa bỏ các khoảng đệm (margin, padding) mặc định mà trình duyệt tự thêm vào, đảm bảo giao diện nhất quán trên mọi trình duyệt.
+        */
+        
+        html,
+        body {
+            margin: 0;
+            /* Xóa bỏ lề ngoài mặc định. */
+            padding: 0;
+            /* Xóa bỏ lề trong mặc định. */
+            height: 100%;
+            /* Đặt chiều cao của html và body là 100% để các phần tử con có thể sử dụng chiều cao tương đối. */
+        }
+        /*
+         * KHỐI 2.3: STYLE CHO LỚP BAO BỌC TOÀN TRANG (.page-wrapper)
+         * Chức năng: Thay thế thẻ <body> để định dạng nền và căn giữa toàn bộ module gallery.
+        */
+        
+        .page-wrapper {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            /* Đặt bộ font chữ ưu tiên cho toàn trang, giúp hiển thị đẹp và hiện đại trên nhiều hệ điều hành. */
+            background-color: #f0f0f0;
+            /* Đặt màu nền xám nhạt cho trang. */
+            padding: 50px 0;
+            /* Tạo khoảng đệm 50px ở trên và dưới của trang. */
+            display: flex;
+            /* Kích hoạt chế độ Flexbox để dễ dàng căn chỉnh nội dung. */
+            justify-content: center;
+            /* Căn giữa nội dung bên trong theo chiều ngang. */
+            align-items: center;
+            /* Căn giữa nội dung bên trong theo chiều dọc. */
+            min-height: 100vh;
+            /* Đặt chiều cao tối thiểu bằng 100% chiều cao của màn hình, đảm bảo nội dung luôn được căn giữa màn hình ngay cả khi có ít nội dung. */
+            box-sizing: border-box;
+            /* Đảm bảo rằng padding và border sẽ được tính vào bên trong kích thước của phần tử, không làm nó to ra. */
+        }
+        /*
+         * KHỐI 2.4: STYLE CHO KHUNG CHỨA GALLERY (.gallery-container, .video-gallery)
+         * Chức năng: Tạo bố cục cho khu vực chứa các ô video.
+        */
+        
+        .gallery-container {
+            width: 100%;
+            /* Đặt chiều rộng bằng 100% so với phần tử cha (.page-wrapper). */
+            max-width: 1400px;
+            /* Giới hạn chiều rộng tối đa là 1400px để giao diện không bị quá rộng trên màn hình lớn. */
+            padding: 20px;
+            /* Tạo khoảng đệm 20px xung quanh khu vực gallery. */
+            box-sizing: border-box;
+            /* Đảm bảo padding không làm tăng kích thước của container. */
+        }
+        
+        .video-gallery {
+            display: flex;
+            /* Kích hoạt Flexbox cho danh sách các ô video. */
+            justify-content: center;
+            /* Căn giữa các ô video theo chiều ngang. */
+            gap: 15px;
+            /* Tạo khoảng cách 15px giữa mỗi ô video. */
+            list-style: none;
+            /* Xóa bỏ dấu chấm đầu dòng mặc định của thẻ <ul>. */
+            padding: 0;
+            /* Xóa bỏ khoảng đệm mặc định của thẻ <ul>. */
+            margin: 0;
+            /* Xóa bỏ lề mặc định của thẻ <ul>. */
+        }
+        /*
+         * KHỐI 2.5: STYLE CHO TỪNG Ô VIDEO THUMBNAIL (.gallery-item)
+         * Chức năng: Định dạng kích thước, hình dáng và hiệu ứng cho mỗi ô video nhỏ.
+        */
+        
+        .gallery-item {
+            position: relative;
+            /* Thiết lập hệ quy chiếu vị trí cho các phần tử con (lớp phủ, nút play) có position: absolute. */
+            width: 180px;
+            /* Đặt chiều rộng cố định là 180px. */
+            height: 320px;
+            /* Đặt chiều cao cố định là 320px. */
+            border-radius: 12px;
+            /* Bo tròn các góc của ô video với bán kính 12px. */
+            overflow: hidden;
+            /* Ẩn đi bất kỳ nội dung nào (ví dụ: video) tràn ra khỏi khung đã được bo tròn. */
+            cursor: pointer;
+            /* Biến con trỏ chuột thành hình bàn tay khi di vào, cho biết đây là một phần tử có thể click. */
+            transition: transform var(--transition-speed) ease;
+            /* Tạo hiệu ứng chuyển động mượt mà cho thuộc tính 'transform' trong 0.3 giây. */
+            flex-shrink: 0;
+            /* Ngăn không cho các ô video bị co lại khi không đủ không gian (quan trọng cho layout mobile). */
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.05);
+            /* Khi người dùng di chuột vào, phóng to ô video lên 5%. */
+        }
+        
+        .gallery-item video {
+            width: 100%;
+            /* Đảm bảo video lấp đầy 100% chiều rộng của ô chứa. */
+            height: 100%;
+            /* Đảm bảo video lấp đầy 100% chiều cao của ô chứa. */
+            object-fit: cover;
+            /* Video sẽ tự động thay đổi kích thước và cắt cúp để lấp đầy không gian mà không làm méo hình. */
+        }
+        /*
+         * KHỐI 2.6: STYLE CHO CÁC LỚP PHỦ (VĂN BẢN VÀ NÚT PLAY)
+         * Chức năng: Định dạng cho các thành phần nằm đè lên trên video thumbnail.
+        */
+        
+        .item-overlay {
+            position: absolute;
+            /* Đặt vị trí của lớp phủ này theo .gallery-item. */
+            bottom: 0;
+            /* Căn lớp phủ ở cạnh dưới. */
+            left: 0;
+            /* Căn lớp phủ ở cạnh trái. */
+            width: 100%;
+            /* Chiều rộng bằng 100% ô chứa. */
+            padding: 20px 15px 15px;
+            /* Tạo khoảng đệm cho văn bản bên trong. */
+            color: white;
+            /* Đặt màu chữ là màu trắng. */
+            font-weight: bold;
+            /* Đặt chữ in đậm. */
+            font-size: 1.1em;
+            /* Đặt kích thước chữ lớn hơn một chút. */
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            /* Tạo một dải màu chuyển sắc từ đen mờ ở dưới lên trong suốt ở trên, giúp chữ nổi bật. */
+            text-align: left;
+            /* Căn chữ về bên trái. */
+            pointer-events: none;
+            /* Cho phép các sự kiện chuột (như click) "xuyên qua" lớp phủ này để đến được ô video bên dưới. */
+        }
+        
+        .play-button-overlay {
+            position: absolute;
+            /* Đặt vị trí của nút play theo .gallery-item. */
+            top: 50%;
+            /* Di chuyển nút xuống 50% từ cạnh trên. */
+            left: 50%;
+            /* Di chuyển nút sang 50% từ cạnh trái. */
+            transform: translate(-50%, -50%);
+            /* Dịch chuyển nút ngược lại 50% chiều rộng và 50% chiều cao của chính nó, đây là kỹ thuật để căn giữa tuyệt đối. */
+            width: 60px;
+            /* Đặt chiều rộng của nút. */
+            height: 60px;
+            /* Đặt chiều cao của nút. */
+            background-color: rgba(255, 255, 255, 0.8);
+            /* Đặt màu nền trắng mờ cho nút. */
+            border-radius: 50%;
+            /* Bo tròn để tạo thành hình tròn. */
+            display: flex;
+            /* Kích hoạt Flexbox để căn giữa icon bên trong. */
+            justify-content: center;
+            /* Căn giữa icon theo chiều ngang. */
+            align-items: center;
+            /* Căn giữa icon theo chiều dọc. */
+            pointer-events: none;
+            /* Tương tự lớp phủ văn bản, cho phép click xuyên qua. */
+            transition: transform var(--transition-speed) ease;
+            /* Tạo hiệu ứng chuyển động mượt mà. */
+        }
+        
+        .play-icon,
+        .expand-icon {
+            position: absolute;
+            /* Đặt vị trí tuyệt đối để 2 icon này có thể nằm chồng lên nhau. */
+            width: 100%;
+            /* Chiều rộng 100% so với cha (.play-button-overlay). */
+            height: 100%;
+            /* Chiều cao 100% so với cha. */
+            transition: opacity var(--transition-speed) ease;
+            /* Tạo hiệu ứng mờ dần/hiện dần mượt mà. */
+        }
+        /* Dùng pseudo-element ::after để vẽ hình tam giác Play bằng CSS borders */
+        
+        .play-icon::after {
+            content: '';
+            /* Bắt buộc phải có để pseudo-element hiển thị. */
+            position: absolute;
+            /* Đặt vị trí tuyệt đối. */
+            top: 50%;
+            /* Căn giữa theo chiều dọc. */
+            left: 50%;
+            /* Căn giữa theo chiều ngang. */
+            transform: translate(-40%, -50%);
+            /* Tinh chỉnh lại vị trí để tam giác trông cân đối hơn. */
+            width: 0;
+            height: 0;
+            /* Kích thước bằng 0, hình dạng sẽ được tạo bởi border. */
+            border-top: 12px solid transparent;
+            /* Tạo cạnh trên trong suốt. */
+            border-bottom: 12px solid transparent;
+            /* Tạo cạnh dưới trong suốt. */
+            border-left: 20px solid #333;
+            /* Tạo cạnh trái có màu, đây chính là hình tam giác chúng ta thấy. */
+        }
+        
+        .expand-icon {
+            opacity: 0;
+            /* Mặc định, icon "phóng to" sẽ bị ẩn (trong suốt). */
+        }
+        /* Dùng pseudo-element ::before và ::after để vẽ 2 góc của icon "phóng to" */
+        
+        .expand-icon::before,
+        .expand-icon::after {
+            content: '';
+            /* Bắt buộc phải có. */
+            position: absolute;
+            /* Đặt vị trí tuyệt đối. */
+            width: 15px;
+            height: 15px;
+            /* Đặt kích thước cho các góc. */
+            border-color: #333;
+            /* Đặt màu cho các đường viền. */
+            border-style: solid;
+            /* Kiểu đường viền là liền mạch. */
+        }
+        
+        .expand-icon::before {
+            top: 16px;
+            left: 16px;
+            /* Vị trí góc trên-trái. */
+            border-width: 3px 0 0 3px;
+            /* Chỉ vẽ đường viền trên và trái để tạo thành hình góc. */
+        }
+        
+        .expand-icon::after {
+            bottom: 16px;
+            right: 16px;
+            /* Vị trí góc dưới-phải. */
+            border-width: 0 3px 3px 0;
+            /* Chỉ vẽ đường viền phải và dưới để tạo thành hình góc. */
+        }
+        /* Hiệu ứng chuyển đổi icon khi người dùng di chuột vào .gallery-item */
+        
+        .gallery-item:hover .play-icon {
+            opacity: 0;
+            /* Làm cho icon Play trở nên trong suốt. */
+        }
+        
+        .gallery-item:hover .expand-icon {
+            opacity: 1;
+            /* Làm cho icon "phóng to" hiện rõ ra. */
+        }
+        /*
+         * KHỐI 2.7: RESPONSIVE - STYLE CHO GIAO DIỆN MOBILE
+         * Chức năng: Các style trong khối này chỉ được áp dụng khi chiều rộng màn hình từ 768px trở xuống.
+        */
+        
+        @media (max-width: 768px) {
+            .gallery-container {
+                padding: 20px 0;
+            }
+            /* Giảm padding trên mobile. */
+            .video-gallery {
+                justify-content: flex-start;
+                /* Các item sẽ bắt đầu từ bên trái thay vì căn giữa. */
+                overflow-x: auto;
+                /* Cho phép cuộn ngang khi các item không đủ chỗ. */
+                scroll-snap-type: x mandatory;
+                /* Tạo hiệu ứng "hút" vào item gần nhất khi người dùng cuộn. */
+                padding: 0 20px;
+                /* Tạo khoảng đệm trái phải để các item không dính vào cạnh màn hình. */
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+                /* Ẩn thanh cuộn trên Firefox và Edge. */
+            }
+            .video-gallery::-webkit-scrollbar {
+                display: none;
+            }
+            /* Ẩn thanh cuộn trên Chrome và Safari. */
+            .gallery-item {
+                width: 90px;
+                height: 90px;
+                border-radius: 50%;
+                /* Chuyển các ô video thành hình tròn. */
+                border: 3px solid #ccc;
+                scroll-snap-align: start;
+                /* Thêm viền và đảm bảo hiệu ứng snap hoạt động đúng. */
+            }
+            .item-overlay {
+                display: none;
+            }
+            /* Ẩn lớp phủ văn bản trên giao diện mobile. */
+            /* Thu nhỏ kích thước nút play và icon cho phù hợp với thumbnail hình tròn */
+            .play-button-overlay {
+                width: 40px;
+                height: 40px;
+            }
+            .play-icon::after {
+                border-top-width: 8px;
+                border-bottom-width: 8px;
+                border-left-width: 13px;
+            }
+            .expand-icon::before {
+                top: 10px;
+                left: 10px;
+                width: 10px;
+                height: 10px;
+            }
+            .expand-icon::after {
+                bottom: 10px;
+                right: 10px;
+                width: 10px;
+                height: 10px;
+            }
+        }
+        /*
+         * KHỐI 2.8: STYLE CHO CỬA SỔ POPUP (MODAL)
+         * Chức năng: Định dạng cho toàn bộ cửa sổ popup, bao gồm nền mờ, khung chứa video, các nút và thanh tiến trình.
+        */
+        
+        .modal {
+            position: fixed;
+            /* Cố định vị trí của popup so với cửa sổ trình duyệt, kể cả khi cuộn trang. */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Cho popup chiếm toàn bộ màn hình. */
+            background-color: rgba(0, 0, 0, 0.85);
+            /* Tạo lớp nền đen mờ. */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Dùng Flexbox để căn giữa .modal-content. */
+            z-index: 1000;
+            /* Đảm bảo popup luôn nằm trên tất cả các phần tử khác. */
+            opacity: 0;
+            visibility: hidden;
+            /* Mặc định ẩn popup. */
+            transition: opacity var(--transition-speed) ease, visibility var(--transition-speed) ease;
+            /* Hiệu ứng xuất hiện mượt mà. */
+        }
+        
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        /* Khi có class 'show', popup sẽ hiện ra. */
+        
+        .modal-content {
+            position: relative;
+            /* Tạo hệ quy chiếu cho các phần tử con bên trong nó. */
+            display: flex;
+            /* Dùng flex để dễ sắp xếp các phần tử con. */
+            flex-direction: column;
+            /* Sắp xếp các phần tử con theo chiều dọc. */
+            transition: width var(--transition-speed) ease, height var(--transition-speed) ease;
+            /* Hiệu ứng thay đổi kích thước mượt mà khi video được tải. */
+            max-width: 95vw;
+            /* Chiều rộng tối đa bằng 95% chiều rộng màn hình. */
+            max-height: 95vh;
+            /* Chiều cao tối đa bằng 95% chiều cao màn hình. */
+        }
+        
+        #modal-video {
+            width: 100%;
+            height: 100%;
+            /* Video sẽ lấp đầy .modal-content. */
+            border-radius: 15px;
+            /* Bo tròn góc cho video trong popup. */
+            display: block;
+            /* Xóa bỏ khoảng trống thừa bên dưới video. */
+        }
+        
+        .modal-progress-container {
+            position: absolute;
+            /* Đặt vị trí tuyệt đối so với .modal-content. */
+            top: 10px;
+            /* Cách cạnh trên 10px. */
+            width: calc(100% - 30px);
+            /* Chiều rộng bằng 100% trừ đi một chút khoảng đệm. */
+            left: 15px;
+            /* Căn lề trái 15px. */
+            display: flex;
+            /* Dùng flexbox để sắp xếp các đoạn của thanh tiến trình. */
+            gap: 4px;
+            /* Tạo khoảng cách giữa các đoạn. */
+            z-index: 1002;
+            /* Đảm bảo thanh tiến trình nằm trên video. */
+        }
+        
+        .progress-segment {
+            flex: 1;
+            /* Chia đều không gian cho các đoạn của thanh. */
+            height: 3px;
+            /* Chiều cao của thanh. */
+            background-color: rgba(255, 255, 255, 0.4);
+            /* Màu nền của phần chưa chạy. */
+            border-radius: 3px;
+            /* Bo tròn góc. */
+            overflow: hidden;
+            /* Ẩn phần .progress-fill tràn ra ngoài. */
+        }
+        
+        .progress-fill {
+            width: 0%;
+            /* Ban đầu, phần đã chạy có độ rộng là 0. */
+            height: 100%;
+            /* Chiều cao 100%. */
+            background-color: white;
+            /* Màu của phần đã chạy. */
+            border-radius: 3px;
+            /* Bo tròn góc. */
+            transition: width 0.1s linear;
+            /* Hiệu ứng chạy của thanh mượt mà hơn. */
+        }
+        
+        .progress-segment.active .progress-fill {
+            background-color: #ff4500;
+            /* Đổi màu thanh tiến trình của video đang hoạt động. */
+        }
+        /* Style chung cho các nút điều khiển trong popup */
+        
+        .modal-close,
+        .modal-nav {
+            position: absolute;
+            /* Đặt vị trí tuyệt đối so với .modal-content. */
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Nền đen mờ. */
+            color: white;
+            /* Màu icon trắng. */
+            border: none;
+            /* Không có đường viền. */
+            border-radius: 50%;
+            /* Hình tròn. */
+            cursor: pointer;
+            /* Con trỏ hình bàn tay. */
+            z-index: 1001;
+            /* Nằm trên video nhưng dưới thanh tiến trình. */
+            font-size: 20px;
+            width: 40px;
+            height: 40px;
+            /* Kích thước. */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Căn giữa icon bên trong. */
+        }
+        
+        .modal-close {
+            top: 25px;
+            right: 15px;
+        }
+        /* Vị trí nút đóng. */
+        
+        .modal-nav {
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        /* Căn giữa các nút tới/lui theo chiều dọc. */
+        
+        .modal-nav.prev {
+            left: 15px;
+        }
+        /* Vị trí nút lui. */
+        
+        .modal-nav.next {
+            right: 15px;
+        }
+        /* Vị trí nút tới. */
+    </style>
+</head>
+
+<body>
+
+    <div class="page-wrapper">
+        <div class="gallery-container">
+            <ul class="video-gallery">
+            </ul>
+        </div>
+
+        <div id="video-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-progress-container">
+                </div>
+                <video id="modal-video" controls autoplay></video>
+                <button class="modal-close" onclick="closeModal()">×</button>
+                <button class="modal-nav prev" onclick="showPrevVideo()">&#10094;</button>
+                <button class="modal-nav next" onclick="showNextVideo()">&#10095;</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        /*
+         * KHỐI 4.1: KHAI BÁO DỮ LIỆU VÀ CÁC BIẾN TOÀN CỤC
+         * Chức năng: Đây là nơi chứa "bộ não" của gallery. Dữ liệu video được định nghĩa ở đây, giúp việc cập nhật trở nên dễ dàng.
+         * Các biến tham chiếu đến các phần tử HTML cũng được khai báo để tái sử dụng.
+         */
+        const videoLink = "https://stories.join-stories.com/asus-hq/ec4c7026-99a2-4813-b330-f2e863f34f76/story.mp4"; // Khai báo một hằng số chứa link video. Nếu tất cả video giống nhau, chỉ cần thay đổi ở một nơi duy nhất.
+
+        // Khai báo mảng dữ liệu. Mỗi phần tử trong mảng là một object, đại diện cho một video.
+        const videoData = [{
+                thumb: videoLink,
+                full: videoLink,
+                title: "Inside the Box 🔒"
+            }, // Video 1
+            {
+                thumb: videoLink,
+                full: videoLink,
+                title: "Feel the design"
+            }, // Video 2
+            {
+                thumb: videoLink,
+                full: videoLink,
+                title: "Motion Brief ♾️"
+            }, // Video 3
+            {
+                thumb: videoLink,
+                full: videoLink,
+                title: "Watch the film"
+            }, // Video 4
+            {
+                thumb: videoLink,
+                full: videoLink,
+                title: "Styled with Beige 🏃"
+            }, // Video 5
+            {
+                thumb: videoLink,
+                full: videoLink,
+                title: "Cool with Gray 🏃"
+            }, // Video 6
+            {
+                thumb: videoLink,
+                full: videoLink,
+                title: "More Features"
+            } // Video 7
+        ];
+
+        // Lấy và lưu trữ các phần tử HTML quan trọng vào các hằng số để dễ dàng truy cập và thao tác.
+        const gallery = document.querySelector('.video-gallery'); // Tham chiếu đến danh sách <ul> chứa các thumbnail.
+        const modal = document.getElementById('video-modal'); // Tham chiếu đến toàn bộ popup.
+        const modalContent = document.querySelector('.modal-content'); // Tham chiếu đến khung chứa video bên trong popup.
+        const modalVideo = document.getElementById('modal-video'); // Tham chiếu đến thẻ <video> trong popup.
+        const progressContainer = document.querySelector('.modal-progress-container'); // Tham chiếu đến khung chứa thanh tiến trình.
+        const galleryContainer = document.querySelector('.gallery-container'); // Tham chiếu đến khu vực gallery lớn.
+        let currentVideoIndex = 0; // Khai báo một biến (có thể thay đổi) để lưu chỉ số của video đang được xem trong popup.
+
+        /*
+         * KHỐI 4.2: CÁC HÀM CHỨC NĂNG
+         * Chức năng: Các hàm này đóng gói các đoạn code thực hiện các tác vụ cụ thể, giúp code trở nên gọn gàng, dễ đọc và tái sử dụng.
+         */
+
+        /**
+         * Chức năng: Tự động tạo các ô video thumbnail và thanh tiến trình từ mảng videoData.
+         * Hàm này sẽ chạy một lần duy nhất khi trang được tải.
+         */
+        function createGalleryItems() {
+            videoData.forEach((data, index) => { // Lặp qua từng phần tử trong mảng videoData. 'data' là object chứa thông tin video, 'index' là vị trí của nó (0, 1, 2...).
+                // -- Tạo các phần tử cho thumbnail --
+                const item = document.createElement('li'); // Tạo một thẻ <li> mới.
+                item.className = 'gallery-item'; // Gán class CSS 'gallery-item' cho thẻ <li>.
+                item.setAttribute('data-index', index); // Gán một thuộc tính 'data-index' với giá trị là chỉ số của video, để sau này biết được người dùng đã click vào video nào.
+
+                const video = document.createElement('video'); // Tạo một thẻ <video> mới.
+                video.src = data.thumb + '#t=0.5'; // Đặt nguồn video. Thêm '#t=0.5' là một mẹo nhỏ để trình duyệt chỉ tải về một khung hình tại giây thứ 0.5 làm ảnh thumbnail, giúp tiết kiệm băng thông.
+                video.muted = true;
+                video.loop = true;
+                video.playsInline = true;
+                video.preload = "metadata"; // Đặt các thuộc tính cho video: tắt tiếng, lặp lại, phát nội tuyến (trên iOS), và chỉ tải thông tin cơ bản của video ban đầu.
+
+                if (index === 0) {
+                    video.autoplay = true;
+                } // Nếu đây là video đầu tiên, thêm thuộc tính 'autoplay' để nó tự động phát.
+
+                const textOverlay = document.createElement('div'); // Tạo thẻ <div> cho lớp phủ văn bản.
+                textOverlay.className = 'item-overlay'; // Gán class CSS.
+                textOverlay.innerHTML = data.title; // Lấy tiêu đề từ mảng dữ liệu và đặt làm nội dung cho lớp phủ.
+
+                const playButton = document.createElement('div'); // Tạo thẻ <div> cho nút play.
+                playButton.className = 'play-button-overlay'; // Gán class CSS.
+                playButton.innerHTML = `<div class="play-icon"></div><div class="expand-icon"></div>`; // Chèn HTML của hai icon vào bên trong nút play.
+
+                item.append(video, playButton, textOverlay); // Gắn video, nút play và lớp phủ văn bản vào làm con của thẻ <li>.
+                gallery.appendChild(item); // Gắn thẻ <li> hoàn chỉnh vào danh sách <ul> trong HTML.
+
+                // -- Tạo các phần tử cho thanh tiến trình trong popup --
+                const progressSegment = document.createElement('div'); // Tạo một thẻ <div> cho một đoạn của thanh tiến trình.
+                progressSegment.className = 'progress-segment'; // Gán class CSS.
+                progressSegment.innerHTML = `<div class="progress-fill"></div>`; // Chèn phần "fill" (sẽ thay đổi độ rộng) vào bên trong.
+                progressContainer.appendChild(progressSegment); // Gắn đoạn thanh tiến trình vào khung chứa của nó trong popup.
+            });
+        }
+
+        /**
+         * Chức năng: Tự động điều chỉnh kích thước popup cho vừa khít với tỷ lệ của video đang phát.
+         * Hàm này được gọi mỗi khi một video mới được tải trong popup.
+         */
+        function resizeModalToFitVideo() {
+            const videoRatio = modalVideo.videoWidth / modalVideo.videoHeight; // Lấy chiều rộng và chiều cao thực của video để tính tỷ lệ khung hình.
+            const screenHeight = window.innerHeight * 0.95; // Tính 95% chiều cao của cửa sổ trình duyệt.
+            const screenWidth = window.innerWidth * 0.95; // Tính 95% chiều rộng của cửa sổ trình duyệt.
+            let newWidth = screenWidth; // Giả sử chiều rộng mới sẽ bằng chiều rộng màn hình.
+            let newHeight = newWidth / videoRatio; // Tính chiều cao tương ứng dựa trên tỷ lệ.
+            if (newHeight > screenHeight) { // Nếu chiều cao tính được lớn hơn chiều cao màn hình,
+                newHeight = screenHeight; // thì đặt lại chiều cao bằng chiều cao màn hình.
+                newWidth = newHeight * videoRatio; // Và tính lại chiều rộng dựa trên chiều cao mới.
+            }
+            modalContent.style.width = `${newWidth}px`; // Cập nhật style chiều rộng của khung chứa video.
+            modalContent.style.height = `${newHeight}px`; // Cập nhật style chiều cao của khung chứa video.
+        }
+
+        /**
+         * Chức năng: Cập nhật độ rộng của thanh tiến trình tương ứng với thời gian video đã phát.
+         * Hàm này được gọi liên tục khi video đang chạy.
+         */
+        function updateProgressBar() {
+            const percent = (modalVideo.currentTime / modalVideo.duration) * 100; // Tính phần trăm thời gian đã phát = (thời gian hiện tại / tổng thời gian) * 100.
+            const progressFills = document.querySelectorAll('.progress-fill'); // Lấy tất cả các phần tử "fill" của thanh tiến trình.
+            if (progressFills[currentVideoIndex]) { // Kiểm tra xem thanh tiến trình của video hiện tại có tồn tại không.
+                progressFills[currentVideoIndex].style.width = `${percent}%`; // Cập nhật style chiều rộng của nó.
+            }
+        }
+
+        /**
+         * Chức năng: Mở popup và phát video được chọn.
+         * @param {number} index - Chỉ số của video cần mở.
+         */
+        function openModal(index) {
+            currentVideoIndex = index; // Cập nhật biến theo dõi video hiện tại.
+            modalVideo.src = videoData[index].full; // Lấy link video từ mảng dữ liệu và gán vào thẻ <video> trong popup.
+            modal.classList.add('show'); // Thêm class 'show' vào popup để kích hoạt CSS làm nó hiện ra.
+            document.body.style.overflow = 'hidden'; // Ẩn thanh cuộn của trang để người dùng không thể cuộn nền khi popup đang mở.
+
+            // Cập nhật trạng thái của các thanh tiến trình.
+            const segments = document.querySelectorAll('.progress-segment'); // Lấy tất cả các đoạn của thanh tiến trình.
+            segments.forEach((seg, i) => { // Lặp qua từng đoạn.
+                seg.classList.toggle('active', i === index); // Nếu là đoạn của video hiện tại thì thêm class 'active', ngược lại thì xóa.
+                seg.querySelector('.progress-fill').style.width = i < index ? '100%' : '0%'; // Các video đã xem (chỉ số nhỏ hơn) sẽ có thanh tiến trình đầy 100%, các video chưa xem sẽ là 0%.
+            });
+        }
+
+        /**
+         * Chức năng: Đóng cửa sổ popup.
+         */
+        function closeModal() {
+            modal.classList.remove('show'); // Xóa class 'show' để ẩn popup.
+            modalVideo.pause(); // Dừng video đang phát để tiết kiệm tài nguyên.
+            modalVideo.src = ''; // Xóa nguồn video.
+            document.body.style.overflow = 'auto'; // Cho phép thanh cuộn của trang hoạt động trở lại.
+            modalContent.style.width = 'auto'; // Reset lại kích thước của khung video.
+            modalContent.style.height = 'auto';
+        }
+
+        /**
+         * Chức năng: Chuyển đến video tiếp theo trong danh sách.
+         */
+        function showNextVideo() {
+            currentVideoIndex = (currentVideoIndex + 1) % videoData.length; // Tăng chỉ số lên 1. Toán tử % (modulo) giúp nó tự động quay về 0 khi đến video cuối cùng, tạo thành một vòng lặp.
+            openModal(currentVideoIndex); // Gọi hàm mở popup với video mới.
+        }
+
+        /**
+         * Chức năng: Quay lại video trước đó trong danh sách.
+         */
+        function showPrevVideo() {
+            currentVideoIndex = (currentVideoIndex - 1 + videoData.length) % videoData.length; // Giảm chỉ số đi 1. Thêm videoData.length để xử lý trường hợp đang ở video 0 và quay lại video cuối cùng.
+            openModal(currentVideoIndex); // Gọi hàm mở popup với video mới.
+        }
+
+        /*
+         * KHỐI 4.3: LẮNG NGHE SỰ KIỆN (EVENT LISTENERS)
+         * Chức năng: Đây là nơi gắn kết các hành động của người dùng (click, hover, gõ phím) với các hàm chức năng đã định nghĩa ở trên.
+         * Code trong này chỉ chạy sau khi toàn bộ trang HTML đã được trình duyệt tải và phân tích xong.
+         */
+        document.addEventListener('DOMContentLoaded', () => {
+            // Bước 1: Gọi hàm để tạo giao diện gallery từ dữ liệu.
+            createGalleryItems();
+
+            // Bước 2: Lấy ra các phần tử vừa được tạo để có thể gắn sự kiện cho chúng.
+            const items = document.querySelectorAll('.gallery-item'); // Lấy tất cả các ô video thumbnail.
+            const firstVideo = items.length > 0 ? items[0].querySelector('video') : null; // Lấy riêng video đầu tiên để điều khiển việc tự động phát.
+
+            // Bước 3: Gắn sự kiện hover cho các ô video thumbnail (chỉ áp dụng cho màn hình desktop).
+            if (window.innerWidth > 768 && firstVideo) { // Kiểm tra nếu chiều rộng màn hình lớn hơn 768px và video đầu tiên tồn tại.
+                items.forEach(item => { // Lặp qua từng ô video.
+                    const video = item.querySelector('video'); // Lấy thẻ video bên trong ô đó.
+
+                    item.addEventListener('mouseenter', () => { // Gắn sự kiện khi chuột di vào một ô.
+                        firstVideo.pause(); // Lập tức dừng video đầu tiên.
+                        video.play(); // Và phát video của ô đang được trỏ vào.
+                    });
+
+                    item.addEventListener('mouseleave', () => { // Gắn sự kiện khi chuột rời khỏi một ô.
+                        video.pause(); // Dừng video của ô vừa rời khỏi.
+                    });
+                });
+
+                galleryContainer.addEventListener('mouseleave', () => { // Gắn sự kiện khi chuột rời khỏi toàn bộ khu vực gallery.
+                    firstVideo.play(); // Phát lại video đầu tiên.
+                });
+            }
+
+            // Bước 4: Gắn sự kiện click vào khu vực gallery để mở popup.
+            gallery.addEventListener('click', (e) => { // Sử dụng event delegation để tối ưu hiệu suất.
+                const item = e.target.closest('.gallery-item'); // Tìm phần tử cha gần nhất có class 'gallery-item'.
+                if (item) { // Nếu người dùng click vào một ô video (hoặc phần tử con của nó).
+                    const index = parseInt(item.getAttribute('data-index')); // Lấy chỉ số của video đã được lưu trong thuộc tính data-index.
+                    openModal(index); // Gọi hàm mở popup với video tương ứng.
+                }
+            });
+
+            // Bước 5: Gắn các sự kiện cho thẻ video bên trong popup.
+            modalVideo.addEventListener('loadedmetadata', resizeModalToFitVideo); // Khi thông tin (kích thước) của video được tải xong, gọi hàm để điều chỉnh kích thước popup.
+            modalVideo.addEventListener('timeupdate', updateProgressBar); // Khi video đang chạy, liên tục gọi hàm để cập nhật thanh tiến trình.
+            modalVideo.addEventListener('ended', showNextVideo); // Khi video phát xong, tự động gọi hàm để chuyển sang video tiếp theo.
+
+            // Bước 6: Gắn các sự kiện để đóng popup.
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            }); // Nếu người dùng click vào nền mờ (chính là thẻ .modal), thì đóng popup.
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeModal();
+            }); // Nếu người dùng bấm phím 'Escape' trên bàn phím, thì đóng popup.
+        });
+    </script>
+
+</body>
+
+</html>

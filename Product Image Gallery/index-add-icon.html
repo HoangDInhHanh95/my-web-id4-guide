@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thư Viện Ảnh - Hiệu Ứng Liquid Glass</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #fff;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .product-gallery-container {
+            width: 100%;
+            max-width: 650px;
+            text-align: center;
+        }
+        
+        .gallery-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .control-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 44px;
+            height: 44px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            font-size: 18px;
+            color: #333;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+        }
+        
+        .nav-arrows {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .main-image-wrapper {
+            margin-bottom: 25px;
+            cursor: zoom-in;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        #main-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+        
+        .thumbnail-list {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .thumbnail {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: border-color 0.3s ease, transform 0.2s ease;
+            padding: 5px;
+            background-color: transparent;
+        }
+        
+        .thumbnail.active {
+            border-color: #000;
+        }
+        
+        .thumbnail:hover {
+            transform: scale(1.05);
+        }
+        /* --- CẬP NHẬT: HIỆU ỨNG LIQUID GLASS CHO POP-UP --- */
+        
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            inset: 0;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            /* YÊU CẦU MỚI: Thêm lại hiệu ứng Liquid Glass */
+            background-color: rgba(255, 255, 255, 0.5);
+            /* 1. Nền bán trong suốt */
+            -webkit-backdrop-filter: blur(15px);
+            /* 2. Hiệu ứng làm mờ cho Safari */
+            backdrop-filter: blur(15px);
+            /* 3. Hiệu ứng làm mờ tiêu chuẩn */
+        }
+        
+        .lightbox.show {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            font-size: 40px;
+            font-weight: 300;
+            color: #333;
+            cursor: pointer;
+        }
+        /* #lightbox-image {
+            max-width: 90%;
+            max-height: 85%;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+        } */
+        
+        .lightbox-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 24px;
+            color: #333;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, transform 0.3s;
+            user-select: none;
+        }
+        
+        .lightbox-nav-btn:hover {
+            background-color: #fff;
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .lightbox-nav-btn.prev-lightbox {
+            left: 20px;
+        }
+        
+        .lightbox-nav-btn.next-lightbox {
+            right: 20px;
+        }
+        /* --- RESPONSIVE --- */
+        
+        @media (max-width: 768px) {
+            .thumbnail {
+                width: 70px;
+                height: 70px;
+            }
+            .control-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+            .lightbox-close {
+                top: 15px;
+                right: 20px;
+            }
+            .lightbox-nav-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+                left: 10px;
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="product-gallery-container">
+        <div class="gallery-controls">
+            <div id="zoom-icon" class="control-btn">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <div class="nav-arrows">
+                <div id="prev-btn" class="control-btn">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </div>
+                <div id="next-btn" class="control-btn">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-image-wrapper">
+            <img id="main-image" src="" alt="Hình ảnh sản phẩm chính">
+        </div>
+        <div class="thumbnail-list" id="thumbnail-list">
+        </div>
+    </div>
+
+    <div id="my-lightbox" class="lightbox">
+        <span class="lightbox-close" id="lightbox-close">&times;</span>
+        <div class="lightbox-nav-btn prev-lightbox" id="lightbox-prev-btn">
+            <i class="fa-solid fa-chevron-left"></i>
+        </div>
+        <img id="lightbox-image" src="" alt="Hình ảnh phóng to">
+        <div class="lightbox-nav-btn next-lightbox" id="lightbox-next-btn">
+            <i class="fa-solid fa-chevron-right"></i>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const imageSources = [
+                "https://dlcdnwebimgs.asus.com/gain/1f2b04d8-c06a-449e-aed9-18bb5d36b76e/w800",
+                "https://dlcdnwebimgs.asus.com/gain/14c6be57-e7d1-462c-a109-4f93c353d93c/w800",
+                "https://dlcdnwebimgs.asus.com/gain/49f2b866-51d0-424a-b5e1-512133c16828/w800",
+                "https://dlcdnwebimgs.asus.com/gain/306e00f8-c0b1-4191-89d9-c3b01a1c93a0/w800",
+                "https://dlcdnwebimgs.asus.com/gain/53a55e2e-2f22-4217-91a7-0e6e8e888ed4/w800",
+                "https://dlcdnwebimgs.asus.com/gain/b6f84969-a352-4a00-b66c-3f412c2a2b0c/w800"
+            ];
+            let currentImageIndex = 0;
+            const mainImage = document.getElementById('main-image');
+            const thumbnailList = document.getElementById('thumbnail-list');
+            const lightbox = document.getElementById('my-lightbox');
+            const lightboxImage = document.getElementById('lightbox-image');
+            const closeButton = document.getElementById('lightbox-close');
+            const zoomIcon = document.getElementById('zoom-icon');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const lightboxPrevBtn = document.getElementById('lightbox-prev-btn');
+            const lightboxNextBtn = document.getElementById('lightbox-next-btn');
+
+            function generateThumbnails() {
+                thumbnailList.innerHTML = '';
+                imageSources.forEach((src, index) => {
+                    const thumb = document.createElement('img');
+                    thumb.src = src;
+                    thumb.alt = `Ảnh thu nhỏ ${index + 1}`;
+                    thumb.className = 'thumbnail';
+                    thumb.dataset.index = index;
+                    thumbnailList.appendChild(thumb);
+                });
+            }
+
+            function updateMainImage(index) {
+                currentImageIndex = index;
+                mainImage.src = imageSources[currentImageIndex];
+                document.querySelectorAll('.thumbnail').forEach(thumb => {
+                    thumb.classList.toggle('active', parseInt(thumb.dataset.index) === currentImageIndex);
+                });
+            }
+
+            function navigateGallery(direction) {
+                let newIndex = currentImageIndex + direction;
+                if (newIndex < 0) newIndex = imageSources.length - 1;
+                else if (newIndex >= imageSources.length) newIndex = 0;
+                updateMainImage(newIndex);
+            }
+
+            function openLightbox() {
+                lightboxImage.src = imageSources[currentImageIndex];
+                lightbox.classList.add('show');
+            }
+
+            function closeLightbox() {
+                lightbox.classList.remove('show');
+            }
+
+            function navigateLightbox(direction) {
+                let newIndex = currentImageIndex + direction;
+                if (newIndex < 0) newIndex = imageSources.length - 1;
+                else if (newIndex >= imageSources.length) newIndex = 0;
+
+                currentImageIndex = newIndex;
+                lightboxImage.src = imageSources[currentImageIndex];
+                updateMainImage(currentImageIndex);
+            }
+
+            thumbnailList.addEventListener('click', e => {
+                if (e.target.matches('img.thumbnail')) {
+                    updateMainImage(parseInt(e.target.dataset.index));
+                }
+            });
+
+            prevBtn.addEventListener('click', () => navigateGallery(-1));
+            nextBtn.addEventListener('click', () => navigateGallery(1));
+            zoomIcon.addEventListener('click', openLightbox);
+            mainImage.addEventListener('click', openLightbox);
+            closeButton.addEventListener('click', closeLightbox);
+            lightbox.addEventListener('click', e => (e.target === lightbox) && closeLightbox());
+            document.addEventListener('keydown', e => (e.key === "Escape") && closeLightbox());
+
+            lightboxPrevBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                navigateLightbox(-1);
+            });
+            lightboxNextBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                navigateLightbox(1);
+            });
+
+            generateThumbnails();
+            updateMainImage(0);
+        });
+    </script>
+</body>
+
+</html>

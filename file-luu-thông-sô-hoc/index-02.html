@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Component Đếm Số Tự Động</title>
+
+    <style>
+        /* --- CÀI ĐẶT CHUNG --- */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        /* --- COMPONENT CHÍNH --- */
+        
+        .id4-chi-so {
+            /* Font chữ được chuyển từ body vào đây để component tự quản lý */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            width: 100%;
+            background-color: #e9efff;
+            /* Màu nền xanh nhạt */
+            padding: 60px 20px;
+            text-align: center;
+        }
+        
+        .id4-chi-so__container {
+            display: flex;
+            justify-content: space-around;
+            /* Dàn đều các mục */
+            align-items: center;
+            flex-wrap: wrap;
+            /* Cho phép xuống dòng trên mobile */
+            gap: 20px;
+            /* Khoảng cách giữa các mục */
+            max-width: 1200px;
+            /* Giới hạn chiều rộng tối đa */
+            margin: 0 auto;
+            /* Căn giữa container */
+        }
+        
+        .id4-chi-so__item {
+            flex: 1;
+            /* Các mục sẽ tự chia đều không gian */
+            min-width: 200px;
+            /* Chiều rộng tối thiểu để không bị quá hẹp */
+            padding: 20px;
+        }
+        
+        .id4-chi-so__number {
+            font-size: 5rem;
+            /* Kích thước số rất lớn */
+            font-weight: 700;
+            /* In đậm */
+            color: #1e3a8a;
+            /* Màu xanh đậm */
+            display: block;
+            /* Hiển thị trên một dòng riêng */
+            margin-bottom: 8px;
+            /* Khoảng cách với chữ bên dưới */
+        }
+        
+        .id4-chi-so__label {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #1e3a8a;
+            text-transform: uppercase;
+            /* In hoa chữ */
+            letter-spacing: 0.5px;
+            line-height: 1.5;
+            /* Thêm line-height để các dòng không bị dính vào nhau */
+        }
+        /* --- RESPONSIVE CHO TABLET --- */
+        
+        @media (max-width: 992px) {
+            .id4-chi-so__container {
+                /* Trên tablet, hiển thị 2 cột */
+                justify-content: center;
+                gap: 30px;
+            }
+            .id4-chi-so__item {
+                flex-basis: 40%;
+                /* Mỗi mục chiếm khoảng 40% chiều rộng */
+            }
+            .id4-chi-so__number {
+                font-size: 4.5rem;
+            }
+        }
+        /* --- RESPONSIVE CHO MOBILE --- */
+        
+        @media (max-width: 576px) {
+            .id4-chi-so {
+                padding: 40px 15px;
+            }
+            .id4-chi-so__container {
+                /* Trên mobile, hiển thị 1 cột */
+                flex-direction: column;
+                gap: 20px;
+            }
+            .id4-chi-so__item {
+                flex-basis: 100%;
+                /* Mỗi mục chiếm toàn bộ chiều rộng */
+                padding: 10px;
+            }
+            .id4-chi-so__number {
+                font-size: 3.5rem;
+            }
+            .id4-chi-so__label {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <section class="id4-chi-so">
+        <div class="id4-chi-so__container">
+            <div class="id4-chi-so__item">
+                <span class="id4-chi-so__number" data-target="10">0</span>
+                <p class="id4-chi-so__label">Kỹ thuật viên Labo</p>
+            </div>
+            <div class="id4-chi-so__item">
+                <span class="id4-chi-so__number" data-target="30">0</span>
+                <p class="id4-chi-so__label">Năm kinh nghiệm</p>
+            </div>
+            <div class="id4-chi-so__item">
+                <span class="id4-chi-so__number" data-target="500">0</span>
+                <p class="id4-chi-so__label">Học viên đã<br>được đào tạo</p>
+            </div>
+            <div class="id4-chi-so__item">
+                <span class="id4-chi-so__number" data-target="600">0</span>
+                <p class="id4-chi-so__label">Khách hàng<br>hài lòng</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            /**
+             * Hàm thực hiện hiệu ứng đếm số
+             * @param {HTMLElement} element - Phần tử span chứa con số
+             * @param {number} duration - Thời gian hoàn thành hiệu ứng (ms)
+             */
+            function animateCounter(element, duration = 2000) {
+                const target = +element.getAttribute('data-target');
+                let current = 0;
+                const increment = target / (duration / 16); // Tính toán mức tăng cho mỗi khung hình (khoảng 60fps)
+
+                const updateCounter = () => {
+                    current += increment;
+                    if (current < target) {
+                        element.innerText = Math.ceil(current).toLocaleString('en-US'); // làm tròn lên và định dạng số
+                        requestAnimationFrame(updateCounter); // Gọi lại hàm ở khung hình tiếp theo
+                    } else {
+                        element.innerText = target.toLocaleString('en-US'); // Đảm bảo số cuối cùng chính xác
+                    }
+                };
+
+                requestAnimationFrame(updateCounter);
+            }
+
+            // Sử dụng Intersection Observer để chỉ kích hoạt hiệu ứng khi người dùng cuộn tới
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    // Nếu component xuất hiện trong màn hình
+                    if (entry.isIntersecting) {
+                        const counters = entry.target.querySelectorAll('.id4-chi-so__number');
+                        counters.forEach(counter => animateCounter(counter));
+
+                        // Ngừng theo dõi sau khi đã kích hoạt để tiết kiệm tài nguyên
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1 // Kích hoạt khi 10% component được nhìn thấy
+            });
+
+            // Bắt đầu theo dõi component
+            const counterSection = document.querySelector('.id4-chi-so');
+            if (counterSection) {
+                observer.observe(counterSection);
+            }
+        });
+    </script>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+<section class="id4-guide-cg-noi-gi-testimonials-section">
+    <h2 class="id4-guide-cg-noi-gi-testimonials-section__title">Chuyên gia nói gì về ID-4 Solution</h2>
+
+    <div class="id4-guide-cg-noi-gi-testimonials-section__container">
+        <div class="id4-guide-cg-noi-gi-testimonial-slider">
+            <div class="id4-guide-cg-noi-gi-testimonials-section__grid">
+                <div class="id4-guide-cg-noi-gi-testimonial-item">
+                    <div class="id4-guide-cg-noi-gi-testimonial-item__card">
+                        <div class="id4-guide-cg-noi-gi-testimonial-item__quote-icon"></div>
+                        <p class="id4-guide-cg-noi-gi-testimonial-item__text">Tôi đã sử dụng hệ thống màng hướng dẫn phẫu thuật của trung tâm ID4 từ năm 2020 cho đến nay và vô cùng hài lòng với chất lượng của sản phẩm. Nhờ hệ thống màng hướng dẫn chính xác, việc thực hiện các ca phẫu thuật cấy ghép Implant
+                            đã trở nên nhanh chóng và an toàn hơn rất nhiều.</p>
+                    </div>
+                    <div class="id4-guide-cg-noi-gi-testimonial-item__author">
+                        <img src="https://placehold.co/100x100/E9EFFF/3B82F6" alt="Bác sĩ Xuân" class="id4-guide-cg-noi-gi-testimonial-item__avatar">
+                        <p class="id4-guide-cg-noi-gi-testimonial-item__name">Bác sĩ Xuân</p>
+                    </div>
+                </div>
+                <div class="id4-guide-cg-noi-gi-testimonial-item">
+                    <div class="id4-guide-cg-noi-gi-testimonial-item__card">
+                        <div class="id4-guide-cg-noi-gi-testimonial-item__quote-icon"></div>
+                        <p class="id4-guide-cg-noi-gi-testimonial-item__text">Chất lượng sản phẩm vượt trội, dịch vụ hỗ trợ của ID4 Solution rất chuyên nghiệp. Tôi hoàn toàn tin tưởng khi giới thiệu cho các đồng nghiệp của mình. Các ca cấy ghép phức tạp trở nên đơn giản hơn rất nhiều.</p>
+                    </div>
+                    <div class="id4-guide-cg-noi-gi-testimonial-item__author">
+                        <img src="https://placehold.co/100x100/E9EFFF/3B82F6" alt="Bác sĩ An" class="id4-guide-cg-noi-gi-testimonial-item__avatar">
+                        <p class="id4-guide-cg-noi-gi-testimonial-item__name">Bác sĩ An</p>
+                    </div>
+                </div>
+                <div class="id4-guide-cg-noi-gi-testimonial-item">
+                    <div class="id4-guide-cg-noi-gi-testimonial-item__card">
+                        <div class="id4-guide-cg-noi-gi-testimonial-item__quote-icon"></div>
+                        <p class="id4-guide-cg-noi-gi-testimonial-item__text">Hệ thống màng hướng dẫn phẫu thuật của ID4 không chỉ chính xác mà còn giúp rút ngắn đáng kể thời gian phẫu thuật, mang lại sự thoải mái tối đa cho bệnh nhân. Đây là một bước tiến lớn trong ngành.</p>
+                    </div>
+                    <div class="id4-guide-cg-noi-gi-testimonial-item__author">
+                        <img src="https://placehold.co/100x100/E9EFFF/3B82F6" alt="Bác sĩ Minh" class="id4-guide-cg-noi-gi-testimonial-item__avatar">
+                        <p class="id4-guide-cg-noi-gi-testimonial-item__name">Bác sĩ Minh</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="id4-guide-cg-noi-gi-slider-controls">
+            <button class="id4-guide-cg-noi-gi-slider-btn id4-guide-cg-noi-gi-prev" aria-label="Previous testimonial">&#8249;</button>
+            <div class="id4-guide-cg-noi-gi-slider-pagination"></div>
+            <button class="id4-guide-cg-noi-gi-slider-btn id4-guide-cg-noi-gi-next" aria-label="Next testimonial">&#8250;</button>
+        </div>
+    </div>
+</section>

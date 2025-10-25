@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Cards — ID-4 Stackable Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1: #16171a;
+            --bg-2: #2b2d31;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --muted: #cfcfcf;
+            --accent: #2f80ed;
+            --accent-dark: #2b6fd7
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: Inter, system-ui, Segoe UI, Roboto, "Helvetica Neue", Arial;
+            color: #eef0f2
+        }
+
+        body {
+            background: radial-gradient(1200px 600px at 10% 10%, rgba(80, 90, 100, 0.08), transparent 6%), radial-gradient(900px 500px at 90% 90%, rgba(20, 30, 40, 0.08), transparent 8%), linear-gradient(180deg, var(--bg-1), var(--bg-2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 48px;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-attachment: fixed;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 14px 14px;
+            opacity: 0.6;
+            mix-blend-mode: overlay;
+            pointer-events: none;
+        }
+
+        .wrap {
+            width: 1100px;
+            max-width: calc(100% - 48px)
+        }
+
+        .cards-header {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 28px;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6)
+        }
+
+        .cards-header h2 {
+            margin: 0;
+            font-size: 20px;
+            letter-spacing: 1px;
+            opacity: 0.95;
+            font-weight: 600
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px
+        }
+
+        @media (max-width:960px) {
+            .cards {
+                grid-template-columns: repeat(2, 1fr)
+            }
+        }
+
+        /* mobile carousel */
+
+        @media (max-width:640px) {
+            .wrap {
+                max-width: 100%;
+                padding: 18px 12px
+            }
+
+            .cards {
+                display: flex;
+                flex-direction: row;
+                gap: 16px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scroll-snap-type: x mandatory;
+                padding-bottom: 8px;
+                scroll-behavior: smooth
+            }
+
+            .cards.dragging {
+                cursor: grabbing
+            }
+
+            .cards::-webkit-scrollbar {
+                display: none
+            }
+
+            .card {
+                min-width: 84%;
+                max-width: 84%;
+                scroll-snap-align: center
+            }
+
+            .dots {
+                display: flex;
+                gap: 8px;
+                justify-content: center;
+                margin-top: 12px
+            }
+
+            .dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 999px;
+                background: rgba(255, 255, 255, 0.18);
+                cursor: pointer;
+                transition: transform .18s, background .18s, opacity .18s;
+                border: none;
+                padding: 0
+            }
+
+            .dot.active {
+                background: white;
+                transform: scale(1.3);
+                opacity: 1;
+                box-shadow: 0 6px 14px rgba(0, 0, 0, 0.45)
+            }
+        }
+
+        @media (min-width:641px) {
+            .dots {
+                display: none
+            }
+        }
+
+        .card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 1px 0 rgba(255, 255, 255, 0.02) inset, 0 6px 22px rgba(2, 6, 12, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: transform .28s cubic-bezier(.2, .9, .2, 1), box-shadow .28s;
+            position: relative;
+            overflow: visible;
+            min-height: 360px
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 18px 50px rgba(2, 6, 12, 0.65), 0 2px 0 rgba(255, 255, 255, 0.02) inset
+        }
+
+        .card-media {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+            padding: 8px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6), 0 1px 0 rgba(255, 255, 255, 0.02) inset;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .card-media img {
+            width: 100%;
+            max-width: 240px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+            filter: contrast(1.02);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+            border: 6px solid rgba(255, 255, 255, 0.03);
+            background: #fff
+        }
+
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            color: var(--muted);
+            flex: 1
+        }
+
+        .card-title {
+            color: #fff;
+            font-weight: 600;
+            font-size: 15px;
+            margin: 0 0 2px 0;
+            letter-spacing: 0.2px
+        }
+
+        .card-desc {
+            font-size: 12px;
+            line-height: 1.45;
+            color: rgba(237, 241, 244, 0.82);
+            margin: 0;
+            opacity: 0.95;
+            text-align: left;
+            max-height: 110px;
+            overflow: hidden
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: auto
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+            color: white;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+            text-decoration: none;
+            box-shadow: 0 6px 18px rgba(47, 128, 237, 0.18), 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+            border: 1px solid rgba(255, 255, 255, 0.06)
+        }
+
+        .btn small {
+            background: rgba(0, 0, 0, 0.12);
+            border-radius: 8px;
+            padding: 4px 6px;
+            font-weight: 600;
+            font-size: 11px
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            left: 12px;
+            top: 12px;
+            width: calc(100% - 24px);
+            height: calc(100% - 24px);
+            border-radius: 10px;
+            pointer-events: none;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.015) inset;
+            mix-blend-mode: overlay;
+            opacity: 0.75
+        }
+
+        .card-desc p {
+            margin: 0
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="cards-header">
+            <h2>CÁC BƯỚC SỬ DỤNG — ID-4 STACKABLE GUIDE</h2>
+        </div>
+
+        <div class="cards" role="list" aria-label="Danh sách câu chuyện">
+            <article class="card" role="listitem">
+                <div class="card-media"><img src="https://picsum.photos/seed/patient1/400/300" alt=""></div>
+                <div class="card-body">
+                    <h3 class="card-title">Câu chuyện của Cô Hoan</h3>
+                    <div class="card-desc">
+                        <p>Giải pháp ID-4 Stackable Guide giúp bác sĩ thực hiện cấy ghép chính xác theo kế hoạch 3D,
+                            giảm đau, hạn chế thời gian phẫu thuật và giữ nụ cười tự tin trở lại.</p>
+                    </div>
+                    <div class="card-footer"><a class="btn" href="#" aria-label="Xem thêm"><svg width="14" height="14"
+                                viewBox="0 0 24 24" fill="none" style="display:block">
+                                <path d="M5 12h14" stroke="white" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                                <path d="M13 6l6 6-6 6" stroke="white" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg><span>Xem thêm</span></a>
+                        <small style="color:rgba(255,255,255,0.55);font-size:12px">Giải pháp</small>
+                    </div>
+                </div>
+            </article>
+
+            <article class="card" role="listitem">
+                <div class="card-media"><img src="https://picsum.photos/seed/patient2/400/300" alt=""></div>
+                <div class="card-body">
+                    <h3 class="card-title">Câu chuyện của Cô Hoan</h3>
+                    <div class="card-desc">
+                        <p>Giải pháp giúp phẫu thuật viên đạt độ chính xác cao, rút ngắn thời gian và giảm sang chấn cho
+                            bệnh nhân.</p>
+                    </div>
+                    <div class="card-footer"><a class="btn" href="#">Xem thêm</a><small
+                            style="color:rgba(255,255,255,0.55);font-size:12px">Tư vấn</small></div>
+                </div>
+            </article>
+
+            <article class="card" role="listitem">
+                <div class="card-media"><img src="https://picsum.photos/seed/patient3/400/300" alt=""></div>
+                <div class="card-body">
+                    <h3 class="card-title">Câu chuyện của Cô Hoan</h3>
+                    <div class="card-desc">
+                        <p>Máng hướng dẫn phẫu thuật thiết kế 3D dựa trên CT Conebeam và dấu hàm cá thể.</p>
+                    </div>
+                    <div class="card-footer"><a class="btn" href="#">Xem thêm</a><small
+                            style="color:rgba(255,255,255,0.55);font-size:12px">Chi tiết</small></div>
+                </div>
+            </article>
+        </div>
+
+        <div class="dots" aria-hidden="false"></div>
+    </div>
+
+    <script>
+        (function () {
+            const slider = document.querySelector('.cards');
+            if (!slider) return;
+            const dotsContainer = document.querySelector('.dots');
+
+            // initial cards (original set)
+            const originalCards = Array.from(slider.querySelectorAll('.card'));
+            const originalCount = originalCards.length;
+
+            // mobile-only continuous autoplay: clone originals once to allow seamless loop
+            function isMobile() {
+                return window.matchMedia('(max-width:640px)').matches;
+            }
+
+            // create dots for originals
+            function createDots() {
+                if (!dotsContainer) return;
+                dotsContainer.innerHTML = '';
+                for (let i = 0; i < originalCount; i++) {
+                    const b = document.createElement('button');
+                    b.className = 'dot';
+                    b.type = 'button';
+                    b.setAttribute('aria-label', 'Chuyển tới slide ' + (i + 1));
+                    b.addEventListener('click', () => {
+                        // scroll to original index (mod loop)
+                        scrollToIndex(i);
+                        pause();
+                        resumeAfterDelay();
+                    });
+                    dotsContainer.appendChild(b);
+                }
+                updateActiveDot();
+            }
+
+            // after cloning keep reference to originals and compute original width
+            let originals = originalCards.slice();
+
+            function computeOriginalWidth() {
+                return originals.reduce((sum, c) => sum + c.offsetWidth + 16 /* gap */, -16); // subtract last added gap
+            }
+
+            // clone originals to enable seamless loop
+            function ensureCloned() {
+                // remove existing clones first (keep only first originalCount children)
+                const children = Array.from(slider.children);
+                children.forEach((ch, idx) => {
+                    if (idx >= originalCount) ch.remove();
+                });
+                originals = Array.from(slider.querySelectorAll('.card')).slice(0, originalCount);
+                // append clones
+                originals.forEach(c => slider.appendChild(c.cloneNode(true)));
+            }
+
+            // scroll helper: center nth original card
+            function scrollToIndex(i) {
+                const card = originals[i];
+                if (!card) return;
+                const left = card.offsetLeft - (slider.clientWidth - card.offsetWidth) / 2;
+                slider.scrollTo({
+                    left,
+                    behavior: 'smooth'
+                });
+            }
+
+            // dot active update: consider only original cards
+            function updateActiveDot() {
+                if (!dotsContainer) return;
+                const dots = Array.from(dotsContainer.children);
+                const center = slider.scrollLeft + slider.clientWidth / 2;
+                let closest = 0,
+                    minDist = Infinity;
+                originals.forEach((card, i) => {
+                    const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+                    const dist = Math.abs(cardCenter - center);
+                    if (dist < minDist) {
+                        minDist = dist;
+                        closest = i;
+                    }
+                });
+                dots.forEach((d, idx) => d.classList.toggle('active', idx === closest));
+            }
+
+            // continuous auto-scroll using requestAnimationFrame (seamless loop)
+            let rafId = null;
+            let lastTime = null;
+            const pxPerSecond = 60; // speed
+            let paused = false;
+            let originalWidth = 0;
+
+            function step(t) {
+                if (paused) {
+                    lastTime = t;
+                    rafId = requestAnimationFrame(step);
+                    return;
+                }
+                if (lastTime == null) lastTime = t;
+                const dt = (t - lastTime) / 1000;
+                lastTime = t;
+                const delta = pxPerSecond * dt;
+                slider.scrollLeft += delta;
+
+                // when passed the originalWidth, wrap back by subtracting originalWidth
+                if (slider.scrollLeft >= originalWidth) {
+                    slider.scrollLeft -= originalWidth;
+                }
+
+                updateActiveDot();
+                rafId = requestAnimationFrame(step);
+            }
+
+            function start() {
+                if (!isMobile()) return;
+                cancel();
+                ensureCloned();
+                // recompute after layout
+                requestAnimationFrame(() => {
+                    originals = Array.from(slider.querySelectorAll('.card')).slice(0, originalCount);
+                    originalWidth = originals.reduce((sum, c) => sum + c.offsetWidth + 16, -16);
+                    // place initial scroll somewhere inside first copy (to avoid visual jump)
+                    if (slider.scrollLeft >= originalWidth) slider.scrollLeft = slider.scrollLeft % originalWidth;
+                    paused = false;
+                    lastTime = null;
+                    rafId = requestAnimationFrame(step);
+                });
+            }
+
+            function cancel() {
+                if (rafId) cancelAnimationFrame(rafId);
+                rafId = null;
+                lastTime = null;
+            }
+
+            function stop() {
+                cancel();
+                paused = true;
+            }
+
+            function pause() {
+                paused = true;
+            }
+
+            function resume() {
+                paused = false;
+                lastTime = null;
+                if (!rafId) rafId = requestAnimationFrame(step);
+            }
+
+            let resumeTimeout = null;
+
+            function resumeAfterDelay(delay = 1600) {
+                if (resumeTimeout) clearTimeout(resumeTimeout);
+                resumeTimeout = setTimeout(() => resume(), delay);
+            }
+
+            // pointer interaction: pause while user drags, allow swipe (native) + resume
+            let pointerDown = false;
+            slider.addEventListener('pointerdown', e => {
+                if (!isMobile()) return;
+                pointerDown = true;
+                pause();
+                slider.setPointerCapture(e.pointerId);
+            });
+            slider.addEventListener('pointerup', e => {
+                if (!isMobile()) return;
+                pointerDown = false;
+                resumeAfterDelay(900);
+            });
+            slider.addEventListener('pointercancel', () => {
+                if (!isMobile()) return;
+                pointerDown = false;
+                resumeAfterDelay(900);
+            });
+
+            // also pause on touchstart/mouseenter for UX
+            slider.addEventListener('touchstart', () => {
+                if (isMobile()) pause();
+            }, {
+                passive: true
+            });
+            slider.addEventListener('touchend', () => {
+                if (isMobile()) resumeAfterDelay(900);
+            }, {
+                passive: true
+            });
+            slider.addEventListener('mouseenter', () => {
+                if (isMobile()) pause();
+            });
+            slider.addEventListener('mouseleave', () => {
+                if (isMobile()) resumeAfterDelay(900);
+            });
+
+            // update dots while user scrolls (throttle via RAF)
+            let rafScroll = null;
+            slider.addEventListener('scroll', () => {
+                if (rafScroll) cancelAnimationFrame(rafScroll);
+                rafScroll = requestAnimationFrame(() => {
+                    updateActiveDot();
+                    rafScroll = null;
+                });
+            });
+
+            // init and respond to resize / orientation change
+            function init() {
+                createDots();
+                if (isMobile()) start();
+            }
+            window.addEventListener('resize', () => {
+                createDots();
+                if (isMobile()) start();
+                else {
+                    cancel(); /* remove clones */
+                }
+            });
+            // orientation change also
+            window.addEventListener('orientationchange', () => {
+                setTimeout(() => {
+                    createDots();
+                    if (isMobile()) start();
+                    else cancel();
+                }, 200);
+            });
+
+            // run
+            init();
+
+        })();
+    </script>
+</body>
+
+</html>

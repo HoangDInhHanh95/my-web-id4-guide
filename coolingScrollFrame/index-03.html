@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Coolingscrollframe - Final Version</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        .section-before,
+        .section-after {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 2rem;
+            padding: 20px;
+        }
+        
+        .section-before h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .section-after h2 {
+            font-size: 3rem;
+        }
+        
+        .pin-container {
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5%;
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .panel-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 40px;
+            width: 100%;
+            max-width: 900px;
+        }
+        
+        .image-content {
+            width: 100%;
+        }
+        
+        .panel img {
+            max-width: 100%;
+            max-height: 45vh;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .panel h2 {
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .panel p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            opacity: 0.8;
+            max-width: 650px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 1024px) {
+            .section-before h2,
+            .section-after h2 {
+                font-size: 2.5rem;
+            }
+            .panel h2 {
+                font-size: 2.2rem;
+            }
+            .panel p {
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .section-before h2,
+            .section-after h2 {
+                font-size: 2rem;
+            }
+            .panel h2 {
+                font-size: 1.8rem;
+            }
+            .panel-content {
+                gap: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <section class="section-before">
+        <h2>Bắt đầu Demo</h2>
+        <p>Cuộn xuống để trải nghiệm hiệu ứng</p>
+    </section>
+
+    <div class="pin-container">
+        <section class="panel">
+            <div class="panel-content">
+                <div class="text-content">
+                    <h2>Hiệu Năng Vượt Trội</h2>
+                    <p>Trang bị bộ xử lý AMD Ryzen™ AI 9 mới nhất, sẵn sàng cho mọi tác vụ từ gaming cường độ cao đến các ứng dụng AI sáng tạo.</p>
+                </div>
+                <div class="image-content">
+                    <img src="https://dlcdnwebimgs.asus.com/files/media/ffe21fc5-81ba-48f2-b1f8-99f5886a3711/v1/images/large/1x/cooling_8.webp" alt="Hệ thống tản nhiệt">
+                </div>
+            </div>
+        </section>
+        <section class="panel">
+            <div class="panel-content">
+                <div class="text-content">
+                    <h2>Màn Hình Nebula Sắc Nét</h2>
+                    <p>Trải nghiệm hình ảnh sống động trên màn hình 14 inch 2.5K 165Hz với công nghệ G-SYNC cho chuyển động mượt mà tuyệt đối.</p>
+                </div>
+                <div class="image-content">
+                    <img src="https://dlcdnwebimgs.asus.com/files/media/ffe21fc5-81ba-48f2-b1f8-99f5886a3711/v1/images/large/1x/cooling_8.webp" alt="Hệ thống tản nhiệt">
+                </div>
+            </div>
+        </section>
+        <section class="panel">
+            <div class="panel-content">
+                <div class="text-content">
+                    <h2>Bàn Phím Chính Xác</h2>
+                    <p>Bàn phím kích thước đầy đủ với hành trình phím 1.7mm và các phím nóng chuyên dụng, giúp điều khiển dễ dàng và chính xác.</p>
+                </div>
+                <div class="image-content">
+                    <img src="https://dlcdnwebimgs.asus.com/files/media/ffe21fc5-81ba-48f2-b1f8-99f5886a3711/v1/images/large/1x/cooling_8.webp" alt="Hệ thống tản nhiệt">
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <section class="section-after">
+        <h2>Kết thúc Demo</h2>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        const panels = gsap.utils.toArray(".panel");
+
+        // Tạo một timeline để điều khiển chuỗi hoạt ảnh
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: ".pin-container",
+                pin: true, // Quan trọng: Ghim chặt container, giải quyết lỗi "chạy nền"
+                scrub: 1, // Liên kết mượt mà với thanh cuộn
+                snap: {
+                    snapTo: 1 / (panels.length - 1), // Chốt vào đầu mỗi keyframe
+                    duration: {
+                        min: 0.2,
+                        max: 0.5
+                    },
+                    ease: "power1.inOut"
+                },
+                // Tạo không gian cuộn đủ dài để xem hết các slide
+                // Mỗi slide tương ứng với một khoảng scroll bằng chiều cao màn hình
+                end: () => "+=" + (panels.length - 1) * window.innerHeight
+            }
+        });
+
+        // Xây dựng chuỗi hoạt ảnh Fade In / Fade Out cho từng panel
+        panels.forEach((panel, i) => {
+            // Panel đầu tiên chỉ cần Fade In
+            if (i === 0) {
+                // Đặt panel đầu tiên là visible ngay từ đầu
+                gsap.set(panel, {
+                    autoAlpha: 1
+                });
+            }
+            // Các panel sau sẽ Fade In khi đến lượt
+            else {
+                tl.to(panel, {
+                    autoAlpha: 1,
+                    duration: 0.5
+                });
+            }
+
+            // Panel không phải cuối cùng sẽ Fade Out để nhường chỗ
+            if (i < panels.length - 1) {
+                // Giữ panel hiển thị trong một khoảng thời gian trước khi mờ đi
+                tl.to(panel, {
+                    autoAlpha: 0,
+                    duration: 0.5
+                }, "+=1");
+            }
+        });
+    </script>
+</body>
+
+</html>

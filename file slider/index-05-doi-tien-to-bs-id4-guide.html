@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID4 BS Guide Component</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <style>
+        /* CSS được gói gọn trong class cha "id4-bs-guide" */
+        
+        .id4-bs-guide {
+            --progress-bar-color: #333;
+            --inactive-bar-color: #d8d8d8;
+            --control-icon-color: #a0a0a0;
+            --progress-scale: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            padding: 40px 0;
+            width: 100%;
+            overflow-x: hidden;
+        }
+        /* Container chính của Swiper */
+        
+        .id4-bs-guide__swiper {
+            width: 100%;
+            padding: 40px 0;
+        }
+        
+        .id4-bs-guide .swiper-wrapper {
+            will-change: transform;
+        }
+        /* Từng slide */
+        
+        .id4-bs-guide .swiper-slide {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            width: 88%;
+            max-width: 950px;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            will-change: transform;
+        }
+        
+        .id4-bs-guide__slide-inner {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 40px 60px;
+            box-sizing: border-box;
+        }
+        
+        .id4-bs-guide__slide-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .id4-bs-guide__tag {
+            font-size: 14px;
+            font-weight: 600;
+            color: #888;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        
+        .id4-bs-guide__slide-content h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #111;
+            margin: 0 0 16px 0;
+            line-height: 1.2;
+        }
+        
+        .id4-bs-guide__slide-content p {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.6;
+            margin: 0;
+        }
+        
+        .id4-bs-guide__slide-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .id4-bs-guide__slide-image img {
+            max-width: 100%;
+            height: auto;
+            max-height: 350px;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+        
+        .id4-bs-guide__controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .id4-bs-guide__pagination.swiper-pagination-bullets {
+            position: static;
+            display: flex;
+            gap: 6px;
+            width: auto;
+        }
+        
+        .id4-bs-guide__pagination .swiper-pagination-bullet {
+            width: 32px;
+            height: 6px;
+            border-radius: 3px;
+            background-color: var(--inactive-bar-color);
+            opacity: 1;
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.3s;
+        }
+        
+        .id4-bs-guide__pagination .swiper-pagination-bullet-active {
+            background-color: var(--inactive-bar-color);
+        }
+        
+        .id4-bs-guide__pagination .swiper-pagination-bullet-active::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--progress-bar-color);
+            transform-origin: left;
+            transform: scaleX(var(--progress-scale));
+            transition: transform 0.1s linear;
+        }
+        
+        .id4-bs-guide__autoplay-control {
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--control-icon-color);
+        }
+        
+        .id4-bs-guide__autoplay-control .id4-bs-guide__icon {
+            display: none;
+        }
+        
+        .id4-bs-guide__autoplay-control.playing .id4-bs-guide__icon--pause {
+            display: block;
+        }
+        
+        .id4-bs-guide__autoplay-control.paused .id4-bs-guide__icon--play {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .id4-bs-guide .swiper-slide {
+                width: 90%;
+            }
+            .id4-bs-guide__slide-inner {
+                flex-direction: column;
+                padding: 30px;
+                text-align: center;
+            }
+            .id4-bs-guide__slide-image {
+                margin-top: 30px;
+                order: -1;
+            }
+            .id4-bs-guide__slide-content h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="id4-bs-guide">
+        <div class="id4-bs-guide__swiper swiper">
+            <div class="swiper-wrapper"></div>
+        </div>
+
+        <div class="id4-bs-guide__controls">
+            <div class="id4-bs-guide__pagination swiper-pagination"></div>
+            <div class="id4-bs-guide__autoplay-control playing" role="button" aria-label="Pause autoplay">
+                <svg class="id4-bs-guide__icon id4-bs-guide__icon--pause" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M5.5 3.5h1.5v9H5.5v-9zm3.5 0h1.5v9H9v-9z" />
+                </svg>
+                <svg class="id4-bs-guide__icon id4-bs-guide__icon--play" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path
+                        d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script>
+        function initId4BsGuide() {
+            const container = document.querySelector('.id4-bs-guide');
+            if (!container) return;
+
+            const slideData = [{
+                tag: "Giám đốc trung tâm",
+                title: "ThS.BS. Lê Văn Điềm",
+                paragraph: "Tốt nghiệp Đại học Y Dược TP. HCM, với 20 năm kinh nghiệm trong vực chẩn đoán và điều trị các ca phẫu thuật nha khoa thẩm mỹ, cấy ghép implant, vi phẫu thuật và tổ chức các lớp đào tạo chuyên sâu.",
+                imageUrl: "https://images.unsplash.com/photo-1629425733761-caae3b5f2e50?q=80&w=1974&auto=format&fit=crop"
+            }, {
+                tag: "Chuyên môn",
+                title: "Phẫu thuật & Cấy ghép",
+                paragraph: "Tham gia nhiều chương trình báo cáo chuyên đề về nha khoa thẩm mỹ, phẫu thuật cấy ghép implant, tổ chức các lớp học chuyên sâu.",
+                imageUrl: "https://images.unsplash.com/photo-1588776814546-da6316ac9478?q=80&w=1974&auto=format&fit=crop"
+            }, {
+                tag: "Kinh nghiệm",
+                title: "20 năm trong ngành",
+                paragraph: "Với kinh nghiệm dày dặn, ThS.BS. Lê Văn Điềm đã thành công trong việc điều trị các loại hình nha khoa khó, cấy ghép implant, và vi phẫu thuật tổng quát.",
+                imageUrl: "https://images.unsplash.com/photo-1606306913336-39d6435c6353?q=80&w=1974&auto=format&fit=crop"
+            }];
+
+            const swiperWrapper = container.querySelector('.swiper-wrapper');
+
+            const slidesHTML = slideData.map(data => `
+                <div class="swiper-slide">
+                    <div class="id4-bs-guide__slide-inner">
+                        <div class="id4-bs-guide__slide-content">
+                            <div class="id4-bs-guide__tag">${data.tag}</div>
+                            <h2>${data.title}</h2>
+                            <p>${data.paragraph}</p>
+                        </div>
+                        <div class="id4-bs-guide__slide-image">
+                            <img src="${data.imageUrl}" alt="${data.title}">
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            swiperWrapper.innerHTML = slidesHTML;
+
+            const offsetLeft = window.innerWidth * 0.3;
+
+            const swiper = new Swiper('.id4-bs-guide__swiper', {
+                speed: 500,
+                loop: false,
+                rewind: true,
+                slidesPerView: 'auto',
+                spaceBetween: 24,
+                slidesOffsetBefore: offsetLeft,
+                slidesOffsetAfter: 30,
+                autoplay: {
+                    delay: 3000,
+                    disableOnInteraction: false,
+                    // === CẬP NHẬT 1: Tắt tính năng dừng khi di chuột qua ===
+                    pauseOnMouseEnter: false,
+                },
+                pagination: {
+                    el: '.id4-bs-guide__pagination',
+                    clickable: true,
+                },
+            });
+
+            swiper.on('autoplayTimeLeft', (s, time, progress) => {
+                const currentProgress = 1 - progress;
+                container.style.setProperty('--progress-scale', currentProgress);
+            });
+
+            swiper.on('slideChange', () => {
+                container.style.setProperty('--progress-scale', '0');
+            });
+
+
+            const controlButton = container.querySelector('.id4-bs-guide__autoplay-control');
+            const swiperEl = container.querySelector('.id4-bs-guide__swiper');
+
+            if (controlButton) {
+                controlButton.addEventListener('click', () => {
+                    if (swiper.autoplay.paused) {
+                        swiper.autoplay.resume();
+                    } else {
+                        swiper.autoplay.pause();
+                    }
+                });
+
+                swiper.on('autoplayResume', () => {
+                    controlButton.classList.remove('paused');
+                    controlButton.classList.add('playing');
+                });
+
+                swiper.on('autoplayPause', () => {
+                    controlButton.classList.remove('playing');
+                    controlButton.classList.add('paused');
+                });
+            }
+
+            // === CẬP NHẬT 2: Thêm logic dừng khi nhấn giữ và chạy lại khi thả ra ===
+            if (swiperEl) {
+                const resumeAutoplay = () => {
+                    // Chỉ chạy lại nếu người dùng không chủ động bấm nút pause
+                    if (controlButton && controlButton.classList.contains('playing')) {
+                        swiper.autoplay.resume();
+                    }
+                };
+
+                const pauseAutoplay = () => {
+                    swiper.autoplay.pause();
+                };
+
+                // Dừng khi nhấn giữ
+                swiperEl.addEventListener('mousedown', pauseAutoplay);
+                swiperEl.addEventListener('touchstart', pauseAutoplay, {
+                    passive: true
+                });
+
+                // Chạy lại khi thả ra
+                swiperEl.addEventListener('mouseup', resumeAutoplay);
+                swiperEl.addEventListener('mouseleave', resumeAutoplay); // Chạy lại khi chuột rời khỏi slide
+                swiperEl.addEventListener('touchend', resumeAutoplay, {
+                    passive: true
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initId4BsGuide);
+    </script>
+</body>
+
+</html>

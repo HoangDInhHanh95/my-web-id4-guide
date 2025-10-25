@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trang Hoàn Chỉnh: Video Gallery & Horizontal Scroll</title>
+    <style>
+        /* --- CÀI ĐẶT CHUNG & BIẾN CSS --- */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+         :root {
+            --id4-font-family: "SVN-Effra", sans-serif;
+            --id4-text-color: #fff;
+            --id4-color-bg-section-video: #f0f1f2;
+            --id4-color-bg-section-scroll: #f9fdfe;
+            --id4-bg-card: rgba(239, 240, 241, 0.2);
+            --id4-dot-inactive-color: #555;
+            --transition-speed: 0.3s;
+            --id4-url-bg-card: url("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2264&q=80");
+        }
+        
+        body {
+            font-family: var(--id4-font-family);
+        }
+        /* --- PHẦN 1: CSS CHO VIDEO GALLERY --- */
+        
+        .id4-video-page-wrapper {
+            padding: 50px 20px;
+            background-color: var(--id4-color-bg-section-video);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .id4-video-gallery-container {
+            max-width: 1400px;
+            width: 100%;
+        }
+        
+        .id4-video-video-gallery {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            list-style: none;
+        }
+        
+        .id4-video-gallery-item {
+            position: relative;
+            width: 125px;
+            height: 250px;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform var(--transition-speed) ease;
+            flex-shrink: 0;
+        }
+        
+        .id4-video-gallery-item:hover {
+            transform: scale(1.02);
+        }
+        
+        .id4-video-gallery-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .id4-video-item-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px 5px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8em;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            text-align: center;
+            pointer-events: none;
+        }
+        
+        .id4-video-play-button-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            transition: transform var(--transition-speed) ease;
+        }
+        
+        .id4-video-play-icon,
+        .id4-video-expand-icon {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: opacity var(--transition-speed) ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .id4-video-play-icon::after {
+            content: '';
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-left: 18px solid #333;
+            margin-left: 3px;
+        }
+        
+        .id4-video-expand-icon {
+            opacity: 0;
+        }
+        
+        .id4-video-expand-icon::before,
+        .id4-video-expand-icon::after {
+            content: '';
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-color: #333;
+            border-style: solid;
+        }
+        
+        .id4-video-expand-icon::before {
+            top: 16px;
+            left: 16px;
+            border-width: 3px 0 0 3px;
+        }
+        
+        .id4-video-expand-icon::after {
+            bottom: 16px;
+            right: 16px;
+            border-width: 0 3px 3px 0;
+        }
+        
+        .id4-video-gallery-item:hover .id4-video-play-icon {
+            opacity: 0;
+        }
+        
+        .id4-video-gallery-item:hover .id4-video-expand-icon {
+            opacity: 1;
+        }
+        
+        .id4-video-mobile-title {
+            display: none;
+        }
+        
+        .id4-video-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity var(--transition-speed) ease, visibility var(--transition-speed) ease;
+        }
+        
+        .id4-video-modal.id4-video-show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .id4-video-modal-content {
+            position: relative;
+            max-width: 80vw;
+            max-height: 80vh;
+            background: rgba(25, 25, 25, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border-radius: 15px;
+        }
+        
+        #modal-video {
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+            display: block;
+            max-height: 80vh;
+            object-fit: contain;
+        }
+        
+        .id4-video-modal-progress-container {
+            position: absolute;
+            top: 10px;
+            width: calc(100% - 30px);
+            left: 15px;
+            display: flex;
+            gap: 4px;
+            z-index: 1002;
+        }
+        
+        .id4-video-progress-segment {
+            flex: 1;
+            height: 3px;
+            background-color: rgba(255, 255, 255, 0.4);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .id4-video-progress-fill {
+            width: 0%;
+            height: 100%;
+            background-color: white;
+            border-radius: 3px;
+            transition: width 0.1s linear;
+        }
+        
+        .id4-video-progress-segment.id4-video-active .id4-video-progress-fill {
+            background-color: #ff4500;
+        }
+        
+        .id4-video-modal-close,
+        .id4-video-modal-nav {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1001;
+            font-size: 16px;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .id4-video-modal-close {
+            top: 15px;
+            right: 15px;
+        }
+        
+        .id4-video-modal-nav {
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .id4-video-modal-nav.id4-video-prev {
+            left: 15px;
+        }
+        
+        .id4-video-modal-nav.id4-video-next {
+            right: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .id4-video-video-gallery {
+                justify-content: flex-start;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                padding: 20px;
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+            .id4-video-video-gallery::-webkit-scrollbar {
+                display: none;
+            }
+            .id4-video-gallery-item {
+                width: 90px;
+                height: auto;
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+                border-radius: 0;
+                overflow: visible;
+                border: none;
+                scroll-snap-align: start;
+            }
+            .id4-video-gallery-item video {
+                width: 75px;
+                height: 75px;
+                border-radius: 50%;
+                border: 3px solid #ccc;
+            }
+            .id4-video-item-overlay {
+                display: none;
+            }
+            .id4-video-mobile-title {
+                display: block;
+                color: #333;
+                font-weight: normal;
+                font-size: 0.8em;
+                text-align: center;
+            }
+            .id4-video-play-button-overlay {
+                width: 30px;
+                height: 30px;
+                top: 37.5px;
+                /* Căn giữa hình tròn */
+                transform: translate(-50%, -50%);
+            }
+        }
+        /* --- PHẦN 2: CSS CHO HORIZONTAL SCROLL --- */
+        
+        .id4-horizontal-scroll-container {
+            color: var(--id4-text-color);
+            background-color: var(--id4-color-bg-section-scroll);
+        }
+        
+        .id4-horizontal-scroll-container.id4-horizontal-scroll-modal-open {
+            overflow: hidden;
+        }
+        
+        .id4-horizontal-scroll-horizontal-track {
+            height: 400vh;
+            position: relative;
+        }
+        
+        .id4-horizontal-scroll-sticky-container {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .id4-horizontal-scroll-horizontal-content {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            padding: 0 calc(50vw - 400px);
+            /* Điều chỉnh để card ở giữa hơn */
+        }
+        
+        .id4-horizontal-scroll-card {
+            width: clamp(300px, 60vw, 800px);
+            height: 600px;
+            margin: 0 clamp(10px, 3vw, 30px);
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 20px;
+            border-radius: 20px;
+            border: 1px solid var(--id4-dot-inactive-color);
+            padding: clamp(20px, 5vw, 40px);
+            flex-shrink: 0;
+            cursor: pointer;
+            position: relative;
+            background-size: cover;
+            background-position: center center;
+        }
+        
+        .id4-horizontal-scroll-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-color: var(--id4-bg-card);
+            border-radius: 20px;
+            z-index: 1;
+        }
+        
+        .id4-horizontal-scroll-card-text,
+        .id4-horizontal-scroll-card-image {
+            position: relative;
+            z-index: 2;
+        }
+        /* Đặt nền chung thay vì từng card */
+        
+        .id4-horizontal-scroll-card {
+            background-image: var(--id4-url-bg-card);
+        }
+        
+        .id4-horizontal-scroll-card-text {
+            flex: 1 1 55%;
+        }
+        
+        .id4-horizontal-scroll-card-image {
+            flex: 1 1 45%;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .id4-horizontal-scroll-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+        
+        .id4-horizontal-scroll-card h2 {
+            font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        
+        .id4-horizontal-scroll-card p {
+            font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+            line-height: 1.6;
+            opacity: 0.8;
+            text-align: left;
+            color: #000;
+        }
+        
+        .id4-horizontal-scroll-pagination-dots {
+            display: none;
+            /* Ẩn trên desktop */
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            flex-direction: row;
+            gap: 12px;
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .id4-horizontal-scroll-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--id4-dot-inactive-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .id4-horizontal-scroll-dot.id4-horizontal-scroll-active {
+            background-color: var(--id4-text-color);
+            transform: scale(1.2);
+        }
+        
+        .id4-horizontal-scroll-modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-color: rgba(26, 26, 26, 0.3);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .id4-horizontal-scroll-modal-overlay.id4-horizontal-scroll-active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .id4-horizontal-scroll-modal-content {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transform: scale(0.9);
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            gap: 30px;
+        }
+        
+        .id4-horizontal-scroll-modal-overlay.id4-horizontal-scroll-active .id4-horizontal-scroll-modal-content {
+            transform: scale(1);
+        }
+        
+        .id4-horizontal-scroll-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 3rem;
+            line-height: 1;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            .id4-horizontal-scroll-pagination-dots {
+                display: flex;
+            }
+            .id4-horizontal-scroll-card,
+            .id4-horizontal-scroll-modal-content {
+                flex-direction: column;
+                height: auto;
+                max-height: 80vh;
+                padding: 30px;
+                width: 90vw;
+            }
+            .id4-horizontal-scroll-card-image,
+            .id4-horizontal-scroll-modal-content .id4-horizontal-scroll-card-image {
+                order: -1;
+                width: 100%;
+                height: 200px;
+                margin-bottom: 20px;
+            }
+            .id4-horizontal-scroll-card h2,
+            .id4-horizontal-scroll-card p,
+            .id4-horizontal-scroll-modal-content h2,
+            .id4-horizontal-scroll-modal-content p {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="id4-video-page-wrapper">
+        <div class="id4-video-gallery-container">
+            <ul class="id4-video-video-gallery">
+            </ul>
+        </div>
+    </div>
+
+    <div id="video-modal" class="id4-video-modal">
+        <div class="id4-video-modal-content">
+            <div class="id4-video-modal-progress-container"></div>
+            <video id="modal-video" controls autoplay playsinline></video>
+            <button class="id4-video-modal-close" aria-label="Đóng cửa sổ video">×</button>
+            <button class="id4-video-modal-nav id4-video-prev" aria-label="Xem video trước">&#10094;</button>
+            <button class="id4-video-modal-nav id4-video-next" aria-label="Xem video tiếp theo">&#10095;</button>
+        </div>
+    </div>
+    <div class="id4-horizontal-scroll-container">
+        <div class="id4-horizontal-scroll-horizontal-track">
+            <div class="id4-horizontal-scroll-sticky-container">
+                <div class="id4-horizontal-scroll-horizontal-content">
+                </div>
+            </div>
+        </div>
+
+        <div class="id4-horizontal-scroll-pagination-dots"></div>
+
+        <div class="id4-horizontal-scroll-modal-overlay">
+            <div class="id4-horizontal-scroll-modal-content"></div>
+            <button class="id4-horizontal-scroll-modal-close" aria-label="Đóng">&times;</button>
+        </div>
+    </div>
+    <script>
+        // === SCRIPT 1: VIDEO GALLERY (ĐÃ SỬA LỖI) ===
+        document.addEventListener('DOMContentLoaded', () => {
+            const videoLink = "https://cms.allon4plus.com.au/assets/img/AllOn4PlusWebsite_Handbrake.mp4";
+            const videoData = [{
+                thumb: videoLink,
+                full: videoLink,
+                title: "MẤT NHIỀU RĂNG"
+            }, {
+                thumb: videoLink,
+                full: videoLink,
+                title: "MẤT RĂNG ĐƠN LẺ"
+            }, {
+                thumb: videoLink,
+                full: videoLink,
+                title: "QUY TRÌNH CẤY IMPLANT"
+            }, {
+                thumb: videoLink,
+                full: videoLink,
+                title: "SẢN XUẤT MHDPT"
+            }, {
+                thumb: videoLink,
+                full: videoLink,
+                title: "HƯỚNG DẪN SỬ DỤNG"
+            }, {
+                thumb: videoLink,
+                full: videoLink,
+                title: "CÁC CA LÂM SÀNG"
+            }, {
+                thumb: videoLink,
+                full: videoLink,
+                title: "ĐÀO TẠO IMPLANT"
+            }];
+            const gallery = document.querySelector('.id4-video-video-gallery');
+            const modal = document.getElementById('video-modal');
+            const modalContent = document.querySelector('.id4-video-modal-content');
+            const modalVideo = document.getElementById('modal-video');
+            const progressContainer = document.querySelector('.id4-video-modal-progress-container');
+            const galleryContainer = document.querySelector('.id4-video-gallery-container');
+            const modalCloseBtn = modal.querySelector('.id4-video-modal-close');
+            const modalPrevBtn = modal.querySelector('.id4-video-modal-nav.id4-video-prev');
+            const modalNextBtn = modal.querySelector('.id4-video-modal-nav.id4-video-next');
+
+            let currentVideoIndex = 0;
+            let savedScrollY;
+
+            function createGalleryItems() {
+                videoData.forEach((data, index) => {
+                    const item = document.createElement('li');
+                    item.className = 'id4-video-gallery-item';
+                    item.setAttribute('data-index', index);
+                    const video = document.createElement('video');
+                    video.src = data.thumb + '#t=0.5';
+                    video.muted = true;
+                    video.loop = true;
+                    video.playsInline = true;
+                    video.preload = "metadata";
+                    if (index === 0 && window.innerWidth > 768) {
+                        video.autoplay = true;
+                    }
+                    const textOverlay = document.createElement('div');
+                    textOverlay.className = 'id4-video-item-overlay';
+                    textOverlay.innerHTML = data.title;
+                    const playButton = document.createElement('div');
+                    playButton.className = 'id4-video-play-button-overlay';
+                    playButton.innerHTML = `<div class="id4-video-play-icon"></div><div class="id4-video-expand-icon"></div>`;
+                    const mobileTitle = document.createElement('div');
+                    mobileTitle.className = 'id4-video-mobile-title';
+                    mobileTitle.innerHTML = data.title;
+                    item.append(video, playButton, textOverlay, mobileTitle);
+                    gallery.appendChild(item);
+                    const progressSegment = document.createElement('div');
+                    progressSegment.className = 'id4-video-progress-segment';
+                    progressSegment.innerHTML = `<div class="id4-video-progress-fill"></div>`;
+                    progressContainer.appendChild(progressSegment);
+                });
+            }
+
+            function resizeModalToFitVideo() {
+                if (!modalVideo.videoWidth) return;
+                const videoRatio = modalVideo.videoWidth / modalVideo.videoHeight;
+                modalContent.style.aspectRatio = videoRatio;
+            }
+
+            function updateProgressBar() {
+                const percent = (modalVideo.currentTime / modalVideo.duration) * 100;
+                const progressFills = document.querySelectorAll('.id4-video-progress-fill');
+                if (progressFills[currentVideoIndex]) {
+                    progressFills[currentVideoIndex].style.width = `${percent}%`;
+                }
+            }
+
+            function openModal(index) {
+                savedScrollY = window.scrollY;
+                const body = document.body;
+                body.style.position = 'fixed';
+                body.style.top = `-${savedScrollY}px`;
+                body.style.width = '100%';
+
+                document.body.appendChild(modal);
+                currentVideoIndex = index;
+                modalVideo.src = videoData[index].full;
+                modal.classList.add('id4-video-show');
+                const segments = document.querySelectorAll('.id4-video-progress-segment');
+                segments.forEach((seg, i) => {
+                    seg.classList.toggle('id4-video-active', i === index);
+                    seg.querySelector('.id4-video-progress-fill').style.width = i < index ? '100%' : '0%';
+                });
+            }
+
+            function closeModal() {
+                const body = document.body;
+                body.style.position = '';
+                body.style.top = '';
+                body.style.width = '';
+                window.scrollTo(0, savedScrollY);
+                modal.classList.remove('id4-video-show');
+                modalVideo.pause();
+                modalVideo.src = '';
+            }
+
+            function showNextVideo() {
+                currentVideoIndex = (currentVideoIndex + 1) % videoData.length;
+                openModal(currentVideoIndex);
+            }
+
+            function showPrevVideo() {
+                currentVideoIndex = (currentVideoIndex - 1 + videoData.length) % videoData.length;
+                openModal(currentVideoIndex);
+            }
+
+            createGalleryItems();
+            const items = document.querySelectorAll('.id4-video-gallery-item');
+            if (items.length > 0) {
+                const firstVideo = items[0].querySelector('video');
+                if (window.innerWidth > 768 && firstVideo) {
+                    items.forEach(item => {
+                        const video = item.querySelector('video');
+                        item.addEventListener('mouseenter', () => {
+                            if (firstVideo.paused) {
+                                video.play();
+                            } else {
+                                firstVideo.pause();
+                                video.play();
+                            }
+                        });
+                        item.addEventListener('mouseleave', () => {
+                            video.pause();
+                        });
+                    });
+                    galleryContainer.addEventListener('mouseleave', () => {
+                        if (!firstVideo.paused) firstVideo.play();
+                    });
+                }
+            }
+            gallery.addEventListener('click', (e) => {
+                const item = e.target.closest('.id4-video-gallery-item');
+                if (item) {
+                    openModal(parseInt(item.getAttribute('data-index')));
+                }
+            });
+            modalVideo.addEventListener('loadedmetadata', resizeModalToFitVideo);
+            modalVideo.addEventListener('timeupdate', updateProgressBar);
+            modalVideo.addEventListener('ended', showNextVideo);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+            modalCloseBtn.addEventListener('click', closeModal);
+            modalPrevBtn.addEventListener('click', showPrevVideo);
+            modalNextBtn.addEventListener('click', showNextVideo);
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('id4-video-show')) closeModal();
+            });
+        });
+
+
+        // === SCRIPT 2: HORIZONTAL SCROLL ===
+        document.addEventListener("DOMContentLoaded", function() {
+            const image1 = 'https://images.unsplash.com/photo-1554232456-8727a6e74f26?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80';
+            const cardData = [{
+                title: 'Phân Tích Chính Xác',
+                description: 'Vị trí hạ mào xương, vị trí Implant, Abutment và phục hình đều được phân tích, lên kế hoạch và thiết kế chính xác.',
+                imageUrl: image1
+            }, {
+                title: '🚀 Hiệu Năng Cao',
+                description: 'Sử dụng Intersection Observer và các kỹ thuật hiện đại để đảm bảo độ mượt tối đa trên mọi thiết bị.',
+                imageUrl: image1
+            }, {
+                title: '🎨 Giàu Tương Tác',
+                description: 'Phản hồi với thao tác di chuột, click và điều hướng bàn phím một cách thông minh và tự nhiên.',
+                imageUrl: image1
+            }, {
+                title: '♿ Dễ Tiếp Cận',
+                description: 'Hỗ trợ điều hướng bằng bàn phím, giúp mọi người dùng đều có thể trải nghiệm trọn vẹn.',
+                imageUrl: image1
+            }, {
+                title: '📱 Đồng Nhất',
+                description: 'Trải nghiệm cuộn dọc-ngang độc đáo được đồng bộ trên mọi thiết bị, từ lớn đến nhỏ.',
+                imageUrl: image1
+            }];
+            const contentContainer = document.querySelector('.id4-horizontal-scroll-horizontal-content');
+            contentContainer.innerHTML = cardData.map(data => `
+                <div class="id4-horizontal-scroll-card">
+                    <div class="id4-horizontal-scroll-card-text">
+                        <h2>${data.title}</h2>
+                        <p>${data.description}</p>
+                    </div>
+                    <div class="id4-horizontal-scroll-card-image">
+                        <img src="${data.imageUrl}" alt="${data.title}" loading="lazy">
+                    </div>
+                </div>`).join('');
+            const cards = Array.from(contentContainer.children);
+            const track = document.querySelector('.id4-horizontal-scroll-horizontal-track');
+            const modalOverlay = document.querySelector('.id4-horizontal-scroll-modal-overlay');
+            const modalContent = document.querySelector('.id4-horizontal-scroll-modal-content');
+            const modalClose = document.querySelector('.id4-horizontal-scroll-modal-close');
+            const mainContainer = document.querySelector('.id4-horizontal-scroll-container');
+
+            function openModal(contentHTML) {
+                modalContent.innerHTML = contentHTML;
+                modalOverlay.classList.add('id4-horizontal-scroll-active');
+                mainContainer.classList.add('id4-horizontal-scroll-modal-open');
+            }
+
+            function closeModal() {
+                modalOverlay.classList.remove('id4-horizontal-scroll-active');
+                mainContainer.classList.remove('id4-horizontal-scroll-modal-open');
+            }
+            cards.forEach(card => card.addEventListener('click', () => openModal(card.innerHTML)));
+            modalClose.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) closeModal();
+            });
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modalOverlay.classList.contains('id4-horizontal-scroll-active')) closeModal();
+            });
+            const paginationContainer = document.querySelector('.id4-horizontal-scroll-pagination-dots');
+            let dots = [];
+            if (paginationContainer) {
+                cards.forEach((card, index) => {
+                    const dot = document.createElement('div');
+                    dot.classList.add('id4-horizontal-scroll-dot');
+                    dot.addEventListener('click', () => {
+                        const scrollableDistance = track.offsetHeight - window.innerHeight;
+                        const progressPerCard = 1 / (cards.length - 1);
+                        const targetScrollTop = track.offsetTop + (scrollableDistance * progressPerCard * index);
+                        window.scrollTo({
+                            top: targetScrollTop,
+                            behavior: 'smooth'
+                        });
+                    });
+                    paginationContainer.appendChild(dot);
+                });
+                dots = Array.from(paginationContainer.children);
+            }
+            let currentX = 0,
+                targetX = 0,
+                easingFactor = 0.08,
+                isTrackInView = false;
+
+            function lerp(start, end, t) {
+                return start * (1 - t) + end * t;
+            }
+
+            function updateActiveDot(progress) {
+                if (dots.length > 0) {
+                    const activeIndex = Math.min(dots.length - 1, Math.round(progress * (cards.length - 1)));
+                    dots.forEach((dot, index) => dot.classList.toggle('id4-horizontal-scroll-active', index === activeIndex));
+                }
+            }
+
+            function updatePositions() {
+                const trackRect = track.getBoundingClientRect();
+                if (trackRect.top <= 0 && trackRect.bottom >= window.innerHeight) {
+                    const scrollInTrack = -trackRect.top;
+                    const scrollableDistance = trackRect.height - window.innerHeight;
+                    const scrollProgress = Math.max(0, Math.min(1, scrollInTrack / scrollableDistance));
+                    const firstCard = cards[0],
+                        lastCard = cards[cards.length - 1];
+                    const contentScrollWidth = lastCard.offsetLeft - firstCard.offsetLeft;
+                    targetX = -contentScrollWidth * scrollProgress;
+                    updateActiveDot(scrollProgress);
+                }
+                currentX = lerp(currentX, targetX, easingFactor);
+                contentContainer.style.transform = `translateX(${currentX}px)`;
+            }
+
+            function animationLoop() {
+                if (isTrackInView) {
+                    updatePositions();
+                }
+                requestAnimationFrame(animationLoop);
+            }
+            const trackObserver = new IntersectionObserver((entries) => isTrackInView = entries[0].isIntersecting, {
+                threshold: 0
+            });
+            trackObserver.observe(track);
+            animationLoop();
+        });
+    </script>
+</body>
+
+</html>

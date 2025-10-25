@@ -1,0 +1,147 @@
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    :root {
+        --id-height-top-bar: 60px;
+        /* mũi tên xuống */
+        --arrow-width: 40px;
+        --arrow-height: 35px;
+        --arrow-bg-color: #f9fdfe;
+        /* màu sắc cho các thành phần */
+        --progress-bar-color: #333;
+        --control-icon-color: #a0a0a0;
+        --color-tilet: #02518a;
+        /* font size text */
+        --id4-font-size-title: 2rem;
+        --id4-font-size-title-left: 40px;
+        --font-size-des: 16px;
+        /* mau sắc background */
+        /* background chuẩn */
+        --id4-color-bg-section: #f0f1f2;
+        /* mau xanh nhat  ebf3ff*/
+        --id4-color-bg-section-2: #f9fdfe;
+        /* font chữ  */
+        --id4-font-family: "SVN-Effra";
+        /* width 820px */
+        --max-width-section: 820px;
+        --maxw: 1200px;
+        /* chuyên động mượt */
+        --transition-speed: 0.3s;
+        /* border radius */
+        --id4-border-radius: 28px;
+    }
+
+    /* Container for the video and content */
+
+    .CBSD-id4-stackable-guide {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Background Video */
+
+    #CBSD-id4-stackable-guide__background-video {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        min-width: 100%;
+        min-height: 100%;
+        width: auto;
+        height: auto;
+        z-index: 1;
+        transform: translateX(-50%) translateY(-50%);
+        background: #000;
+    }
+
+    /* Content Overlay */
+
+    .CBSD-id4-stackable-guide__content-overlay {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        max-width: 1000px;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        /* Aligns text to the left */
+        color: white;
+    }
+
+    /* Left side text content */
+
+    .CBSD-id4-stackable-guide__text-content {
+        flex-basis: 50%;
+    }
+
+    .CBSD-id4-stackable-guide__text-content h1 {
+        font-size: var(--id4-font-size-title);
+        margin-bottom: 1rem;
+        line-height: 1.6;
+        font-weight: 700;
+        color: #fff;
+    }
+
+    .CBSD-id4-stackable-guide__text-content p {
+        font-size: 1rem;
+        line-height: 1.6;
+        max-width: 500px;
+        text-align: justify;
+    }
+
+    /* --- Responsive Design --- */
+    /* Tablet view */
+
+    @media (max-width: 992px) {
+        .CBSD-id4-stackable-guide__text-content h1 {
+            font-size: 2rem;
+        }
+
+        .CBSD-id4-stackable-guide__text-content p {
+            font-size: 0.9rem;
+        }
+    }
+
+    /* Mobile View (Portrait) */
+
+    @media (max-width: 768px) {
+        .CBSD-id4-stackable-guide {
+            height: 100vh;
+            min-height: 600px;
+        }
+
+        .CBSD-id4-stackable-guide__content-overlay {
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            /* padding: 1.5rem; */
+        }
+
+        .CBSD-id4-stackable-guide__text-content {
+            order: 1;
+            width: 100%;
+            margin-bottom: 2rem;
+            flex-basis: auto;
+            /* Reset flex-basis for mobile */
+        }
+
+        .CBSD-id4-stackable-guide__text-content h1 {
+            font-size: 1.8rem;
+        }
+
+        .CBSD-id4-stackable-guide__text-content p {
+            font-size: 0.9rem;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+</style>

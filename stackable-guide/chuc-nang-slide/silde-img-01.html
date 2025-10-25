@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID4 Reusable Media Slider Component</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <style>
+        /* CSS được gói gọn trong class cha "id4-media-slider" */
+        
+        .id4-media-slider {
+            --progress-bar-color: #333;
+            --inactive-bar-color: #d8d8d8;
+            --control-icon-color: #a0a0a0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            padding: 60px 0;
+            width: 100%;
+            overflow-x: hidden;
+        }
+        
+        .id4-media-slider__swiper {
+            width: 100%;
+            padding: 20px 0;
+            overflow: visible;
+        }
+        
+        .id4-media-slider .swiper-wrapper {
+            will-change: transform;
+        }
+        
+        .id4-media-slider .swiper-slide {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            width: 88%;
+            max-width: 950px;
+            height: 450px;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            will-change: transform;
+            opacity: 0.4;
+            transform: scale(0.92);
+        }
+        
+        .id4-media-slider .swiper-slide-active {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .id4-media-slider__slide-inner {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            padding: 40px 60px;
+            box-sizing: border-box;
+            gap: 40px;
+        }
+        
+        .id4-media-slider__content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .id4-media-slider__content h2 {
+            font-size: 36px;
+            font-weight: 700;
+            color: #111;
+            margin: 0 0 16px 0;
+            line-height: 1.2;
+        }
+        
+        .id4-media-slider__content p {
+            font-size: 16px;
+            color: #555;
+            line-height: 1.6;
+            margin: 0;
+        }
+        
+        .id4-media-slider__media {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .id4-media-slider__media img,
+        .id4-media-slider__media video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .id4-media-slider__controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .id4-media-slider__pagination.swiper-pagination-bullets {
+            position: static;
+            display: flex;
+            gap: 6px;
+            width: auto;
+        }
+        
+        .id4-media-slider__pagination .swiper-pagination-bullet {
+            width: 32px;
+            height: 6px;
+            border-radius: 3px;
+            background-color: var(--inactive-bar-color);
+            opacity: 1;
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.3s;
+        }
+        
+        .id4-media-slider__pagination .swiper-pagination-bullet-active {
+            background-color: var(--inactive-bar-color);
+        }
+        
+        .id4-media-slider__pagination .swiper-pagination-bullet-active::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--progress-bar-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            animation-name: id4-media-slider-progressFill;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+            animation-duration: var(--id4-autoplay-delay, 5s);
+        }
+        
+        .id4-media-slider.autoplay-paused .swiper-pagination-bullet-active::after {
+            animation-play-state: paused;
+        }
+        
+        @keyframes id4-media-slider-progressFill {
+            from {
+                transform: scaleX(0);
+            }
+            to {
+                transform: scaleX(1);
+            }
+        }
+        
+        .id4-media-slider__autoplay-control {
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--control-icon-color);
+        }
+        
+        .id4-media-slider__autoplay-control .id4-media-slider__icon {
+            display: none;
+        }
+        
+        .id4-media-slider__autoplay-control.playing .id4-media-slider__icon--pause {
+            display: block;
+        }
+        
+        .id4-media-slider__autoplay-control.paused .id4-media-slider__icon--play {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .id4-media-slider .swiper-slide {
+                width: 90%;
+                height: auto;
+            }
+            .id4-media-slider__slide-inner {
+                flex-direction: column;
+                padding: 30px;
+                gap: 20px;
+            }
+            .id4-media-slider__content {
+                text-align: center;
+            }
+            .id4-media-slider__content h2 {
+                font-size: 28px;
+            }
+            .id4-media-slider__media {
+                width: 100%;
+                height: 200px;
+                /* Chiều cao cố định cho media trên mobile */
+                order: -1;
+                /* Đưa media lên trên text */
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="id4-media-slider">
+        <div class="id4-media-slider__swiper swiper">
+            <div class="swiper-wrapper">
+
+                <div class="swiper-slide">
+                    <div class="id4-media-slider__slide-inner">
+                        <div class="id4-media-slider__content">
+                            <h2>Chuyển Động Mượt Mà</h2>
+                            <p>Video sẽ tự động phát khi slide này được kích hoạt, mang lại trải nghiệm sống động.</p>
+                        </div>
+                        <div class="id4-media-slider__media">
+                            <video muted loop playsinline poster="https://via.placeholder.com/400x300.png?text=Video+Poster">
+                                <source src="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4" type="video/mp4">
+                            </video>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide">
+                    <div class="id4-media-slider__slide-inner">
+                        <div class="id4-media-slider__content">
+                            <h2>Hình Ảnh Sắc Nét</h2>
+                            <p>Đây là một slide chỉ có hình ảnh. Video ở slide trước đã tự động dừng lại.</p>
+                        </div>
+                        <div class="id4-media-slider__media">
+                            <img src="https://images.unsplash.com/photo-1629425733761-caae3b5f2e50?q=80&w=870" alt="Bác sĩ">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide">
+                    <div class="id4-media-slider__slide-inner">
+                        <div class="id4-media-slider__content">
+                            <h2>Thiết Kế Linh Hoạt</h2>
+                            <p>Bạn có thể thêm bao nhiêu slide tùy thích với các loại nội dung khác nhau.</p>
+                        </div>
+                        <div class="id4-media-slider__media">
+                            <img src="https://images.unsplash.com/photo-1588776814546-da6316ac9478?q=80&w=870" alt="Dụng cụ y tế">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="id4-media-slider__controls">
+            <div class="id4-media-slider__pagination swiper-pagination"></div>
+            <div class="id4-media-slider__autoplay-control playing" role="button" aria-label="Pause autoplay">
+                <svg class="id4-media-slider__icon id4-media-slider__icon--pause" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 3.5h1.5v9H5.5v-9zm3.5 0h1.5v9H9v-9z" /></svg>
+                <svg class="id4-media-slider__icon id4-media-slider__icon--play" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/></svg>
+            </div>
+        </div>
+    </div>
+    <div class="id4-media-slider">
+        <div class="id4-media-slider__swiper swiper">
+            <div class="swiper-wrapper">
+
+                <div class="swiper-slide">
+                    <div class="id4-media-slider__slide-inner">
+                        <div class="id4-media-slider__content">
+                            <h2>Component Độc Lập</h2>
+                            <p>Đây là một slider hoàn toàn khác, nó có các nút điều khiển và autoplay riêng.</p>
+                        </div>
+                        <div class="id4-media-slider__media">
+                            <img src="https://images.unsplash.com/photo-1606306913336-39d6435c6353?q=80&w=870" alt="Nha sĩ">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="swiper-slide">
+                    <div class="id4-media-slider__slide-inner">
+                        <div class="id4-media-slider__content">
+                            <h2>Dễ Dàng Tái Sử Dụng</h2>
+                            <p>Chỉ cần sao chép và dán khối HTML của `id4-media-slider` để tạo một slider mới.</p>
+                        </div>
+                        <div class="id4-media-slider__media">
+                            <img src="https://plus.unsplash.com/premium_photo-1661769750788-b235061a7a02?q=80&w=870" alt="Phòng khám">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="id4-media-slider__controls">
+            <div class="id4-media-slider__pagination swiper-pagination"></div>
+            <div class="id4-media-slider__autoplay-control playing" role="button" aria-label="Pause autoplay">
+                <svg class="id4-media-slider__icon id4-media-slider__icon--pause" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 3.5h1.5v9H5.5v-9zm3.5 0h1.5v9H9v-9z" /></svg>
+                <svg class="id4-media-slider__icon id4-media-slider__icon--play" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/></svg>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script>
+        function initializeMediaSliders() {
+            // Lấy tất cả các component slider trên trang
+            const sliderComponents = document.querySelectorAll('.id4-media-slider');
+
+            // Lặp qua từng component và khởi tạo Swiper cho nó
+            sliderComponents.forEach(sliderContainer => {
+                const autoplayDelay = 5000;
+                sliderContainer.style.setProperty('--id4-autoplay-delay', (autoplayDelay / 1000) + 's');
+
+                const swiperEl = sliderContainer.querySelector('.id4-media-slider__swiper');
+
+                const swiper = new Swiper(swiperEl, {
+                    speed: 500,
+                    loop: true,
+                    centeredSlides: true,
+                    slidesPerView: 'auto',
+                    spaceBetween: 24,
+                    autoplay: {
+                        delay: autoplayDelay,
+                        disableOnInteraction: false,
+                        pauseOnMouseEnter: true,
+                    },
+                    pagination: {
+                        el: sliderContainer.querySelector('.id4-media-slider__pagination'),
+                        clickable: true,
+                    },
+                    // CÁC SỰ KIỆN
+                    on: {
+                        // Sự kiện khi slide thay đổi
+                        slideChange: function() {
+                            // Dừng video ở slide trước đó
+                            const previousSlide = this.slides[this.previousIndex];
+                            const prevVideo = previousSlide.querySelector('video');
+                            if (prevVideo) {
+                                prevVideo.pause();
+                            }
+
+                            // Chạy video ở slide hiện tại
+                            const activeSlide = this.slides[this.activeIndex];
+                            const activeVideo = activeSlide.querySelector('video');
+                            if (activeVideo) {
+                                activeVideo.play();
+                            }
+                        },
+                        // Sự kiện khi khởi tạo xong
+                        init: function() {
+                            // Tự động play video nếu slide đầu tiên là video
+                            const activeSlide = this.slides[this.activeIndex];
+                            const activeVideo = activeSlide.querySelector('video');
+                            if (activeVideo) {
+                                activeVideo.play();
+                            }
+                        }
+                    }
+                });
+
+                const controlButton = sliderContainer.querySelector('.id4-media-slider__autoplay-control');
+
+                if (controlButton) {
+                    controlButton.addEventListener('click', () => {
+                        if (swiper.autoplay.running) {
+                            swiper.autoplay.stop();
+                        } else {
+                            swiper.autoplay.start();
+                        }
+                    });
+
+                    swiper.on('autoplayStart', () => {
+                        controlButton.classList.remove('paused');
+                        controlButton.classList.add('playing');
+                        sliderContainer.classList.remove('autoplay-paused');
+                    });
+
+                    swiper.on('autoplayStop', () => {
+                        controlButton.classList.remove('playing');
+                        controlButton.classList.add('paused');
+                        sliderContainer.classList.add('autoplay-paused');
+                    });
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeMediaSliders);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID-4 Stackable Guide Slider</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <style>
+        :root {
+            --progress-bar-color: #333;
+            --control-icon-color: #a0a0a0;
+            --color-tilet: #02518a;
+            --id4-font-size-title: 2rem;
+            --id4-font-size-title-left: 40px;
+            --font-size-des: 16px;
+            --id4-color-bg-section: #f0f1f2;
+            --id4-color-bg-section-2: #f9fdfe;
+            --id4-font-family: 'SVN-Effra', sans-serif;
+            --max-width-section: 820px;
+            --maxw: 1200px;
+            --id4-bg-khoa-hoc: url('https://via.placeholder.com/1920x400/0000FF/FFFFFF?text=Background+Khoa+Hoc');
+            --id4-bg-section-STACKABLE-GUIDE: #007bff;
+            --id4-border-radius: 28px;
+            --id4-autoplay-delay: 2s;
+        }
+
+        .id4-image-MHDPT-container {
+            position: relative;
+            background-image: var(--id4-bg-khoa-hoc);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            width: 100%;
+        }
+
+        .id4-CTP-STACKABLE-GUIDE-wrap {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            background: var(--id4-color-bg-section);
+        }
+
+        .id4-CTP-STACKABLE-GUIDE-inner {
+            width: 100%;
+            max-width: var(--maxw);
+            text-align: center;
+        }
+
+        .id4-CTP-STACKABLE-GUIDE-title {
+            margin: 0;
+            color: var(--color-tilet);
+            font-family: var(--id4-font-family);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: var(--id4-font-size-title);
+            line-height: 1.3;
+            letter-spacing: 0.2px;
+            padding-bottom: 2px;
+        }
+
+        @media (min-width:768px) {
+            .id4-CTP-STACKABLE-GUIDE-wrap {
+                padding: 0px 20px;
+            }
+
+            .id4-CTP-STACKABLE-GUIDE-title {
+                font-size: 24px;
+                line-height: 1.35;
+                letter-spacing: 0.4px;
+            }
+        }
+
+        @media (min-width:1024px) {
+            .id4-CTP-STACKABLE-GUIDE-wrap {
+                padding: 0px 24px;
+            }
+
+            .id4-CTP-STACKABLE-GUIDE-title {
+                font-size: 32px;
+                line-height: 1.4;
+                letter-spacing: 0.6px;
+            }
+        }
+
+        .id4-image-MHDPT {
+            font-family: var(--id4-font-family);
+            width: 100%;
+            overflow-x: hidden;
+            padding: 50px 0;
+            position: relative;
+        }
+
+        .id4-image-MHDPT>img.background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .id4-CTP-STACKABLE-GUIDE-wrap {
+            max-width: var(--maxw);
+            margin: 0 auto;
+        }
+
+        .id4-CTP-STACKABLE-GUIDE-inner {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .id4-image-MHDPT .id4-CTP-STACKABLE-GUIDE-title {
+            color: #fff;
+        }
+
+        .id4-image-MHDPT__swiper {
+            width: 100%;
+            padding: 20px 0;
+            overflow: visible;
+        }
+
+        .id4-image-MHDPT .swiper-wrapper {
+            will-change: transform;
+        }
+
+        .id4-image-MHDPT .swiper-slide {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            width: 80%;
+            max-width: 1000px;
+            height: 562px;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            will-change: transform;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .id4-image-MHDPT .swiper-slide:not(.swiper-slide-active) {
+            opacity: 0.7;
+            transform: scale(0.95);
+        }
+
+        .id4-image-MHDPT .swiper-slide .id4-image-MHDPT__slide-inner {
+            border-radius: 28px;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            font-weight: bold;
+            color: var(--color-tilet);
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+            position: relative;
+            z-index: 1;
+        }
+
+        .id4-image-MHDPT .swiper-slide img.slide-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 24px;
+        }
+
+        .id4-image-MHDPT__slide-inner {
+            box-sizing: border-box;
+        }
+
+        .id4-image-MHDPT__controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+            margin: 5px 0px 52px 0px;
+        }
+
+        .id4-image-MHDPT__pagination.swiper-pagination-bullets {
+            position: static;
+            display: flex;
+            gap: 6px;
+            width: auto;
+        }
+
+        .id4-image-MHDPT__pagination .swiper-pagination-bullet {
+            width: 70px;
+            height: 8px;
+            border-radius: 3px;
+            background-color: var(--control-icon-color);
+            opacity: 1;
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.3s;
+        }
+
+        .id4-image-MHDPT__pagination .swiper-pagination-bullet-active {
+            background-color: var(--control-icon-color);
+        }
+
+        .id4-image-MHDPT__pagination .swiper-pagination-bullet-active::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--progress-bar-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            animation-name: id4-image-MHDPT-progressFill;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+            animation-duration: var(--id4-autoplay-delay);
+            animation-play-state: running;
+        }
+
+        .id4-image-MHDPT.autoplay-paused .swiper-pagination-bullet-active::after {
+            animation-play-state: paused;
+        }
+
+        @keyframes id4-image-MHDPT-progressFill {
+            from {
+                transform: scaleX(0);
+            }
+
+            to {
+                transform: scaleX(1);
+            }
+        }
+
+        .id4-image-MHDPT__autoplay-control {
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--control-icon-color);
+            transition: color 0.3s;
+        }
+
+        .id4-image-MHDPT__autoplay-control:hover {
+            color: var(--progress-bar-color);
+        }
+
+        .id4-image-MHDPT__autoplay-control .id4-image-MHDPT__icon {
+            display: none;
+            width: 30px;
+            height: 30px;
+        }
+
+        .id4-image-MHDPT__autoplay-control.playing .id4-image-MHDPT__icon--pause {
+            display: block;
+        }
+
+        .id4-image-MHDPT__autoplay-control.paused .id4-image-MHDPT__icon--play {
+            display: block;
+        }
+
+        /* === Styles cho MODAL/POP-UP (Mobile & Tablet) === */
+
+        .id4-modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            /* Thay đổi: Dùng flexbox để căn giữa */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .id4-modal-content {
+            position: relative;
+            /* Thay đổi: Đặt background màu đen nhạt hơn cho hình ảnh nổi bật hơn */
+            background-color: rgba(0, 0, 0, 0.9);
+            margin: auto;
+            padding: 10px;
+            border-radius: 12px;
+            width: 95%;
+            max-width: 90vw;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            animation-name: animatetop;
+            animation-duration: 0.4s;
+            max-height: 90vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes animatetop {
+            from {
+                top: -300px;
+                opacity: 0
+            }
+
+            to {
+                top: 0;
+                opacity: 1
+            }
+        }
+
+        .id4-modal-close {
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            transition: color 0.3s;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            z-index: 10;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+        }
+
+        .id4-modal-close:hover,
+        .id4-modal-close:focus {
+            color: #ccc;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .id4-modal-img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            object-fit: contain;
+            max-height: 80vh;
+        }
+
+        /* Thay đổi: Ẩn các thành phần không cần thiết */
+
+        .id4-modal-content #modalTitle,
+        .id4-modal-content #modalContent {
+            display: none !important;
+        }
+
+        /* === Media Query cho Mobile & Tablet (Dưới 1024px) === */
+
+        @media (max-width: 1023.98px) {
+            .id4-image-MHDPT .swiper-slide {
+                width: 85%;
+                height: 200px;
+                max-width: none;
+                cursor: pointer;
+            }
+
+            .id4-image-MHDPT__controls {
+                margin: 20px 0px 30px 0px;
+            }
+
+            .id4-image-MHDPT__pagination .swiper-pagination-bullet {
+                width: 25px;
+                height: 6px;
+                border-radius: 3px;
+                background-color: var(--control-icon-color);
+                opacity: 1;
+                position: relative;
+                overflow: hidden;
+                transition: background-color 0.3s;
+            }
+        }
+
+        /* Đảm bảo modal không hiển thị trên Desktop */
+
+        @media (min-width: 1024px) {
+            .id4-modal {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="id4-image-MHDPT-container">
+
+        <div class="id4-image-MHDPT">
+            <section class="id4-CTP-STACKABLE-GUIDE-wrap">
+
+                <div class="id4-CTP-STACKABLE-GUIDE-inner">
+
+                    <h1 class="id4-CTP-STACKABLE-GUIDE-title">
+                        Các thành phần<br />ID-4 Stackable Guide<br /> </h1>
+
+                </div>
+            </section>
+
+
+            <div class="id4-image-MHDPT__swiper swiper">
+
+                <div class="swiper-wrapper">
+
+                    <div class="swiper-slide">
+                        <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-5@4x.png"
+                            alt="Slide 1 Image" class="slide-image">
+
+                    </div>
+
+                    <div class="swiper-slide">
+                        <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-5@4x.png"
+                            alt="Slide 2 Image" class="slide-image">
+
+                    </div>
+
+                    <div class="swiper-slide">
+                        <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-1@4x.png"
+                            alt="Slide 3 Image" class="slide-image">
+
+                    </div>
+
+                    <div class="swiper-slide">
+                        <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-1@4x.png"
+                            alt="Slide 4 Image" class="slide-image">
+
+                    </div>
+
+                    <div class="swiper-slide">
+                        <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-1@4x.png"
+                            alt="Slide 5 Image" class="slide-image">
+
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="id4-image-MHDPT__controls">
+
+                <div class="id4-image-MHDPT__pagination swiper-pagination"></div>
+
+                <div class="id4-image-MHDPT__autoplay-control playing" role="button" aria-label="Pause autoplay">
+
+                    <svg class="id4-image-MHDPT__icon id4-image-MHDPT__icon--pause" xmlns="http://www.w3.org/2000/svg"
+                        width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M5.5 3.5h1.5v9H5.5v-9zm3.5 0h1.5v9H9v-9z" />
+                    </svg> <svg class="id4-image-MHDPT__icon id4-image-MHDPT__icon--play"
+                        xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        viewBox="0 0 16 16">
+                        <path
+                            d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
+                    </svg>
+                </div>
+                </d>
+            </div>
+        </div>
+
+        <div id="id4Modal" class="id4-modal">
+            <div class="id4-modal-content">
+                <span class="id4-modal-close">&times;</span>
+                <h3 id="modalTitle" style="color: var(--color-tilet);"></h3>
+                <img id="modalImage" src="" alt="" class="id4-modal-img">
+                <div id="modalContent"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        function initId4ImageMHDPT() {
+            const container = document.querySelector('.id4-image-MHDPT');
+            if (!container) return;
+
+            const autoplayDelay = 2000;
+            container.style.setProperty('--id4-autoplay-delay', (autoplayDelay / 1000) + 's');
+
+            if (typeof Swiper === 'undefined') {
+                console.error('Swiper library is not loaded.');
+                return;
+            }
+
+            const swiper = new Swiper('.id4-image-MHDPT__swiper', {
+                speed: 500,
+                loop: true,
+                centeredSlides: true,
+                slidesPerView: 'auto',
+                spaceBetween: 24,
+
+                autoplay: {
+                    delay: autoplayDelay,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+                },
+                pagination: {
+                    el: '.id4-image-MHDPT__pagination',
+                    clickable: true,
+                },
+            });
+
+            const controlButton = container.querySelector('.id4-image-MHDPT__autoplay-control');
+
+            if (controlButton) {
+                controlButton.addEventListener('click', () => {
+                    if (swiper.autoplay.running) {
+                        swiper.autoplay.stop();
+                    } else {
+                        swiper.autoplay.start();
+                    }
+                });
+
+                swiper.on('autoplayStart', () => {
+                    controlButton.classList.remove('paused');
+                    controlButton.classList.add('playing');
+                    container.classList.remove('autoplay-paused');
+                    controlButton.setAttribute('aria-label', 'Pause autoplay');
+                });
+
+                swiper.on('autoplayStop', () => {
+                    controlButton.classList.remove('playing');
+                    controlButton.classList.add('paused');
+                    container.classList.add('autoplay-paused');
+                    controlButton.setAttribute('aria-label', 'Start autoplay');
+                });
+            }
+
+            // === Logic Pop-up (Modal) cho Mobile/Tablet ===
+            const modal = document.getElementById("id4Modal");
+            const modalImage = document.getElementById("modalImage");
+            const closeBtn = document.getElementsByClassName("id4-modal-close")[0];
+
+            function isMobileView() {
+                return window.innerWidth < 1024;
+            }
+
+            // Hàm mở modal (Chỉ hiển thị hình ảnh)
+            function openModal(slide) {
+                if (!isMobileView()) return;
+
+                // Lấy thông tin ảnh từ thuộc tính src của thẻ <img>
+                const imgSrc = slide.querySelector('.slide-image').src;
+                modalImage.src = imgSrc;
+                modal.style.display = "flex";
+            }
+
+            // Gắn sự kiện click cho các slide
+            const slides = document.querySelectorAll('.id4-image-MHDPT .swiper-slide');
+            slides.forEach(slide => {
+                slide.addEventListener('click', (e) => {
+                    // Tránh mở modal khi kéo/vuốt swiper (chỉ mở khi click vào slide đang active)
+                    if (!slide.classList.contains('swiper-slide-active') || e.target.closest('.id4-modal')) {
+                        return;
+                    }
+                    if (isMobileView()) {
+                        openModal(slide);
+                    }
+                });
+            });
+
+            // Đóng modal khi click nút đóng
+            closeBtn.onclick = function () {
+                modal.style.display = "none";
+            }
+
+            // Đóng modal khi click ra ngoài
+            window.onclick = function (event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+            // === Hết Logic Pop-up ===
+        }
+
+        document.addEventListener('DOMContentLoaded', initId4ImageMHDPT);
+    </script>
+
+</body>
+
+</html>

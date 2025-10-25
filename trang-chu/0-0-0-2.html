@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizontal Scroll Guide - GSAP Version</title>
+    <style>
+         :root {
+            --id4-guide-background-color: #1a1a1a;
+            --id4-guide-card-background: #282828;
+            --id4-guide-text-color: #fff;
+            --id4-guide-border-color: #555;
+            --id4-guide-accent-color: #00aaff;
+            --id4-guide-dot-inactive-color: #555;
+            --id4-guide-bg-card: rgba(239, 240, 241, 0.2);
+            --id4-guide-color-text: #000;
+            --id4-guide-url-bg-card: url('http://localhost/iD4Center/wp-content/uploads/2025/09/bg-card-MHDPT@4x.png');
+        }
+        
+        body {
+            /* Thêm màu nền để dễ nhìn hơn */
+            background-color: var(--id4-guide-background-color);
+        }
+        
+        .id4-guide-container {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: var(--id4-guide-text-color);
+        }
+        
+        .id4-guide-container.id4-guide-modal-open {
+            overflow: hidden;
+        }
+        
+        .id4-guide-progress-bar-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background-color: var(--id4-guide-border-color);
+            z-index: 10;
+        }
+        
+        .id4-guide-progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--id4-guide-accent-color);
+        }
+        /* Container chính cho phần cuộn ngang */
+        
+        .id4-guide-horizontal-section {
+            overflow: hidden;
+            /* Quan trọng: để ghim và cuộn không bị lỗi */
+        }
+        /* Thay thế cho sticky-container, giờ chỉ cần 100vh */
+        
+        .id4-guide-content-wrapper {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 0 5vw;
+            /* Thêm padding 2 bên */
+            box-sizing: border-box;
+        }
+        
+        .id4-guide-horizontal-content {
+            display: flex;
+            align-items: center;
+            /* Để GSAP tính toán, không cần padding ở đây */
+        }
+        
+        .id4-guide-card {
+            width: clamp(300px, 60vw, 980px);
+            height: 600px;
+            max-height: 600px;
+            margin: 0 clamp(10px, 3vw, 30px);
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 20px;
+            border-radius: 20px;
+            border: 1px solid var(--id4-guide-border-color);
+            padding: clamp(20px, 5vw, 40px);
+            box-sizing: border-box;
+            flex-shrink: 0;
+            cursor: pointer;
+            position: relative;
+            background-size: cover;
+            background-position: center center;
+        }
+        
+        .id4-guide-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--id4-guide-bg-card);
+            border-radius: 20px;
+            z-index: 1;
+        }
+        
+        .id4-guide-card-text,
+        .id4-guide-card-image {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .id4-guide-card:nth-child(1) {
+            background-image: var(--id4-guide-url-bg-card);
+        }
+        
+        .id4-guide-card:nth-child(2) {
+            background-image: var(--id4-guide-url-bg-card);
+        }
+        
+        .id4-guide-card:nth-child(3) {
+            background-image: var(--id4-guide-url-bg-card);
+        }
+        
+        .id4-guide-card:nth-child(4) {
+            background-image: var(--id4-guide-url-bg-card);
+        }
+        
+        .id4-guide-card:nth-child(5) {
+            background-image: var(--id4-guide-url-bg-card);
+        }
+        
+        .id4-guide-card-text {
+            flex: 1 1 55%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .id4-guide-card-image {
+            flex: 1 1 45%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .id4-guide-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+        
+        .id4-guide-card h2 {
+            font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+            margin-top: 0;
+            margin-bottom: 15px;
+            text-align: left;
+            color: var(--id4-guide-color-text);
+        }
+        
+        .id4-guide-card p {
+            font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+            line-height: 1.6;
+            opacity: 0.8;
+            text-align: left;
+            color: var(--id4-guide-color-text);
+        }
+        
+        .id4-guide-pagination-dots {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            flex-direction: row;
+            justify-content: center;
+            gap: 12px;
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .id4-guide-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--id4-guide-dot-inactive-color);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .id4-guide-dot.id4-guide-active {
+            background-color: var(--id4-guide-text-color);
+            transform: scale(1.2);
+        }
+        /* ----- CSS cho Modal giữ nguyên ----- */
+        
+        .id4-guide-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: rgba(26, 26, 26, 0.3);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .id4-guide-modal-overlay.id4-guide-active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .id4-guide-modal-content {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transform: scale(0.9);
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .id4-guide-modal-content .id4-guide-card-text {
+            flex: 1 1 55%;
+        }
+        
+        .id4-guide-modal-content .id4-guide-card-image {
+            flex: 1 1 45%;
+        }
+        
+        .id4-guide-modal-content .id4-guide-card-image img {
+            width: 100%;
+            border-radius: 15px;
+        }
+        
+        .id4-guide-modal-content h2,
+        .id4-guide-modal-content p {
+            text-align: left;
+            color: var(--id4-guide-text-color);
+        }
+        
+        .id4-guide-modal-overlay.id4-guide-active .id4-guide-modal-content {
+            transform: scale(1);
+        }
+        
+        .id4-guide-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 3rem;
+            line-height: 1;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        
+        .id4-guide-modal-close:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        /* ----- CSS Responsive giữ nguyên ----- */
+        
+        @media (max-width: 1024px) {
+            .id4-guide-card {
+                width: clamp(350px, 70vw, 570px);
+                height: 440px;
+                max-height: 440px;
+                padding: clamp(30px, 4vw, 35px);
+                gap: 20px;
+            }
+            .id4-guide-card h2 {
+                font-size: clamp(1.4rem, 4vw, 2rem);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .id4-guide-pagination-dots {
+                display: flex;
+            }
+            .id4-guide-progress-bar-container {
+                display: none;
+            }
+            .id4-guide-card,
+            .id4-guide-modal-content {
+                flex-direction: column;
+                text-align: center;
+                height: auto;
+                max-height: 80vh;
+                padding: 30px;
+                width: 90vw;
+            }
+            .id4-guide-card-image,
+            .id4-guide-modal-content .id4-guide-card-image {
+                order: -1;
+                width: 100%;
+                height: 200px;
+                margin-bottom: 20px;
+            }
+            .id4-guide-card h2,
+            .id4-guide-card p,
+            .id4-guide-modal-content h2,
+            .id4-guide-modal-content p {
+                text-align: center;
+            }
+            .id4-guide-modal-content {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="id4-guide-container">
+        <div class="id4-guide-progress-bar-container">
+            <div class="id4-guide-progress-bar"></div>
+        </div>
+
+        <section class="id4-guide-horizontal-section">
+            <div class="id4-guide-content-wrapper">
+                <div class="id4-guide-horizontal-content">
+                </div>
+            </div>
+        </section>
+
+
+        <div class="id4-guide-pagination-dots"></div>
+
+        <div class="id4-guide-modal-overlay">
+            <div class="id4-guide-modal-content"></div>
+            <button class="id4-guide-modal-close" aria-label="Đóng">&times;</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Đăng ký plugin ScrollTrigger
+            gsap.registerPlugin(ScrollTrigger);
+
+            const cardData = [{
+                title: '✨ Lập kế hoạch chính xác',
+                description: 'Vị trí hạ mào xương/ Vị trí Implant/ Abutment / Phục hình: Tất cả đều được phân tích lên kế hoạch và thiết kế chính xác.',
+                imageUrl: 'http://localhost/iD4Center/wp-content/uploads/2025/09/MHDPT-1.png'
+            }, {
+                title: '🚀 Hiệu năng cao',
+                description: 'Sử dụng GSAP ScrollTrigger để tạo hiệu ứng cuộn mượt mà và tối ưu nhất.',
+                imageUrl: 'http://localhost/iD4Center/wp-content/uploads/2025/09/MHDPT-1.png'
+            }, {
+                title: '🎨 Giàu tương tác',
+                description: 'Phản hồi với thao tác di chuột, click và điều hướng bàn phím một cách thông minh.',
+                imageUrl: 'http://localhost/iD4Center/wp-content/uploads/2025/09/MHDPT-1.png'
+            }, {
+                title: '♿ Dễ tiếp cận',
+                description: 'Hỗ trợ điều hướng bằng bàn phím, giúp mọi người dùng đều có thể trải nghiệm trọn vẹn.',
+                imageUrl: 'http://localhost/iD4Center/wp-content/uploads/2025/09/MHDPT-1.png'
+            }, {
+                title: '📱 Đồng nhất',
+                description: 'Trải nghiệm cuộn dọc-ngang độc đáo được đồng bộ trên mọi thiết bị, từ lớn đến nhỏ.',
+                imageUrl: 'http://localhost/iD4Center/wp-content/uploads/2025/09/MHDPT-1.png'
+            }];
+
+
+            const contentContainer = document.querySelector('.id4-guide-horizontal-content');
+
+            contentContainer.innerHTML = cardData.map(data => `
+                <div class="id4-guide-card">
+                    <div class="id4-guide-card-text">
+                        <h2>${data.title}</h2>
+                        <p>${data.description}</p>
+                    </div>
+                    <div class="id4-guide-card-image">
+                        <img src="${data.imageUrl}" alt="${data.title}" loading="lazy">
+                    </div>
+                </div>
+            `).join('');
+
+            const cards = gsap.utils.toArray(".id4-guide-card");
+            const horizontalSection = document.querySelector('.id4-guide-horizontal-section');
+            const progressBar = document.querySelector('.id4-guide-progress-bar');
+
+            // --- LOGIC CUỘN NGANG VỚI GSAP ---
+            // Tính toán độ rộng cần cuộn
+            // scrollWidth là tổng độ rộng của content, clientWidth là độ rộng của viewport
+            const scrollWidth = contentContainer.scrollWidth - document.documentElement.clientWidth + window.innerWidth;
+
+            // Tạo animation cuộn ngang
+            let tween = gsap.to(contentContainer, {
+                x: () => -(contentContainer.scrollWidth - horizontalSection.clientWidth),
+                ease: "none", // Animation tuyến tính
+                scrollTrigger: {
+                    trigger: horizontalSection, // Kích hoạt khi section này vào viewport
+                    pin: true, // Ghim section này lại trong khi cuộn
+                    scrub: 1, // Làm mượt animation theo thanh cuộn (1 giây)
+                    end: () => "+=" + contentContainer.offsetWidth, // Kết thúc khi đã cuộn hết content
+                    invalidateOnRefresh: true, // Tính toán lại khi resize
+                    // Cập nhật progress bar và dots khi cuộn
+                    onUpdate: (self) => {
+                        if (progressBar) {
+                            progressBar.style.width = `${self.progress * 100}%`;
+                        }
+                        updateActiveDot(self.progress);
+                    }
+                }
+            });
+
+            // --- LOGIC PAGINATION DOTS ---
+            const paginationContainer = document.querySelector('.id4-guide-pagination-dots');
+            let dots = [];
+
+            if (paginationContainer) {
+                cards.forEach((card, index) => {
+                    const dot = document.createElement('div');
+                    dot.classList.add('id4-guide-dot');
+                    dot.addEventListener('click', () => {
+                        // Tính toán tiến trình (progress) tương ứng với card
+                        const progress = index / (cards.length - 1);
+                        // Lấy vị trí scroll bắt đầu và kết thúc của ScrollTrigger
+                        const startScroll = tween.scrollTrigger.start;
+                        const endScroll = tween.scrollTrigger.end;
+                        const targetScroll = startScroll + (endScroll - startScroll) * progress;
+
+                        // Cuộn đến vị trí đó
+                        window.scrollTo({
+                            top: targetScroll,
+                            behavior: 'smooth'
+                        });
+                    });
+                    paginationContainer.appendChild(dot);
+                });
+                dots = Array.from(paginationContainer.children);
+                if (dots.length > 0) dots[0].classList.add('id4-guide-active'); // Kích hoạt dot đầu tiên
+            }
+
+            function updateActiveDot(progress) {
+                if (dots.length > 0) {
+                    const activeIndex = Math.round(progress * (cards.length - 1));
+                    dots.forEach((dot, index) => {
+                        dot.classList.toggle('id4-guide-active', index === activeIndex);
+                    });
+                }
+            }
+
+
+            // --- LOGIC MODAL (GIỮ NGUYÊN) ---
+            const modalOverlay = document.querySelector('.id4-guide-modal-overlay');
+            const modalContent = document.querySelector('.id4-guide-modal-content');
+            const modalClose = document.querySelector('.id4-guide-modal-close');
+
+            function openModal(contentHTML) {
+                modalContent.innerHTML = contentHTML;
+                modalOverlay.classList.add('id4-guide-active');
+                document.body.classList.add('id4-guide-modal-open');
+            }
+
+            function closeModal() {
+                modalOverlay.classList.remove('id4-guide-active');
+                document.body.classList.remove('id4-guide-modal-open');
+            }
+
+            cards.forEach(card => card.addEventListener('click', () => openModal(card.innerHTML)));
+            modalClose.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) closeModal();
+            });
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modalOverlay.classList.contains('id4-guide-active')) closeModal();
+            });
+
+        });
+    </script>
+
+</body>
+
+</html>

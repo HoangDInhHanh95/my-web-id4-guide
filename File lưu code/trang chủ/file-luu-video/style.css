@@ -1,0 +1,446 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --id4-font-size-title: 2rem;
+    --id4-font-size-title-left: 40px;
+    --font-size-des: 16px;
+    --color-tilet: #02518a;
+    --id4-color-bg-section: #f0f1f2;
+    --id4-font-family: 'SVN-Effra';
+    /* width 820px */
+    --max-width-section: 820px;
+    --maxw: 1200px;
+}
+
+
+/* 
+        page-wrapper - Lớp bao bọc toàn bộ nội dung trang, 
+        dùng để căn giữa toàn bộ thư viện video trên màn hình và thiết lập màu nền chung. 
+*/
+
+.page-wrapper {
+    box-sizing: border-box;
+    font-family: var(--id4-font-family);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 10px;
+    background-color: var(--id4-color-bg-section);
+}
+
+
+/* 
+    gallery-container - Vùng chứa chính cho toàn bộ thư viện video, 
+    giới hạn chiều rộng tối đa để giao diện không bị quá rộng trên màn hình lớn.
+*/
+
+.gallery-container {
+    box-sizing: border-box;
+    width: 140px;
+    max-width: 1400px;
+    padding: 20px;
+}
+
+
+/* 
+    - video-gallery - Thẻ <ul> chứa danh sách các video. 
+    - Lớp này sử dụng Flexbox để sắp xếp các video theo hàng ngang.
+*/
+
+.video-gallery {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+
+/* giúp video đạt 100 */
+
+.col,
+.columns,
+.gallery-item {
+    margin: 0;
+    padding: 0 !important;
+    position: relative;
+    width: 100%;
+}
+
+
+/* 
+    - gallery-item - Từng mục video riêng lẻ (thẻ <li>). 
+    - Lớp này định dạng kích thước, bo góc, và hiệu ứng khi di chuột vào. 
+    - Trên di động, nó được dùng để sắp xếp video và tiêu đề theo chiều dọc.
+*/
+
+.gallery-item {
+    position: relative;
+    width: 125px;
+    height: 250px;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform var(--transition-speed) ease;
+    flex-shrink: 0;
+}
+
+
+/* 
+    - Điều trình kích thước khi hover vào 
+*/
+
+.gallery-item:hover {
+    transform: scale(1.01);
+}
+
+
+/* 
+        - gallery-item video dùng để định dạng cho thẻ <video> 
+        là ảnh thumbnail trong mỗi mục của thư viện. 
+        - Trên máy tính (Desktop): Nó làm cho video lấp đầy hoàn toàn khung hình chữ nhật của thẻ 
+        .gallery-item cha. Thuộc tính object-fit: cover đảm bảo video giữ đúng tỷ lệ và không bị méo, 
+        dù có thể bị cắt bớt một phần để vừa với khung.
+*/
+
+.gallery-item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+/* 
+        item-overlay - Lớp phủ màu tối ở nửa dưới của video trên giao diện máy tính, 
+        chứa tiêu đề của video. Lớp này bị ẩn trên giao diện di động
+*/
+
+.item-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 0px 5px 15px 5px;
+    color: white;
+    font-weight: bold;
+    font-size: 0.8em;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    text-align: center;
+    pointer-events: none;
+}
+
+
+/* 
+        play-button-overlay - Lớp chứa nút "Play". 
+        Nó được đặt ở giữa video để người dùng biết có thể nhấn vào xem.
+*/
+
+.play-button-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    transition: transform var(--transition-speed) ease;
+}
+
+
+/* 
+        play-icon - Biểu tượng hình tam giác (nút Play) mặc định. 
+        Nó sẽ biến mất khi di chuột vào video.
+*/
+
+.play-icon,
+.expand-icon {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transition: opacity var(--transition-speed) ease;
+}
+
+.play-icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-40%, -50%);
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 18px solid #333;
+}
+
+
+/* 
+        expand-icon - Biểu tượng phóng to, 
+        chỉ xuất hiện khi người dùng di chuột vào video trên giao diện máy tính, 
+        thay thế cho play-icon.
+
+*/
+
+.expand-icon {
+    opacity: 0;
+}
+
+.expand-icon::before,
+.expand-icon::after {
+    content: '';
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-color: #333;
+    border-style: solid;
+}
+
+.expand-icon::before {
+    top: 16px;
+    left: 16px;
+    border-width: 3px 0 0 3px;
+}
+
+.expand-icon::after {
+    bottom: 16px;
+    right: 16px;
+    border-width: 0 3px 3px 0;
+}
+
+.gallery-item:hover .play-icon {
+    opacity: 0;
+}
+
+.gallery-item:hover .expand-icon {
+    opacity: 1;
+}
+
+.mobile-title {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .page-wrapper {
+        padding: 0 !important;
+        align-items: flex-start;
+    }
+
+    .gallery-container {
+        padding: 0px 0;
+        width: 100%;
+    }
+
+    .video-gallery {
+        display: flex;
+        justify-content: flex-start;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding: 0 20px;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+        align-items: flex-start;
+    }
+
+    .video-gallery::-webkit-scrollbar {
+        display: none;
+    }
+
+    .col,
+    .columns,
+    .gallery-item {
+        margin: 0;
+        padding: 0 15px 30px;
+        position: relative;
+        width: 75px !important;
+    }
+
+    .gallery-item {
+        width: 90px;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        border-radius: 0;
+        overflow: visible;
+        border: none;
+        scroll-snap-align: start;
+        /* border: 3px solid #ccc; */
+        object-fit: cover;
+    }
+
+    /* 
+            -Trên điện thoại (Mobile): Nó biến video thành một hình tròn nhỏ 
+            (border-radius: 50%) có kích thước cố định 90x90 pixel và thêm một viền màu xám xung quanh.
+    */
+    .gallery-item video {
+        width: 75px;
+        height: 75px;
+        border-radius: 50%;
+        border: 3px solid #ccc;
+    }
+
+    .item-overlay {
+        display: none;
+    }
+
+    .mobile-title {
+        display: block;
+        color: #333;
+        font-weight: normal;
+        font-size: 0.8em;
+        text-align: center;
+        /* width: 100%; */
+    }
+
+    .play-button-overlay {
+        width: 30px;
+        height: 30px;
+        top: 31%;
+        left: 50%;
+    }
+
+    .play-icon::after {
+        border-top-width: 6px;
+        border-bottom-width: 6px;
+        border-left-width: 11px;
+    }
+
+    .expand-icon::before {
+        top: 10px;
+        left: 10px;
+        width: 10px;
+        height: 10px;
+    }
+
+    .expand-icon::after {
+        bottom: 10px;
+        right: 10px;
+        width: 10px;
+        height: 10px;
+    }
+}
+
+.modal {
+    margin-top: 2%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-speed) ease, visibility var(--transition-speed) ease;
+}
+
+.modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+/* khung chưa video */
+
+.modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: width var(--transition-speed) ease, height var(--transition-speed) ease;
+    max-width: 80vw;
+    max-height: 70vh;
+    /* THAY ĐỔI: Chiều cao ngắn hơn nữa */
+    background: rgba(25, 25, 25, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    border-radius: 15px;
+}
+
+#modal-video {
+    width: 100%;
+    height: 87%;
+    border-radius: 15px;
+    display: block;
+    object-fit: cover;
+}
+
+.modal-progress-container {
+    position: absolute;
+    top: 10px;
+    width: calc(100% - 30px);
+    left: 15px;
+    display: flex;
+    gap: 4px;
+    z-index: 1002;
+}
+
+.progress-segment {
+    flex: 1;
+    height: 3px;
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    width: 0%;
+    height: 100%;
+    background-color: white;
+    border-radius: 3px;
+    transition: width 0.1s linear;
+}
+
+.progress-segment.active .progress-fill {
+    background-color: #ff4500;
+}
+
+.modal-close,
+.modal-nav {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 1001;
+    font-size: 16px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-close {
+    top: 20px;
+    right: 5px;
+}
+
+.modal-nav {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.modal-nav.prev {
+    left: 15px;
+}
+
+.modal-nav.next {
+    right: 15px;
+}

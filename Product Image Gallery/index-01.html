@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thư Viện Ảnh Cập Nhật</title>
+    <style>
+        /* --- CSS --- */
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #fff;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        /* --- GIAO DIỆN CHÍNH --- */
+        
+        .product-gallery-container {
+            width: 100%;
+            max-width: 650px;
+            /* Tăng nhẹ chiều rộng để chứa nhiều ảnh hơn */
+            text-align: center;
+        }
+        
+        .main-image-wrapper {
+            margin-bottom: 20px;
+            cursor: zoom-in;
+        }
+        
+        #main-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 4px;
+            /* Thêm bo góc nhẹ cho ảnh chính */
+        }
+        
+        .thumbnail-list {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .thumbnail {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+            /* YÊU CẦU MỚI: Border trong suốt ở trạng thái mặc định */
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: border-color 0.3s ease, transform 0.2s ease;
+            padding: 5px;
+        }
+        /* YÊU CẦU MỚI: Border chỉ hiện ra khi được chọn (active) */
+        
+        .thumbnail.active {
+            border-color: #000;
+            /* Border màu đen khi active */
+        }
+        
+        .thumbnail:hover {
+            transform: scale(1.05);
+            /* Hiệu ứng phóng to nhẹ khi di chuột qua */
+        }
+        /* --- GIAO DIỆN POP-UP (LIGHTBOX) --- */
+        
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .lightbox.show {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            font-size: 40px;
+            font-weight: 300;
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .lightbox-close:hover {
+            transform: scale(1.1);
+        }
+        
+        #lightbox-image {
+            max-width: 90%;
+            max-height: 85%;
+            object-fit: contain;
+        }
+        
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 40px;
+            color: #fff;
+            cursor: pointer;
+            padding: 10px;
+            user-select: none;
+            transition: background-color 0.3s;
+            border-radius: 5px;
+        }
+        
+        .lightbox-nav:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .prev {
+            left: 20px;
+        }
+        
+        .next {
+            right: 20px;
+        }
+        /* --- RESPONSIVE --- */
+        
+        @media (max-width: 768px) {
+            .thumbnail {
+                width: 70px;
+                height: 70px;
+            }
+            .lightbox-nav {
+                font-size: 30px;
+            }
+            .prev {
+                left: 10px;
+            }
+            .next {
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="product-gallery-container">
+        <div class="main-image-wrapper">
+            <img id="main-image" src="" alt="Hình ảnh sản phẩm chính">
+        </div>
+        <div class="thumbnail-list" id="thumbnail-list">
+        </div>
+    </div>
+
+    <div id="my-lightbox" class="lightbox">
+        <span class="lightbox-close" id="lightbox-close">&times;</span>
+        <a class="lightbox-nav prev" onclick="navigateLightbox(-1)">&#10094;</a>
+        <img id="lightbox-image" src="" alt="Hình ảnh phóng to">
+        <a class="lightbox-nav next" onclick="navigateLightbox(1)">&#10095;</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // YÊU CẦU MỚI: Thêm nhiều ảnh tương tự
+            const imageSources = [
+                "https://dlcdnwebimgs.asus.com/gain/3f823293-7e3c-44b4-8ed9-385c6b65377d/w800", // Front view
+                "https://dlcdnwebimgs.asus.com/gain/14c6be57-e7d1-462c-a109-4f93c353d93c/w800", // Angled view
+                "https://dlcdnwebimgs.asus.com/gain/49f2b866-51d0-424a-b5e1-512133c16828/w800", // Side view (right)
+                "https://dlcdnwebimgs.asus.com/gain/306e00f8-c0b1-4191-89d9-c3b01a1c93a0/w800", // Top-down view (closed)
+                "https://dlcdnwebimgs.asus.com/gain/53a55e2e-2f22-4217-91a7-0e6e8e888ed4/w800", // Side view (left)
+                "https://dlcdnwebimgs.asus.com/gain/b6f84969-a352-4a00-b66c-3f412c2a2b0c/w800", // Back view
+                "https://dlcdnwebimgs.asus.com/gain/8338965f-71f6-4074-82a8-8a8047f3f15d/w800", // Tilted open view
+                "https://dlcdnwebimgs.asus.com/gain/c17e335b-5136-4e5a-8004-92211913a52c/w800" // Flat open view (180 degrees)
+            ];
+
+            let currentImageIndex = 0;
+
+            const mainImage = document.getElementById('main-image');
+            const thumbnailList = document.getElementById('thumbnail-list');
+            const lightbox = document.getElementById('my-lightbox');
+            const lightboxImage = document.getElementById('lightbox-image');
+            const closeButton = document.getElementById('lightbox-close');
+
+            function generateThumbnails() {
+                thumbnailList.innerHTML = '';
+                imageSources.forEach((src, index) => {
+                    const thumb = document.createElement('img');
+                    thumb.src = src;
+                    thumb.alt = `Ảnh thu nhỏ ${index + 1}`;
+                    thumb.className = 'thumbnail';
+                    thumb.dataset.index = index;
+                    thumbnailList.appendChild(thumb);
+                });
+            }
+
+            function updateMainImage(index) {
+                if (index < 0 || index >= imageSources.length) return;
+
+                currentImageIndex = index;
+                mainImage.src = imageSources[currentImageIndex];
+
+                // Cập nhật lớp 'active' cho thumbnail
+                document.querySelectorAll('.thumbnail').forEach(thumb => {
+                    thumb.classList.toggle('active', parseInt(thumb.dataset.index) === currentImageIndex);
+                });
+            }
+
+            function openLightbox() {
+                lightboxImage.src = imageSources[currentImageIndex];
+                lightbox.classList.add('show');
+            }
+
+            function closeLightbox() {
+                lightbox.classList.remove('show');
+            }
+
+            // Gán sự kiện cho danh sách thumbnail
+            thumbnailList.addEventListener('click', function(e) {
+                if (e.target.matches('img.thumbnail')) {
+                    const index = parseInt(e.target.dataset.index);
+                    updateMainImage(index);
+                }
+            });
+
+            // Gán các sự kiện khác
+            mainImage.addEventListener('click', openLightbox);
+            closeButton.addEventListener('click', closeLightbox);
+            lightbox.addEventListener('click', e => (e.target === lightbox) && closeLightbox());
+            document.addEventListener('keydown', e => (e.key === "Escape") && closeLightbox());
+
+            // Hàm điều hướng trong lightbox
+            window.navigateLightbox = function(direction) {
+                let newIndex = currentImageIndex + direction;
+                if (newIndex < 0) {
+                    newIndex = imageSources.length - 1;
+                } else if (newIndex >= imageSources.length) {
+                    newIndex = 0;
+                }
+
+                updateMainImage(newIndex);
+                lightboxImage.src = imageSources[newIndex];
+            }
+
+            // Khởi tạo thư viện ảnh
+            generateThumbnails();
+            updateMainImage(0); // Hiển thị ảnh đầu tiên
+        });
+    </script>
+</body>
+
+</html>

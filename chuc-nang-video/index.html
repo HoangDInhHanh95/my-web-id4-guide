@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Video Gallery</title>
+    <style>
+        /* --- Cài đặt chung --- */
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 50px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .gallery-container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+            box-sizing: border-box;
+            /* --- YÊU CẦU 1: Đã loại bỏ background và border --- */
+        }
+        /* --- Giao diện Desktop: Ô chữ nhật --- */
+        
+        .video-gallery {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .gallery-item {
+            position: relative;
+            width: 180px;
+            height: 320px;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .gallery-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        /* --- YÊU CẦU 2: Style cho nút Play hình tròn mới --- */
+        
+        .play-button-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            /* Cho phép click xuyên qua nút này vào video item */
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover .play-button-overlay {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+        
+        .play-button-overlay::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 0;
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            border-left: 20px solid #333;
+            margin-left: 5px;
+            /* Căn chỉnh tam giác vào giữa */
+        }
+        /* --- Giao diện Mobile: Vòng tròn, vuốt ngang --- */
+        
+        @media (max-width: 768px) {
+            .gallery-container {
+                padding: 20px 0;
+            }
+            .video-gallery {
+                justify-content: flex-start;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                padding: 0 20px;
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+            .video-gallery::-webkit-scrollbar {
+                display: none;
+            }
+            .gallery-item {
+                width: 90px;
+                height: 90px;
+                border-radius: 50%;
+                border: 3px solid #ccc;
+                scroll-snap-align: start;
+            }
+            .gallery-item.active {
+                border-color: #ff4500;
+                box-shadow: 0 0 15px rgba(255, 69, 0, 0.7);
+            }
+            /* Thu nhỏ nút play trên mobile */
+            .play-button-overlay {
+                width: 40px;
+                height: 40px;
+            }
+            .play-button-overlay::after {
+                border-top: 8px solid transparent;
+                border-bottom: 8px solid transparent;
+                border-left: 13px solid #333;
+            }
+        }
+        /* --- Modal (Popup) Video --- */
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            position: relative;
+            width: 90vw;
+            height: 80vh;
+            max-width: 450px;
+            max-height: 800px;
+        }
+        
+        #modal-video {
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+        }
+        
+        .modal-close,
+        .modal-nav {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1001;
+            font-size: 20px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-close {
+            top: 15px;
+            right: 15px;
+        }
+        
+        .modal-nav {
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .modal-nav.prev {
+            left: 15px;
+        }
+        
+        .modal-nav.next {
+            right: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="gallery-container">
+        <ul class="video-gallery">
+        </ul>
+    </div>
+
+    <div id="video-modal" class="modal">
+        <div class="modal-content">
+            <video id="modal-video" controls autoplay></video>
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <button class="modal-nav prev" onclick="showPrevVideo()">&#10094;</button>
+            <button class="modal-nav next" onclick="showNextVideo()">&#10095;</button>
+        </div>
+    </div>
+
+
+    <script>
+        const newVideoURL = "https://stories.join-stories.com/asus-hq/ec4c7026-99a2-4813-b330-f2e863f34f76/story.mp4";
+
+        const videoData = [{
+            thumb: newVideoURL,
+            full: newVideoURL
+        }, {
+            thumb: newVideoURL,
+            full: newVideoURL
+        }, {
+            thumb: newVideoURL,
+            full: newVideoURL
+        }, {
+            thumb: newVideoURL,
+            full: newVideoURL
+        }, {
+            thumb: newVideoURL,
+            full: newVideoURL
+        }, ];
+
+        const gallery = document.querySelector('.video-gallery');
+        const modal = document.getElementById('video-modal');
+        const modalVideo = document.getElementById('modal-video');
+        let currentVideoIndex = 0;
+
+        // 1. Tạo các mục trong gallery từ dữ liệu
+        function createGalleryItems() {
+            videoData.forEach((data, index) => {
+                const item = document.createElement('li');
+                item.className = 'gallery-item';
+                if (index === 0) item.classList.add('active');
+                item.setAttribute('data-index', index);
+
+                const video = document.createElement('video');
+                video.src = data.thumb + '#t=0.1';
+                video.muted = true;
+                video.loop = true;
+                video.playsInline = true;
+                video.preload = "metadata";
+
+                if (index === 0) {
+                    video.autoplay = true;
+                }
+
+                // --- YÊU CẦU 2: Tạo và chèn nút play mới, bỏ lớp phủ văn bản ---
+                const playButton = document.createElement('div');
+                playButton.className = 'play-button-overlay';
+
+                item.appendChild(video);
+                item.appendChild(playButton); // Chèn nút play vào
+                gallery.appendChild(item);
+            });
+        }
+
+        // 2. Mở Modal
+        function openModal(index) {
+            currentVideoIndex = index;
+            modalVideo.src = videoData[index].full;
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 3. Đóng Modal
+        function closeModal() {
+            modal.classList.remove('show');
+            modalVideo.pause();
+            modalVideo.src = '';
+            document.body.style.overflow = 'auto';
+        }
+
+        // 4. Chuyển video
+        function showNextVideo() {
+            currentVideoIndex = (currentVideoIndex + 1) % videoData.length;
+            openModal(currentVideoIndex);
+        }
+
+        function showPrevVideo() {
+            currentVideoIndex = (currentVideoIndex - 1 + videoData.length) % videoData.length;
+            openModal(currentVideoIndex);
+        }
+
+        // 5. Thêm Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            createGalleryItems();
+
+            const items = document.querySelectorAll('.gallery-item');
+            items.forEach(item => {
+                item.addEventListener('click', () => {
+                    const index = parseInt(item.getAttribute('data-index'));
+                    openModal(index);
+                });
+
+                const video = item.querySelector('video');
+                if (window.innerWidth > 768 && !video.autoplay) {
+                    item.addEventListener('mouseenter', () => video.play());
+                    item.addEventListener('mouseleave', () => video.pause());
+                }
+            });
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('show')) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>

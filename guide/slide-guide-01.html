@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cập nhật Slider - Cơ sở vật chất</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        .id4_guide_main-container {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4ff;
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+        /* Lớp giả để tạo đường cong lớn ở top */
+        
+        .id4_guide_main-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 500px;
+            background-color: white;
+            z-index: -1;
+            border-bottom-left-radius: 50% 10%;
+            border-bottom-right-radius: 50% 10%;
+        }
+        /* Các khối trang trí ở góc */
+        
+        .id4_guide_decorative-box-1,
+        .id4_guide_decorative-box-2,
+        .id4_guide_dots-pattern {
+            position: absolute;
+            z-index: 1;
+        }
+        
+        .id4_guide_decorative-box-1 {
+            top: 20px;
+            right: 15%;
+            width: 150px;
+            height: 70px;
+            border: 2px solid #fecaca;
+            /* red-200 */
+            border-radius: 1.5rem;
+            /* rounded-3xl */
+        }
+        
+        .id4_guide_decorative-box-2 {
+            top: 50px;
+            right: calc(15% + 20px);
+            width: 100px;
+            height: 50px;
+            background-color: #93c5fd;
+            /* blue-300 */
+            border-radius: 1rem;
+            /* rounded-xl */
+            z-index: 0;
+        }
+        
+        .id4_guide_dots-pattern {
+            top: 50px;
+            right: calc(15% - 50px);
+            width: 60px;
+            height: 60px;
+            background-image: radial-gradient(circle, #93c5fd 2px, transparent 2px);
+            background-size: 12px 12px;
+        }
+        
+        .id4_guide_slider-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            height: 550px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            -webkit-user-select: none;
+            /* Safari */
+            -ms-user-select: none;
+            /* IE 10+ */
+            user-select: none;
+            /* Standard syntax */
+            overflow: hidden;
+            /* ✅ SỬA LỖI: Cắt bỏ phần bóng mờ bị tràn ra ngoài */
+        }
+        
+        .id4_guide_slide {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            background-color: white;
+            border-radius: 1.5rem;
+            /* rounded-3xl */
+            box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.07), 0 8px 10px -6px rgb(0 0 0 / 0.07);
+            transition: transform 0.6s ease-in-out, height 0.6s ease-in-out, opacity 0.6s ease-in-out;
+            overflow: hidden;
+            width: 300px;
+            /* Trạng thái mặc định (ẩn đi) */
+            height: 380px;
+            opacity: 0;
+            z-index: 0;
+            transform: translateX(-50%) translateY(-50%) scale(0.7);
+        }
+        
+        .id4_guide_slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+        /* --- Trạng thái Slides (Desktop) --- */
+        
+        .id4_guide_slide.id4_guide_slide-active {
+            height: 480px;
+            opacity: 1;
+            z-index: 100;
+            transform: translateX(-50%) translateY(-50%);
+        }
+        
+        .id4_guide_slide.id4_guide_slide-next {
+            height: 380px;
+            opacity: 1;
+            z-index: 90;
+            transform: translateX(calc(-50% + 100%)) translateY(calc(-50% + 40px)) scale(0.85);
+        }
+        
+        .id4_guide_slide.id4_guide_slide-prev {
+            height: 380px;
+            opacity: 1;
+            z-index: 90;
+            transform: translateX(calc(-50% - 100%)) translateY(calc(-50% + 40px)) scale(0.85);
+        }
+        /* --- Nút điều hướng --- */
+        
+        .id4_guide_nav-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 200;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid #e2e8f0;
+            border-radius: 9999px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, background-color 0.2s, box-shadow 0.2s;
+        }
+        
+        @media (hover: hover) {
+            .id4_guide_slider-wrapper:hover .id4_guide_nav-button {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+        
+        .id4_guide_nav-button:hover {
+            background-color: white;
+        }
+        
+        .id4_guide_nav-prev {
+            left: 10%;
+        }
+        
+        .id4_guide_nav-next {
+            right: 10%;
+        }
+        
+        .id4_guide_nav-button svg {
+            width: 24px;
+            height: 24px;
+            color: #4a5568;
+        }
+        /* --- Giao diện đáp ứng (Responsive) --- */
+        
+        @media (max-width: 1023px) {
+            .id4_guide_nav-button {
+                display: none;
+            }
+            .id4_guide_decorative-box-1,
+            .id4_guide_decorative-box-2,
+            .id4_guide_dots-pattern {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 767px) {
+            .id4_guide_slider-wrapper {
+                height: 450px;
+            }
+            .id4_guide_slide {
+                width: 240px;
+            }
+            section.container h2 {
+                font-size: 2.25rem;
+                line-height: 2.5rem;
+            }
+            /* Trạng thái Slides (Mobile) */
+            .id4_guide_slide.id4_guide_slide-active {
+                height: 380px;
+            }
+            .id4_guide_slide.id4_guide_slide-next,
+            .id4_guide_slide.id4_guide_slide-prev {
+                height: 300px;
+            }
+            .id4_guide_slide.id4_guide_slide-next {
+                transform: translateX(calc(-50% + 85%)) translateY(calc(-50% + 30px)) scale(0.8);
+            }
+            .id4_guide_slide.id4_guide_slide-prev {
+                transform: translateX(calc(-50% - 85%)) translateY(calc(-50% + 30px)) scale(0.8);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="id4_guide_main-container">
+
+        <div class="id4_guide_decorative-box-1"></div>
+
+        <div class="id4_guide_decorative-box-2"></div>
+
+        <div class="id4_guide_dots-pattern"></div>
+
+
+        <section class="container mx-auto text-center pt-24 pb-12 px-4">
+
+            <h2 class="text-4xl font-bold text-gray-800">Cơ sở vật chất & Công nghệ</h2>
+
+            <p class="mt-4 max-w-3xl mx-auto text-gray-600 leading-relaxed">
+                Tại iD-4™, GUIDE Centex, mỗi sản phẩm đều được thiết kế trên nền tảng số hóa toàn diện: từ phim CT Cone Beam, dữ liệu quét trong miệng 3D, đến phần mềm thiết kế implant chuyên dụng. Chúng tôi sử dụng công nghệ in kim loại Cobalt-Chrome hoặc Titanium kết
+                                hợp nhựa quang polymer 3D resin, đảm bảo độ chính xác cao, tính ổn định và độ bền vượt trội.             </p>
+        </section>
+
+
+        <div class="id4_guide_slider-wrapper">
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const id4_guide_sliderWrapper = document.querySelector('.id4_guide_slider-wrapper');
+
+
+            const id4_guide_images = ['https://placehold.co/600x800/e2e8f0/4a5568?text=Image+1', 'https://placehold.co/600x800/cbd5e1/2d3748?text=Image+2', 'https://placehold.co/600x800/94a3b8/1a202c?text=Image+3', 'https://placehold.co/600x800/64748b/1a202c?text=Image+4', 'https://placehold.co/600x800/475569/ffffff?text=Image+5', 'https://placehold.co/600x800/334155/e2e8f0?text=Image+6'];
+
+
+            let id4_guide_currentIndex = 0;
+            let id4_guide_autoPlayInterval;
+            let id4_guide_isDragging = false;
+            let id4_guide_startX;
+            let id4_guide_endX;
+
+
+            id4_guide_images.forEach((src) => {
+                const id4_guide_slide = document.createElement('div');
+                id4_guide_slide.classList.add('id4_guide_slide');
+                const id4_guide_img = document.createElement('img');
+                id4_guide_img.src = src;
+                id4_guide_slide.appendChild(id4_guide_img);
+                id4_guide_sliderWrapper.appendChild(id4_guide_slide);
+            });
+
+
+            id4_guide_sliderWrapper.insertAdjacentHTML('beforeend', `
+                <button class="id4_guide_nav-button id4_guide_nav-prev" aria-label="Previous slide">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <button class="id4_guide_nav-button id4_guide_nav-next" aria-label="Next slide">
+                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            `);
+
+
+            const id4_guide_slides = document.querySelectorAll('.id4_guide_slide');
+            const id4_guide_totalSlides = id4_guide_slides.length;
+            const id4_guide_prevButton = document.querySelector('.id4_guide_nav-prev');
+            const id4_guide_nextButton = document.querySelector('.id4_guide_nav-next');
+
+
+            function id4_guide_updateSlider() {
+                id4_guide_slides.forEach((slide) => {
+                    slide.classList.remove('id4_guide_slide-active', 'id4_guide_slide-prev', 'id4_guide_slide-next');
+                });
+
+
+                const id4_guide_prevIndex = (id4_guide_currentIndex - 1 + id4_guide_totalSlides) % id4_guide_totalSlides;
+                const id4_guide_nextIndex = (id4_guide_currentIndex + 1) % id4_guide_totalSlides;
+
+
+                if (id4_guide_slides[id4_guide_currentIndex]) {
+                    id4_guide_slides[id4_guide_currentIndex].classList.add('id4_guide_slide-active');
+                }
+                if (id4_guide_slides[id4_guide_prevIndex]) {
+                    id4_guide_slides[id4_guide_prevIndex].classList.add('id4_guide_slide-prev');
+                }
+                if (id4_guide_slides[id4_guide_nextIndex]) {
+                    id4_guide_slides[id4_guide_nextIndex].classList.add('id4_guide_slide-next');
+                }
+            }
+
+
+            function id4_guide_startAutoPlay() {
+                id4_guide_stopAutoPlay();
+                id4_guide_autoPlayInterval = setInterval(id4_guide_nextSlide, 3000);
+            }
+
+
+            function id4_guide_stopAutoPlay() {
+                clearInterval(id4_guide_autoPlayInterval);
+            }
+
+
+            function id4_guide_nextSlide() {
+                id4_guide_currentIndex = (id4_guide_currentIndex + 1) % id4_guide_totalSlides;
+                id4_guide_updateSlider();
+            }
+
+
+            function id4_guide_prevSlide() {
+                id4_guide_currentIndex = (id4_guide_currentIndex - 1 + id4_guide_totalSlides) % id4_guide_totalSlides;
+                id4_guide_updateSlider();
+            }
+
+
+            id4_guide_nextButton.addEventListener('click', () => {
+                id4_guide_nextSlide();
+                id4_guide_startAutoPlay();
+            });
+            id4_guide_prevButton.addEventListener('click', () => {
+                id4_guide_prevSlide();
+                id4_guide_startAutoPlay();
+            });
+
+
+            function id4_guide_dragStart(e) {
+                id4_guide_isDragging = true;
+                id4_guide_startX = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+                id4_guide_stopAutoPlay();
+            }
+
+
+            function id4_guide_dragEnd(e) {
+                if (!id4_guide_isDragging) return;
+                id4_guide_isDragging = false;
+                id4_guide_endX = e.type.includes('mouse') ? e.pageX : e.changedTouches[0].clientX;
+
+
+                const threshold = 50;
+                if (id4_guide_startX - id4_guide_endX > threshold) {
+                    id4_guide_nextSlide();
+                } else if (id4_guide_endX - id4_guide_startX > threshold) {
+                    id4_guide_prevSlide();
+                }
+                id4_guide_startAutoPlay();
+            }
+
+
+            id4_guide_sliderWrapper.addEventListener('mouseenter', id4_guide_stopAutoPlay);
+            id4_guide_sliderWrapper.addEventListener('mouseleave', id4_guide_startAutoPlay);
+
+
+            id4_guide_sliderWrapper.addEventListener('mousedown', id4_guide_dragStart);
+            id4_guide_sliderWrapper.addEventListener('mouseup', id4_guide_dragEnd);
+            id4_guide_sliderWrapper.addEventListener('mouseleave', (e) => {
+                if (id4_guide_isDragging) id4_guide_dragEnd(e);
+            });
+            id4_guide_sliderWrapper.addEventListener('touchstart', id4_guide_dragStart, {
+                passive: true
+            });
+            id4_guide_sliderWrapper.addEventListener('touchend', id4_guide_dragEnd);
+
+
+            id4_guide_updateSlider();
+            id4_guide_startAutoPlay();
+        });
+    </script>
+</body>
+
+</html>

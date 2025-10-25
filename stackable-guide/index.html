@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ứng dụng ID-4 Stackable Guide</title>
+    <style>
+        /* Tùy chỉnh font chữ chung */
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            /* Màu nền xám nhạt để dễ nhìn component */
+        }
+        /* ----- BẮT ĐẦU CODE CHO GIAO DIỆN ----- */
+        /* Container chính của section */
+        
+        .id4-clinical-cases-section {
+            background-color: #eaf1f8;
+            /* Màu nền xanh nhạt giống trong hình */
+            padding: 60px 20px;
+            /* Khoảng đệm trên dưới và hai bên */
+            width: 100%;
+            box-sizing: border-box;
+        }
+        /* Lớp container để căn giữa nội dung và giới hạn chiều rộng */
+        
+        .id4-clinical-cases-container {
+            max-width: 1100px;
+            /* Giới hạn chiều rộng tối đa */
+            margin: 0 auto;
+            /* Tự động căn giữa */
+            display: flex;
+            /* Sử dụng Flexbox để tạo layout 2 cột */
+            align-items: center;
+            /* Căn giữa các item theo chiều dọc */
+            gap: 40px;
+            /* Khoảng cách giữa 2 cột */
+        }
+        /* Cột chứa tiêu đề (bên trái) */
+        
+        .id4-title-column {
+            flex: 0 0 40%;
+            /* Cột này chiếm 40% chiều rộng và không co giãn */
+        }
+        /* Cột chứa đoạn văn bản (bên phải) */
+        
+        .id4-text-column {
+            flex: 1;
+            /* Cột này sẽ chiếm hết phần không gian còn lại */
+        }
+        /* Định dạng cho tiêu đề chính */
+        
+        .id4-main-title {
+            font-size: 2.5rem;
+            /* Kích thước chữ */
+            color: #005a9e;
+            /* Màu chữ xanh dương */
+            font-weight: bold;
+            /* In đậm */
+            line-height: 1.3;
+            /* Chiều cao dòng để các chữ không dính vào nhau */
+            margin: 0;
+            /* Xóa margin mặc định */
+        }
+        /* Định dạng cho đoạn mô tả */
+        
+        .id4-description {
+            font-size: 1rem;
+            /* Kích thước chữ */
+            color: #333;
+            /* Màu chữ xám đậm */
+            line-height: 1.7;
+            /* Chiều cao dòng để dễ đọc */
+            margin: 0;
+            /* Xóa margin mặc định */
+        }
+        /* ----- Responsive cho thiết bị di động ----- */
+        
+        @media (max-width: 768px) {
+            .id4-clinical-cases-container {
+                flex-direction: column;
+                /* Chuyển layout thành 1 cột */
+                text-align: center;
+                /* Căn giữa toàn bộ văn bản */
+                gap: 25px;
+                /* Giảm khoảng cách khi xếp chồng lên nhau */
+            }
+            .id4-title-column {
+                flex-basis: auto;
+                /* Reset lại kích thước của cột */
+            }
+            .id4-main-title {
+                font-size: 2rem;
+                /* Giảm kích thước chữ tiêu đề trên mobile */
+            }
+            .id4-description {
+                font-size: 0.95rem;
+                /* Giảm nhẹ kích thước chữ mô tả */
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <section class="id4-clinical-cases-section">
+        <div class="id4-clinical-cases-container">
+            <div class="id4-title-column">
+                <h2 class="id4-main-title">
+                    Ứng dụng<br> ID-4 Stackable<br> Guide trên các<br> Ca lâm sàng
+                </h2>
+            </div>
+            <div class="id4-text-column">
+                <p class="id4-description">
+                    ID-4 Stackable GUIDE đã được ứng dụng thành công cho nhiều ca mất răng toàn hàm, tiêu xương hàm nặng và các ca All-on-X phức tạp. Nhờ khả năng định vị chính xác và thao tác an toàn, bác sĩ có thể tiến hành phục hình tạm ngay trong ngày, giúp bệnh nhân
+                    nhanh chóng khôi phục ăn nhai và tự tin nở nụ cười. Các kết quả lâm sàng cho thấy Implant được đặt đúng vị trí, phục hình ổn định, hài hòa thẩm mỹ và mang lại tiên lượng lâu dài, an toàn cho người bệnh. Đây chính là minh chứng rõ ràng
+                    cho hiệu quả vượt trội của công nghệ ID-4 Stackable GUIDE trong phẫu thuật Implant hiện đại.
+                </p>
+            </div>
+        </div>
+    </section>
+
+</body>
+
+</html>

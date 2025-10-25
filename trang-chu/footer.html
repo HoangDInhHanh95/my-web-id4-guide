@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID4 Guide Footer - Hoàn Chỉnh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer"
+    />
+
+    <style>
+        /* CSS đã được cập nhật và sửa lỗi */
+        
+        .id4-guide-footer {
+            font-family: Arial, sans-serif;
+            background-color: #0056a4;
+            color: #ffffff;
+            padding: 50px 0;
+            /* Căn giữa toàn bộ nội dung bằng Flexbox */
+            display: flex;
+            justify-content: center;
+        }
+        
+        .id4-guide-footer-container {
+            max-width: 1200px;
+            width: 100%;
+            padding: 0 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+        
+        .id4-guide-footer-col {
+            padding: 0 15px;
+            box-sizing: border-box;
+            margin-bottom: 30px;
+        }
+        
+        .id4-guide-footer-col h4 {
+            font-size: 18px;
+            text-transform: uppercase;
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-weight: 700;
+            position: relative;
+        }
+        
+        .id4-guide-footer-logo {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .id4-guide-footer-logo sup {
+            font-size: 12px;
+        }
+        
+        .id4-guide-footer-title-spacer {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            visibility: hidden;
+            display: block;
+        }
+        
+        .id4-guide-footer-info-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+        
+        .id4-guide-footer-info-item i {
+            margin-right: 12px;
+            margin-top: 5px;
+            min-width: 16px;
+            text-align: center;
+        }
+        
+        .id4-guide-footer-map-button {
+            display: inline-flex;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .id4-guide-footer-map-button:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .id4-guide-footer-map-button i {
+            margin-right: 8px;
+        }
+        
+        .id4-guide-footer-col ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .id4-guide-footer-col ul li {
+            margin-bottom: 12px;
+        }
+        
+        .id4-guide-footer-col ul li a {
+            text-decoration: none;
+            color: #ffffff;
+            font-size: 15px;
+            transition: color 0.3s ease, padding-left 0.3s ease;
+        }
+        
+        .id4-guide-footer-col ul li a:hover {
+            color: #e0e0e0;
+            padding-left: 5px;
+        }
+        
+        .id4-guide-footer-social-links a {
+            display: inline-block;
+            height: 40px;
+            width: 40px;
+            background-color: rgba(255, 255, 255, 0.2);
+            margin-right: 10px;
+            text-align: center;
+            line-height: 40px;
+            border-radius: 50%;
+            color: #ffffff;
+            transition: all 0.5s ease;
+        }
+        
+        .id4-guide-footer-social-links a:hover {
+            color: #0056a4;
+            background-color: #ffffff;
+        }
+        
+        .id4-guide-footer-fanpage-img {
+            margin-top: 25px;
+        }
+        
+        .id4-guide-footer-fanpage-img img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            display: block;
+        }
+        /* CSS cho Responsive */
+        
+        @media (min-width: 992px) {
+            .id4-guide-footer-col {
+                width: 25%;
+            }
+        }
+        
+        @media (max-width: 991.98px) and (min-width: 768px) {
+            .id4-guide-footer-col {
+                width: 50%;
+            }
+        }
+        
+        @media (max-width: 767.98px) {
+            .id4-guide-footer-col {
+                width: 100%;
+            }
+            .id4-guide-footer-title-spacer {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="id4-guide-footer">
+        <div class="id4-guide-footer-container">
+            <div class="id4-guide-footer-col">
+                <div class="id4-guide-footer-logo">iD-4 GUIDE<sup>TM</sup></div>
+                <h4>ID-4TM GUIDE Center</h4>
+                <div class="id4-guide-footer-info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Địa chỉ: 188 Lê Hồng Phong, P.4, Quận 5, TP. Hồ Chí Minh.</span>
+                </div>
+                <a href="#" class="id4-guide-footer-map-button">
+                    <i class="fas fa-map-marked-alt"></i> Xem bản đồ
+                </a>
+                <div class="id4-guide-footer-info-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Giờ làm việc: 08:30 - 19:30 (T2 - T7)</span>
+                </div>
+                <div class="id4-guide-footer-info-item">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>Hotline: 098 101 4422</span>
+                </div>
+                <div class="id4-guide-footer-info-item">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>(028) 38 339 432 - (028) 38 339 433</span>
+                </div>
+            </div>
+
+            <div class="id4-guide-footer-col">
+                <div class="id4-guide-footer-title-spacer">&nbsp;</div>
+                <h4>Dịch vụ</h4>
+                <ul>
+                    <li><a href="#">Implant</a></li>
+                    <li><a href="#">Veneer</a></li>
+                    <li><a href="#">Bọc răng sứ</a></li>
+                    <li><a href="#">Tẩy trắng răng</a></li>
+                    <li><a href="#">Nhổ răng khôn</a></li>
+                    <li><a href="#">Nha khoa tổng quát</a></li>
+                </ul>
+            </div>
+
+            <div class="id4-guide-footer-col">
+                <div class="id4-guide-footer-title-spacer">&nbsp;</div>
+                <h4>Liên kết nhanh</h4>
+                <ul>
+                    <li><a href="#">Về chúng tôi</a></li>
+                    <li><a href="#">ID-4 Guide</a></li>
+                    <li><a href="#">ID-4 Stackable Guide</a></li>
+                    <li><a href="#">ID-4 Ebook</a></li>
+                    <li><a href="#">Quy trình case lâm sàng</a></li>
+                    <li><a href="#">Quy trình CBCT Scan</a></li>
+                </ul>
+            </div>
+
+            <div class="id4-guide-footer-col">
+                <div class="id4-guide-footer-title-spacer">&nbsp;</div>
+                <h4>Kết nối</h4>
+                <div class="id4-guide-footer-social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#">Zalo</a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+                <div class="id4-guide-footer-fanpage-img">
+                    <h4>Fanpage</h4>
+                    <a href="#"><img src="https://via.placeholder.com/250x120.png?text=Fanpage+Image" alt="Fanpage"></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

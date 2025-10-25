@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>id4-guide - GSAP Final Version</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        /* Thay thế cho selector 'body' */
+        
+        .id4-guide-wrapper {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            /* Fix lỗi font bị mờ khi chuyển cảnh */
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .id4-guide-section-before,
+        .id4-guide-section-after {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            font-size: 2rem;
+        }
+        
+        .id4-guide-section-before h2,
+        .id4-guide-section-after h2 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .id4-guide-pin-container {
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .id4-guide-panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5%;
+            opacity: 0;
+            visibility: hidden;
+        }
+        
+        .id4-guide-panel-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 40px;
+            width: 100%;
+            max-width: 900px;
+        }
+        
+        .id4-guide-panel img {
+            max-width: 100%;
+            max-height: 45vh;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .id4-guide-panel h2 {
+            font-size: 2.8rem;
+            font-weight: 600;
+        }
+        
+        .id4-guide-panel p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            opacity: 0.8;
+            max-width: 650px;
+        }
+        /* Responsive Styles */
+        
+        @media (max-width: 768px) {
+            .id4-guide-section-before h2,
+            .id4-guide-section-after h2 {
+                font-size: 2rem;
+            }
+            .id4-guide-panel h2 {
+                font-size: 1.8rem;
+            }
+            .id4-guide-panel p {
+                font-size: 0.9rem;
+            }
+            .id4-guide-panel-content {
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="id4-guide-wrapper">
+        <section class="id4-guide-section-before">
+            <h2>id4-guide: Bắt đầu Demo</h2>
+            <p>Cuộn xuống để trải nghiệm hiệu ứng</p>
+        </section>
+
+        <div class="id4-guide-pin-container">
+        </div>
+
+        <section class="id4-guide-section-after">
+            <h2>id4-guide: Kết thúc Demo</h2>
+            <p>Cảm ơn bạn đã trải nghiệm!</p>
+        </section>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // =================================================================
+            // === BƯỚC 1: QUẢN LÝ TOÀN BỘ NỘI DUNG TẠI ĐÂY ===
+            // =================================================================
+            const slideData = [{
+                title: "Không giới hạn với công nghệ ID-3 GLIDE",
+                paragraph: "ID-3 GLIDE sử dụng công nghệ xử lý bề mặt 3D-titanium của DENTIUM, cải thiện độ bám dính của các tế bào xương và mô mềm xung quanh implant, rút ngắn thời gian lành thương, đem lại độ ổn định cao hơn.",
+                imageUrl: "https://images.unsplash.com/photo-1629904853716-f0bc54eea481?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            }, {
+                title: "An toàn tuyệt đối với công nghệ GLIDE",
+                paragraph: "Công nghệ xử lý bề mặt DENTIUM ID-3 GLIDE cho phép định hướng và gắn kết mô mềm tốt hơn, hạn chế các vấn đề như viêm quanh implant, nâng cao tỷ lệ thành công của quá trình phẫu thuật.",
+                imageUrl: "https://images.unsplash.com/photo-1558222218-b7b54e1e4a23?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            }, {
+                title: "Tối ưu hóa phẫu thuật với ứng dụng kỹ thuật số",
+                paragraph: "Kết hợp công nghệ ID-3 GLIDE với hướng dẫn phẫu thuật kỹ thuật số, giúp bác sĩ thực hiện cấy ghép implant chính xác, an toàn và hiệu quả hơn, giảm thiểu thời gian và biến chứng.",
+                imageUrl: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            }, {
+                title: "Kết quả vượt trội và bền vững",
+                paragraph: "Nhờ bề mặt xử lý tiên tiến và khả năng tích hợp xương tốt, implant DENTIUM ID-3 GLIDE mang lại kết quả lâu dài, thẩm mỹ tự nhiên và chức năng ăn nhai tối ưu cho bệnh nhân.",
+                imageUrl: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            }];
+
+            // =================================================================
+            // === BƯỚC 2: TỰ ĐỘNG TẠO HTML TỪ DỮ LIỆU ===
+            // =================================================================
+            const pinContainer = document.querySelector('.id4-guide-pin-container');
+
+            const panelsHTML = slideData.map(data => `
+                <section class="id4-guide-panel">
+                    <div class="id4-guide-panel-content">
+                        <h2>${data.title}</h2>
+                        <p>${data.paragraph}</p>
+                        <img src="${data.imageUrl}" alt="${data.title}">
+                    </div>
+                </section>
+            `).join('');
+
+            pinContainer.innerHTML = panelsHTML;
+
+            // =================================================================
+            // === BƯỚC 3: LOGIC HOẠT ẢNH VỚI GSAP ===
+            // =================================================================
+            gsap.registerPlugin(ScrollTrigger);
+            const panels = gsap.utils.toArray(".id4-guide-panel");
+
+            // Thiết lập trạng thái ban đầu cho slide đầu tiên
+            gsap.set(panels[0], {
+                autoAlpha: 1
+            });
+
+            const timeline = gsap.timeline({
+                scrollTrigger: {
+                    trigger: ".id4-guide-pin-container",
+                    pin: true,
+                    scrub: 0.5,
+
+                    snap: {
+                        snapTo: "labels",
+                        duration: {
+                            min: 0.2,
+                            max: 0.5
+                        },
+                        ease: "power1.inOut"
+                    },
+
+                    end: () => "+=" + (panels.length - 1) * window.innerHeight
+                }
+            });
+
+            // Xây dựng chuỗi hoạt ảnh cross-fade (mờ chéo)
+            panels.forEach((panel, i) => {
+                if (i > 0) {
+                    timeline.addLabel(`slide${i}`);
+
+                    timeline.to(panels[i - 1], {
+                        autoAlpha: 0,
+                        duration: 0.5,
+                        ease: "power1.inOut"
+                    });
+
+                    timeline.to(panel, {
+                        autoAlpha: 1,
+                        duration: 0.5,
+                        ease: "power1.inOut"
+                    }, "<");
+                }
+            });
+
+            timeline.addLabel(`slide${panels.length}`);
+        });
+    </script>
+</body>
+
+</html>

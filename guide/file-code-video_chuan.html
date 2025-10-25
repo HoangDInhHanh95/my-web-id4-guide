@@ -1,0 +1,80 @@
+<!-- <div style="position:relative; width:100%; aspect-ratio: 2.35/1; overflow:hidden;">
+    <video id="myVideo" src="http://localhost/iD4Center/wp-content/uploads/2025/10/nen-banner-vd-trang-chu-01.mp4" autoplay loop muted playsinline style="position:absolute; top:0; left:0; width:100% !important; align-items: center; overflow: hidden;">
+  </video>
+</div> -->
+
+
+
+
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .box-container {
+        position: relative;
+        width: 100%;
+    }
+
+    /* CSS cho Video (sửa lại 1 chút cho chuẩn) */
+
+    .vd-mang {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 32 / 15;
+        overflow: hidden;
+    }
+
+    .vd-mang video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .test-img-phu {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100%;
+    }
+
+    /* THÊM CÁI NÀY */
+
+    .test-img-phu img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .img-tiep {
+        width: 100%;
+    }
+
+    .img-tiep img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+</style>
+
+<div class="box-container">
+    <div class="vd-mang" style="position:relative; width:100%; aspect-ratio: 32 / 15; overflow:hidden;">
+        <video id="myVideo" src="http://localhost/iD4Center/wp-content/uploads/2025/10/nen-banner-vd-trang-chu-01.mp4"
+            autoplay muted playsinline
+            style="position:absolute; top:0; left:0; width:100% !important; align-items: center; overflow: hidden;">
+        </video>
+    </div>
+
+    <div class="test-img-phu">
+        <img src="http://localhost/iD4Center/wp-content/uploads/2025/10/trang-tri-1.1.png" alt="">
+    </div>
+</div>
+<div class="img-tiep">
+    <img src="http://localhost/iD4Center/wp-content/uploads/2025/10/1234.png" alt="">
+</div>

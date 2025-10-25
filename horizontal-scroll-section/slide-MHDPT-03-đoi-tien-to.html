@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID4 Image MHDPT Component</title>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <style>
+        :root {
+            --progress-bar-color: #333;
+            --inactive-bar-color: #d8d8d8;
+            --control-icon-color: #a0a0a0;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --id4-bg-section-STACKABLE-GUIDE: url('http://localhost/iD4Center/wp-content/uploads/2025/09/bg-ID-4-STACKABLE-GUIDE-1@4x.png');
+        }
+
+        .id-4-stacktable-guide-slide-container {
+            background-image: var(--id4-bg-section-STACKABLE-GUIDE);
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .id-4-stacktable-guide-slide {
+            font-family: var(--font-family);
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        .id-4-stacktable-guide-slide__swiper {
+            width: 100%;
+            padding: 20px 0;
+            overflow: visible;
+        }
+
+        .id-4-stacktable-guide-slide .swiper-wrapper {
+            will-change: transform;
+        }
+
+        .id-4-stacktable-guide-slide .swiper-slide {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f9f9fa;
+            border-radius: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            /* width: 100%; */
+            max-width: 800px;
+            /* height: 562px; */
+            height: 462px;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            will-change: transform;
+            overflow: hidden;
+        }
+
+        .id-4-stacktable-guide-slide .swiper-slide .id-4-stacktable-guide-slide__slide-inner {
+            border-radius: 24px;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .id-4-stacktable-guide-slide__slide-text {
+            flex: 1 1 50%;
+            padding: 40px;
+            box-sizing: border-box;
+            color: #333;
+            font-size: 18px;
+            line-height: 1.6;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: justify;
+        }
+
+        .id-4-stacktable-guide-slide__slide-text strong {
+            font-weight: 600;
+            color: #000;
+        }
+
+        .id-4-stacktable-guide-slide__slide-image {
+            flex: 1 1 50%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* CSS MỚI: Định dạng cho thẻ <img> bên trong */
+
+        @media (min-width: 768.25px) {
+            .id-4-stacktable-guide-slide__slide-image img {
+                width: 82%;
+                height: 100%;
+                object-fit: contain;
+            }
+        }
+
+        /* ĐÃ XÓA CÁC QUY TẮC :nth-child(n) cho background-image */
+
+        .id-4-stacktable-guide-slide__slide-inner {
+            box-sizing: border-box;
+        }
+
+        .id-4-stacktable-guide-slide__controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+        }
+
+        .id-4-stacktable-guide-slide__pagination.swiper-pagination-bullets {
+            position: static;
+            display: flex;
+            gap: 6px;
+            width: auto;
+        }
+
+        .id-4-stacktable-guide-slide__pagination .swiper-pagination-bullet {
+            width: 60px;
+            height: 6px;
+            border-radius: 3px;
+            background-color: var(--inactive-bar-color);
+            opacity: 1;
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.3s;
+        }
+
+        .id-4-stacktable-guide-slide__pagination .swiper-pagination-bullet-active {
+            background-color: var(--inactive-bar-color);
+        }
+
+        .id-4-stacktable-guide-slide__pagination .swiper-pagination-bullet-active::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--progress-bar-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            animation-name: id-4-stacktable-guide-slide-progressFill;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+            animation-duration: var(--id4-autoplay-delay, 5s);
+            animation-play-state: running;
+        }
+
+        .id-4-stacktable-guide-slide.autoplay-paused .swiper-pagination-bullet-active::after {
+            animation-play-state: paused;
+        }
+
+        @keyframes id-4-stacktable-guide-slide-progressFill {
+            from {
+                transform: scaleX(0);
+            }
+
+            to {
+                transform: scaleX(1);
+            }
+        }
+
+        .id-4-stacktable-guide-slide__autoplay-control {
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--control-icon-color);
+        }
+
+        .id-4-stacktable-guide-slide__autoplay-control .id-4-stacktable-guide-slide__icon {
+            display: none;
+        }
+
+        .id-4-stacktable-guide-slide__autoplay-control.playing .id-4-stacktable-guide-slide__icon--pause {
+            display: block;
+        }
+
+        .id-4-stacktable-guide-slide__autoplay-control.paused .id-4-stacktable-guide-slide__icon--play {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .id-4-stacktable-guide-slide__slide-image img {
+                width: 100%;
+                object-fit: contain;
+            }
+
+            .id-4-stacktable-guide-slide .swiper-slide {
+                width: 90%;
+                height: auto;
+                min-height: 450px;
+            }
+
+            .id-4-stacktable-guide-slide .swiper-slide .id-4-stacktable-guide-slide__slide-inner {
+                flex-direction: column;
+            }
+
+            .id-4-stacktable-guide-slide__slide-text {
+                flex: 1 1 auto;
+                width: 100%;
+                padding: 24px;
+                font-size: 16px;
+                order: 2;
+                text-align: justify;
+            }
+
+            .id-4-stacktable-guide-slide__slide-image {
+                flex: 1 1 200px;
+                width: 100%;
+                min-height: 180px;
+                order: 1;
+            }
+
+            /* CSS BỔ SUNG CHO PHÂN TRANG VÀ ĐIỀU KHIỂN TRÊN MOBILE/TABLET */
+            .id-4-stacktable-guide-slide__pagination .swiper-pagination-bullet {
+                width: 40px;
+                /* Giảm chiều rộng của thanh tiến trình */
+                height: 5px;
+                /* Giảm chiều cao của thanh tiến trình */
+            }
+
+            .id-4-stacktable-guide-slide__autoplay-control {
+                width: 20px;
+                /* Giảm kích thước vùng chứa nút điều khiển */
+                height: 20px;
+            }
+
+            .id-4-stacktable-guide-slide__autoplay-control svg {
+                width: 14px;
+                /* Giảm kích thước icon SVG */
+                height: 14px;
+            }
+
+            /* KẾT THÚC CSS BỔ SUNG */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="id-4-stacktable-guide-slide-container">
+        <div class="id-4-stacktable-guide-slide">
+
+            <div class="id-4-stacktable-guide-slide__swiper swiper">
+
+                <div class="swiper-wrapper">
+
+
+                    <div class="swiper-slide">
+
+                        <div class="id-4-stacktable-guide-slide__slide-inner">
+
+                            <div class="id-4-stacktable-guide-slide__slide-text">
+
+                                <p><strong>Không bị biến dạng:</strong> iD-4 Stackable GUIDE sử dụng công nghệ in kim
+                                    loại 3D (crom-cobal /titanium), từ đó khắc phục được nhược điểm của máng hướng dẫn
+                                    bằng nhựa dễ gãy đem lại độ chính xác hoàn hảo.</p>
+                            </div>
+
+                            <div class="id-4-stacktable-guide-slide__slide-image">
+                                <img src="http://localhost/iD4Center/wp-content/uploads/2025/10/Artboard-1.png"
+                                    alt="Slide 1">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="swiper-slide">
+
+                        <div class="id-4-stacktable-guide-slide__slide-inner">
+
+                            <div class="id-4-stacktable-guide-slide__slide-text">
+
+                                <p><strong>Nội dung slide 2:</strong> Văn bản mô tả cho hình ảnh thứ hai, giải thích về
+                                    một tính năng hoặc lợi ích khác.</p>
+                            </div>
+
+                            <div class="id-4-stacktable-guide-slide__slide-image">
+                                <img src="http://localhost/iD4Center/wp-content/uploads/2025/10/Artboard-1.png"
+                                    alt="Slide 2">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="swiper-slide">
+
+                        <div class="id-4-stacktable-guide-slide__slide-inner">
+
+                            <div class="id-4-stacktable-guide-slide__slide-text">
+
+                                <p><strong>Nội dung slide 3:</strong> Trình bày chi tiết về quy trình hoặc một ứng dụng
+                                    cụ thể của sản phẩm.</p>
+                            </div>
+
+                            <div class="id-4-stacktable-guide-slide__slide-image">
+                                <img src="http://localhost/iD4Center/wp-content/uploads/2025/10/Artboard-1.png"
+                                    alt="Slide 3">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="swiper-slide">
+
+                        <div class="id-4-stacktable-guide-slide__slide-inner">
+
+                            <div class="id-4-stacktable-guide-slide__slide-text">
+
+                                <p><strong>Nội dung slide 4:</strong> So sánh hoặc đưa ra các thông số kỹ thuật quan
+                                    trọng.
+                                </p>
+                            </div>
+
+                            <div class="id-4-stacktable-guide-slide__slide-image">
+                                <img src="http://localhost/iD4Center/wp-content/uploads/2025/10/Artboard-1.png"
+                                    alt="Slide 4">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="swiper-slide">
+
+                        <div class="id-4-stacktable-guide-slide__slide-inner">
+
+                            <div class="id-4-stacktable-guide-slide__slide-text">
+
+                                <p><strong>Nội dung slide 5:</strong> Kết luận về lợi ích và độ chính xác mà công nghệ
+                                    mang lại. </p>
+                            </div>
+
+                            <div class="id-4-stacktable-guide-slide__slide-image">
+                                <img src="http://localhost/iD4Center/wp-content/uploads/2025/10/Artboard-1.png"
+                                    alt="Slide 5">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="id-4-stacktable-guide-slide__controls">
+                <div class="id-4-stacktable-guide-slide__pagination swiper-pagination"></div>
+
+                <div class="id-4-stacktable-guide-slide__autoplay-control playing" role="button"
+                    aria-label="Pause autoplay">
+                    <svg class="id-4-stacktable-guide-slide__icon id-4-stacktable-guide-slide__icon--pause"
+                        xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        viewBox="0 0 16 16">
+
+                        <path d="M5.5 3.5h1.5v9H5.5v-9zm3.5 0h1.5v9H9v-9z" />
+
+                    </svg> <svg class="id-4-stacktable-guide-slide__icon id-4-stacktable-guide-slide__icon--play"
+                        xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        viewBox="0 0 16 16">
+
+                        <path
+                            d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
+
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+
+    <script>
+        function init_id_4_stacktable_guide_slide() {
+            const container = document.querySelector('.id-4-stacktable-guide-slide');
+
+            if (!container) return;
+
+
+            const id_4_stacktable_guide_slide_autoplayDelay = 3000;
+
+
+            container.style.setProperty('--id4-autoplay-delay', (id_4_stacktable_guide_slide_autoplayDelay / 1000) + 's');
+
+
+            const id_4_stacktable_guide_slide_swiper = new Swiper('.id-4-stacktable-guide-slide__swiper', {
+                speed: 500,
+                loop: true,
+                centeredSlides: true,
+                slidesPerView: 'auto',
+                spaceBetween: 24,
+
+                autoplay: {
+                    delay: id_4_stacktable_guide_slide_autoplayDelay,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+
+                },
+                pagination: {
+                    el: '.id-4-stacktable-guide-slide__pagination',
+                    clickable: true,
+
+                },
+
+            });
+
+
+            const id_4_stacktable_guide_slide_controlButton = container.querySelector('.id-4-stacktable-guide-slide__autoplay-control');
+
+
+            if (id_4_stacktable_guide_slide_controlButton) {
+                id_4_stacktable_guide_slide_controlButton.addEventListener('click', () => {
+                    if (id_4_stacktable_guide_slide_swiper.autoplay.running) {
+                        id_4_stacktable_guide_slide_swiper.autoplay.stop();
+
+                    } else {
+                        id_4_stacktable_guide_slide_swiper.autoplay.start();
+                    }
+                });
+
+
+                id_4_stacktable_guide_slide_swiper.on('autoplayStart', () => {
+                    id_4_stacktable_guide_slide_controlButton.classList.remove('paused');
+                    id_4_stacktable_guide_slide_controlButton.classList.add('playing');
+                    container.classList.remove('autoplay-paused');
+                });
+
+
+                id_4_stacktable_guide_slide_swiper.on('autoplayStop', () => {
+                    id_4_stacktable_guide_slide_controlButton.classList.remove('playing');
+                    id_4_stacktable_guide_slide_controlButton.classList.add('paused');
+                    container.classList.add('autoplay-paused');
+                });
+            }
+        }
+        document.addEventListener('DOMContentLoaded', init_id_4_stacktable_guide_slide);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID4 Image MHDPT Component</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <style>
+        /* CSS được gói gọn trong class cha "id4-img-stackable-guide" */
+        
+        .id4-img-stackable-guide {
+            --progress-bar-color: #333;
+            --inactive-bar-color: #d8d8d8;
+            --control-icon-color: #a0a0a0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            padding: 40px 0;
+            width: 100%;
+            overflow-x: hidden;
+            position: relative;
+        }
+        /* Title Section */
+        
+        .id4-img-stackable-guide__title-section {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 0 20px;
+        }
+        
+        .id4-img-stackable-guide__main-title {
+            font-size: 2.5em;
+            color: #333;
+            font-weight: bold;
+            line-height: 1.3;
+        }
+        /* .id4-img-stackable-guide__main-title .subtitle {
+            display: block;
+            font-size: 0.6em;
+            color: #007bff;
+            font-weight: 600;
+            margin-top: 5px;
+        } */
+        /* Container chính của Swiper */
+        
+        .id4-img-stackable-guide__swiper {
+            width: 100%;
+            padding: 40px 0;
+            overflow: visible;
+        }
+        
+        .id4-img-stackable-guide .swiper-wrapper {
+            will-change: transform;
+        }
+        /* Từng slide */
+        
+        .id4-img-stackable-guide .swiper-slide {
+            display: flex;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-image: var(--desktop-bg);
+            border-radius: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            width: 75%;
+            max-width: 950px;
+            height: 450px;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            will-change: transform;
+            opacity: 0.4;
+            transform: scale(0.92);
+            overflow: hidden;
+        }
+        
+        .id4-img-stackable-guide .swiper-slide-active {
+            opacity: 1;
+            transform: scale(1);
+        }
+        /* Cấu trúc nội dung bên trong slide */
+        
+        .id4-img-stackable-guide__slide-inner {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+        }
+        
+        .slide-left {
+            flex: 0 0 48%;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .slide-right {
+            /* flex: 0 0 35%; */
+            position: relative;
+            cursor: pointer;
+            background-color: #000000;
+            border-top-right-radius: 24px;
+            border-bottom-right-radius: 24px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .slide-right img.video-thumbnail {
+            width: 80%;
+            /* height: 90; */
+            /* object-fit: cover; */
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+        
+        .slide-right:hover img.video-thumbnail {
+            opacity: 1;
+        }
+        /* Nội dung cột trái */
+        
+        .text-content h3 {
+            font-size: 1.5rem;
+            color: #0056b3;
+            margin-bottom: 20px;
+        }
+        
+        .text-content ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .text-content li {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            font-size: 0.9rem;
+            color: #333;
+        }
+        
+        .text-content li .check-icon {
+            color: #007bff;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        /* === CẬP NHẬT: CSS CHO KHỐI ẢNH === */
+        
+        .image-content {
+            width: 100%;
+            /* margin-top: 10px; */
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            /* Đặt chiều cao tối thiểu để khối luôn có không gian */
+            min-height: 190px;
+        }
+        /* Bỏ thẻ img bên trong đi để dùng background */
+        
+        .image-content img {
+            display: none;
+        }
+        /* ================================= */
+        /* Nút Play */
+        
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        
+        .slide-right:hover .play-button {
+            transform: translate(-50%, -50%) scale(1.1);
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .play-button::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 0;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            border-left: 25px solid white;
+            margin-left: 5px;
+        }
+        /* Video Popup */
+        
+        .id4-video-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        
+        .id4-video-popup.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .id4-video-popup-content {
+            position: relative;
+            width: 90%;
+            max-width: 960px;
+            aspect-ratio: 16 / 9;
+        }
+        
+        .id4-video-popup-content video {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+        }
+        
+        .id4-video-popup-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            font-size: 2.5rem;
+            color: #fff;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        /* Controls */
+        
+        .id4-img-stackable-guide__controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .id4-img-stackable-guide__pagination.swiper-pagination-bullets {
+            position: static;
+            display: flex;
+            gap: 6px;
+            width: auto;
+        }
+        
+        .id4-img-stackable-guide__pagination .swiper-pagination-bullet {
+            width: 32px;
+            height: 6px;
+            border-radius: 3px;
+            background-color: var(--inactive-bar-color);
+            opacity: 1;
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.3s;
+        }
+        
+        .id4-img-stackable-guide__pagination .swiper-pagination-bullet-active {
+            background-color: var(--inactive-bar-color);
+        }
+        
+        .id4-img-stackable-guide__pagination .swiper-pagination-bullet-active::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--progress-bar-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            animation: id4-img-stackable-guide-progressFill 5s linear forwards;
+            animation-play-state: running;
+        }
+        
+        .id4-img-stackable-guide.autoplay-paused .swiper-pagination-bullet-active::after {
+            animation-play-state: paused;
+        }
+        
+        @keyframes id4-img-stackable-guide-progressFill {
+            from {
+                transform: scaleX(0);
+            }
+            to {
+                transform: scaleX(1);
+            }
+        }
+        
+        .id4-img-stackable-guide__autoplay-control {
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--control-icon-color);
+        }
+        
+        .id4-img-stackable-guide__autoplay-control .id4-img-stackable-guide__icon {
+            display: none;
+        }
+        
+        .id4-img-stackable-guide__autoplay-control.playing .id4-img-stackable-guide__icon--pause {
+            display: block;
+        }
+        
+        .id4-img-stackable-guide__autoplay-control.paused .id4-img-stackable-guide__icon--play {
+            display: block;
+        }
+        /* Responsive */
+        
+        @media (max-width: 1024px) {
+            .id4-img-stackable-guide .swiper-slide {
+                height: 400px;
+                width: 85%;
+            }
+            .slide-left {
+                padding: 30px;
+                flex: 0 0 60%;
+            }
+            .slide-right {
+                flex: 0 0 40%;
+                border-top-right-radius: 24px;
+                border-bottom-right-radius: 24px;
+            }
+            .id4-img-stackable-guide__main-title {
+                font-size: 2.2em;
+            }
+            .text-content h3 {
+                font-size: 1.3rem;
+            }
+            .text-content li {
+                font-size: 0.85rem;
+            }
+        }
+        /* === CẬP NHẬT GIAO DIỆN MOBILE === */
+        
+        @media (max-width: 767px) {
+            .id4-img-stackable-guide .swiper-slide {
+                height: auto;
+                flex-direction: column;
+                width: 90%;
+                background-image: var(--mobile-bg);
+            }
+            .id4-img-stackable-guide__slide-inner {
+                flex-direction: column;
+                align-items: center;
+                /* Canh giữa các khối con */
+            }
+            .slide-left {
+                width: 100%;
+                padding: 25px;
+                order: 2;
+                background-color: transparent;
+                text-align: center;
+                /* Canh giữa nội dung text và khối ảnh */
+            }
+            /* Căn lề trái cho danh sách gạch đầu dòng */
+            .text-content ul {
+                display: inline-block;
+                text-align: left;
+            }
+            .slide-right {
+                width: 100%;
+                height: auto;
+                aspect-ratio: 16 / 9;
+                order: 1;
+                background-color: transparent;
+                border-radius: 0;
+            }
+            .slide-right img.video-thumbnail {
+                border-top-left-radius: 24px;
+                border-top-right-radius: 24px;
+            }
+            .id4-img-stackable-guide__main-title {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="id4-img-stackable-guide">
+        <div class="id4-img-stackable-guide__title-section">
+            <br class="id4-img-stackable-guide__main-title"> CÁC THÀNH PHẦN <br> ID-4 STACKABLE GUIDE
+            </h2>
+        </div>
+
+        <div class="id4-img-stackable-guide__swiper swiper">
+            <div class="swiper-wrapper"></div>
+        </div>
+
+        <div class="id4-img-stackable-guide__controls">
+            <div class="id4-img-stackable-guide__pagination swiper-pagination"></div>
+            <div class="id4-img-stackable-guide__autoplay-control playing" role="button" aria-label="Pause autoplay">
+                <svg class="id4-img-stackable-guide__icon id4-img-stackable-guide__icon--pause" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M5.5 3.5h1.5v9H5.5v-9zm3.5 0h1.5v9H9v-9z" />
+                </svg>
+                <svg class="id4-img-stackable-guide__icon id4-img-stackable-guide__icon--play" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
+                </svg>
+            </div>
+        </div>
+
+        <div class="id4-video-popup">
+            <button class="id4-video-popup-close">&times;</button>
+            <div class="id4-video-popup-content">
+                <video controls autoplay playsinline></video>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+                    const id4_img_stackable_guide_slideData = [{
+                        title: "1. Máng hướng dẫn phẫu thuật định vị máng hạ xương",
+                        points: [
+                            "Máng được cố định vào răng hoặc mô mềm hàm trên và hàm dưới tùy theo từng trường hợp.",
+                            "Được kết nối và cố định với máng hạ xương bằng chốt chặn giúp cho quá trình khoan đặt Anchor Pin được chắc chắn và chính xác"
+                        ],
+                        image: "http://localhost/iD4Center/wp-content/uploads/2025/09/MHDPT-stackable-guide@4x.png",
+                        videoThumbnail: "http://localhost/iD4Center/wp-content/uploads/2025/09/MHDPT-stackable-guide@4x.png",
+                        videoSrc: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                        backgroundImage: "http://localhost/iD4Center/wp-content/uploads/2025/09/bg-name-card-stackable-guide-1.png",
+                        mobileBackgroundImage: "http://localhost/iD4Center/wp-content/uploads/2025/09/bg-name-card-stackable-guide-1.png"
+                    }, {
+                        title: "2. Máng hướng dẫn phẫu thuật hạ xương",
+                        points: [
+                            "Được cố định vào xương hàm thông qua Anchor Pin.",
+                            "Lòng máng được thiết kế chính xác theo kế hoạch hạ xương, giúp bảo vệ các cấu trúc giải phẫu quan trọng."
+                        ],
+                        image: "http://localhost/iD4Center/wp-content/uploads/2025/09/MHDPT-stackable-guide@4x.png",
+                        videoThumbnail: "http://localhost/iD4Center/wp-content/uploads/2025/09/MHDPT-stackable-guide@4x.png",
+                        videoSrc: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+                        backgroundImage: "http://localhost/iD4Center/wp-content/uploads/2025/09/bg-name-card-stackable-guide-1.png",
+                        mobileBackgroundImage: "http://localhost/iD4Center/wp-content/uploads/2025/09/bg-name-card-stackable-guide-1.png"
+                    }, {
+                        title: "3. Máng hướng dẫn phẫu thuật đặt Implant",
+                        points: [
+                            "Được kết nối và cố định với máng hạ xương bằng chốt chặn.",
+                            "Ống hướng dẫn titan được thiết kế chính xác theo kế hoạch đặt Implant."
+                        ],
+                        image: "http://localhost/iD4Center/wp-content/uploads/2025/09/MHDPT-stackable-guide@4x.png",
+                        videoThumbnail: "http://localhost/iD4Center/wp-content/uploads/2025/09/MHDPT-stackable-guide@4x.png",
+                        videoSrc: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+                        backgroundImage: "http://localhost/iD4Center/wp-content/uploads/2025/09/bg-name-card-stackable-guide-1.png",
+                        mobileBackgroundImage: "http://localhost/iD4Center/wp-content/uploads/2025/09/bg-name-card-stackable-guide-1.png"
+                    }, {
+                        title: "4. Máng hướng dẫn phẫu thuật Implant phụ trợ",
+                        points: [
+                            "Hỗ trợ đặt các Implant phụ trợ (nếu có) chính xác theo kế hoạch.",
+                            "Giúp tối ưu hóa vị trí đặt Implant để đạt được kết quả phục hình tốt nhất."
+                        ],
+                        image: "http://localhost/iD4Center/wp-content/uploads/2025/09/MHDPT-stackable-guide@4x.png",
+                        videoThumbnail: "http://localhost/iD4Center/wp-content/uploads/2025/09/MHDPT-stackable-guide@4x.png",
+                        videoSrc: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+                        backgroundImage: "http://localhost/iD4Center/wp-content/uploads/2025/09/bg-name-card-stackable-guide-1.png",
+                        mobileBackgroundImage: "http://localhost/iD4Center/wp-content/uploads/2025/09/bg-name-card-stackable-guide-1.png"
+                    }];
+
+                    const id4_img_stackable_guide_swiperWrapper = document.querySelector('.id4-img-stackable-guide .swiper-wrapper');
+                    id4_img_stackable_guide_slideData.forEach(data => {
+                                const id4_img_stackable_guide_slide = document.createElement('div');
+                                id4_img_stackable_guide_slide.className = 'swiper-slide';
+
+                                id4_img_stackable_guide_slide.style.setProperty('--desktop-bg', `url('${data.backgroundImage}')`);
+                                id4_img_stackable_guide_slide.style.setProperty('--mobile-bg', `url('${data.mobileBackgroundImage}')`);
+
+                                // === CẬP NHẬT: THÊM LINK VÀO HTML ===
+                                id4_img_stackable_guide_slide.innerHTML = `
+                    <div class="id4-img-stackable-guide__slide-inner">
+                        <div class="slide-left">
+                            <div class="text-content">
+                                <h3>${data.title}</h3>
+                                <ul>
+                                    ${data.points.map(point => `<li><span class="check-icon">✔</span>${point}</li>`).join('')}
+                                </ul>
+                            </div>
+                            <div class="image-content" style="background-image: url('${data.image}')">
+                                <img src="${data.image}" alt="Hình ảnh minh họa">
+                            </div>
+                        </div>
+                        <div class="slide-right" data-video-src="${data.videoSrc}">
+                            <img src="${data.videoThumbnail}" class="video-thumbnail" alt="Video thumbnail">
+                            <div class="play-button"></div>
+                        </div>
+                    </div>
+                `;
+                id4_img_stackable_guide_swiperWrapper.appendChild(id4_img_stackable_guide_slide);
+            });
+
+
+            id4_img_stackable_guide_init();
+        });
+
+
+        function id4_img_stackable_guide_init() {
+            const id4_img_stackable_guide_container = document.querySelector('.id4-img-stackable-guide');
+            if (!id4_img_stackable_guide_container) return;
+
+            const id4_img_stackable_guide_swiper = new Swiper('.id4-img-stackable-guide__swiper', {
+                speed: 500,
+                loop: true,
+                centeredSlides: true,
+                slidesPerView: 'auto', 
+                spaceBetween: 24, 
+                autoHeight: true, 
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+                },
+                pagination: {
+                    el: '.id4-img-stackable-guide__pagination',
+                    clickable: true,
+                },
+            });
+
+            const id4_img_stackable_guide_controlButton = id4_img_stackable_guide_container.querySelector('.id4-img-stackable-guide__autoplay-control');
+
+            if (id4_img_stackable_guide_controlButton) {
+                id4_img_stackable_guide_controlButton.addEventListener('click', () => {
+                    if (id4_img_stackable_guide_swiper.autoplay.running) {
+                        id4_img_stackable_guide_swiper.autoplay.stop();
+                    } else {
+                        id4_img_stackable_guide_swiper.autoplay.start();
+                    }
+                });
+
+                id4_img_stackable_guide_swiper.on('autoplayStart', () => {
+                    id4_img_stackable_guide_controlButton.classList.remove('paused');
+                    id4_img_stackable_guide_controlButton.classList.add('playing');
+                    id4_img_stackable_guide_container.classList.remove('autoplay-paused');
+                });
+
+                id4_img_stackable_guide_swiper.on('autoplayStop', () => {
+                    id4_img_stackable_guide_controlButton.classList.remove('playing');
+                    id4_img_stackable_guide_controlButton.classList.add('paused');
+                    id4_img_stackable_guide_container.classList.add('autoplay-paused');
+                });
+            }
+
+            // Video Popup Logic
+            const id4_img_stackable_guide_popup = id4_img_stackable_guide_container.querySelector('.id4-video-popup');
+            const id4_img_stackable_guide_closePopupBtn = id4_img_stackable_guide_popup.querySelector('.id4-video-popup-close');
+            const id4_img_stackable_guide_popupVideo = id4_img_stackable_guide_popup.querySelector('video');
+
+            id4_img_stackable_guide_container.addEventListener('click', function(e) {
+                 const id4_img_stackable_guide_videoContainer = e.target.closest('.slide-right');
+                 if(id4_img_stackable_guide_videoContainer) {
+                     const id4_img_stackable_guide_videoSrc = id4_img_stackable_guide_videoContainer.getAttribute('data-video-src');
+                     if(id4_img_stackable_guide_videoSrc) {
+                         id4_img_stackable_guide_swiper.autoplay.stop();
+                         id4_img_stackable_guide_popupVideo.src = id4_img_stackable_guide_videoSrc;
+                         id4_img_stackable_guide_popup.classList.add('show');
+                     }
+                 }
+            });
+
+            function id4_img_stackable_guide_closePopup() {
+                id4_img_stackable_guide_popup.classList.remove('show');
+                id4_img_stackable_guide_popupVideo.pause();
+                id4_img_stackable_guide_popupVideo.src = ""; 
+                if (!id4_img_stackable_guide_controlButton.classList.contains('paused')) {
+                   id4_img_stackable_guide_swiper.autoplay.start();
+                }
+            }
+
+            id4_img_stackable_guide_closePopupBtn.addEventListener('click', id4_img_stackable_guide_closePopup);
+            id4_img_stackable_guide_popup.addEventListener('click', function(e) {
+                if (e.target === id4_img_stackable_guide_popup) {
+                    id4_img_stackable_guide_closePopup();
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

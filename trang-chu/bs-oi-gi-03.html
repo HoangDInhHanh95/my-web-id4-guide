@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID4 Team Slider Component</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <style>
+         :root {
+            --progress-bar-color: #333;
+            --inactive-bar-color: #d8d8d8;
+            --control-icon-color: #a0a0a0;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            /* Card variables based on new image */
+            --id4-card-bg: #fff;
+            --id4-title-color: #005baa;
+            /* Blue title color */
+            --id4-subtitle-color: #0073e6;
+            /* Lighter blue for subtitle */
+            --id4-body-text: #333;
+            --id4-accent-bg: #eef7ff;
+            /* Light blue shape */
+            --size--width-card: 900px;
+        }
+        
+        body {
+            margin: 0;
+            background-color: #f0f2f5;
+            /* A light background for better contrast */
+        }
+        
+        .id-guide-container {
+            width: 100%;
+            padding: 40px 0;
+            box-sizing: border-box;
+        }
+        
+        .id-guide {
+            font-family: var(--font-family);
+            width: 100%;
+            overflow-x: hidden;
+        }
+        
+        .id-guide__swiper {
+            width: 100%;
+            padding: 20px 0;
+            overflow: visible;
+        }
+        
+        .id-guide .swiper-wrapper {
+            will-change: transform;
+        }
+        
+        .id-guide .swiper-slide {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--id4-card-bg);
+            border-radius: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            max-width: var(--size--width-card);
+            height: calc(var(--size--width-card)/2);
+            /* ============================= */
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            will-change: transform;
+            overflow: hidden;
+            position: relative;
+            transform: scale(0.9);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        /* Active slide styles */
+        
+        .id-guide .swiper-slide-active {
+            transform: scale(1);
+            opacity: 1;
+            pointer-events: auto;
+            /* Enable interaction for active card */
+        }
+        
+        .id-guide .swiper-slide .id-guide__slide-inner {
+            border-radius: 24px;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        /* Light blue background shape - Adjusted for new card size */
+        
+        .id-guide .swiper-slide .id-guide__slide-inner::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 550px;
+            /* Adjusted */
+            height: 550px;
+            /* Adjusted */
+            background-color: var(--id4-accent-bg);
+            border-radius: 50%;
+            z-index: 1;
+        }
+        
+        .id-guide__slide-text {
+            flex: 1 1 50%;
+            padding: 40px;
+            padding-left: 60px;
+            box-sizing: border-box;
+            color: var(--id4-body-text);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+        }
+        /* Title */
+        
+        .id-guide__slide-text strong {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--id4-title-color);
+            display: block;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+        /* Subtitle */
+        
+        .id-guide__slide-text .subtitle {
+            font-size: 18px;
+            color: var(--id4-subtitle-color);
+            margin: 0;
+            margin-bottom: 24px;
+        }
+        /* Bullet list */
+        
+        .id-guide__slide-text ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+        
+        .id-guide__slide-text li {
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--id4-body-text);
+            margin-bottom: 12px;
+            padding-left: 20px;
+            position: relative;
+        }
+        /* Custom bullet */
+        
+        .id-guide__slide-text li::before {
+            content: '•';
+            color: var(--id4-title-color);
+            font-weight: bold;
+            display: inline-block;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        
+        .id-guide__slide-image {
+            flex: 1 1 50%;
+            height: 100%;
+            display: flex;
+            align-items: flex-end;
+            /* Align doctor to the bottom */
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .id-guide__slide-image img {
+            max-width: 100%;
+            max-height: 98%;
+            height: auto;
+            object-fit: contain;
+            object-position: bottom center;
+        }
+        
+        .id-guide__controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+            margin-top: 20px;
+        }
+        
+        .id-guide__pagination.swiper-pagination-bullets {
+            position: static;
+            display: flex;
+            gap: 6px;
+            width: auto;
+        }
+        
+        .id-guide__pagination .swiper-pagination-bullet {
+            width: 60px;
+            height: 6px;
+            border-radius: 3px;
+            background-color: var(--inactive-bar-color);
+            opacity: 1;
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.3s;
+        }
+        
+        .id-guide__pagination .swiper-pagination-bullet-active {
+            background-color: var(--inactive-bar-color);
+        }
+        
+        .id-guide__pagination .swiper-pagination-bullet-active::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--progress-bar-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            animation-name: id-guide-progressFill;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+            animation-duration: var(--id4-autoplay-delay, 5s);
+            animation-play-state: running;
+        }
+        
+        .id-guide.autoplay-paused .swiper-pagination-bullet-active::after {
+            animation-play-state: paused;
+        }
+        
+        @keyframes id-guide-progressFill {
+            from {
+                transform: scaleX(0);
+            }
+            to {
+                transform: scaleX(1);
+            }
+        }
+        
+        .id-guide__autoplay-control {
+            cursor: pointer;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--control-icon-color);
+        }
+        
+        .id-guide__autoplay-control .id-guide__icon {
+            display: none;
+        }
+        
+        .id-guide__autoplay-control.playing .id-guide__icon--pause {
+            display: block;
+        }
+        
+        .id-guide__autoplay-control.paused .id-guide__icon--play {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .id-guide .swiper-slide {
+                width: 90%;
+                height: auto;
+                min-height: 500px;
+                transform: scale(0.95);
+                opacity: 0.7;
+            }
+            .id-guide .swiper-slide-active {
+                transform: scale(1);
+                opacity: 1;
+            }
+            .id-guide .swiper-slide .id-guide__slide-inner {
+                flex-direction: column;
+            }
+            .id-guide .swiper-slide .id-guide__slide-inner::before {
+                width: 300px;
+                height: 300px;
+                top: -50px;
+                right: -100px;
+            }
+            .id-guide__slide-text {
+                order: 2;
+                width: 100%;
+                flex: 1 1 auto;
+                padding: 24px;
+            }
+            .id-guide__slide-text strong {
+                font-size: 22px;
+            }
+            .id-guide__slide-text .subtitle {
+                font-size: 16px;
+            }
+            .id-guide__slide-text li {
+                font-size: 14px;
+            }
+            .id-guide__slide-image {
+                order: 1;
+                width: 100%;
+                flex: 1 1 250px;
+                min-height: 250px;
+            }
+            .id-guide__slide-image img {
+                max-height: 100%;
+            }
+            .id-guide__pagination .swiper-pagination-bullet {
+                width: 40px;
+                height: 5px;
+            }
+            .id-guide__autoplay-control {
+                width: 20px;
+                height: 20px;
+            }
+            .id-guide__autoplay-control svg {
+                width: 14px;
+                height: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="id-guide-container">
+        <div class="id-guide">
+            <div class="id-guide__swiper swiper">
+                <div class="swiper-wrapper">
+
+                    <div class="swiper-slide">
+                        <div class="id-guide__slide-inner">
+                            <div class="id-guide__slide-text">
+                                <strong>ThS.BS. Lê Văn Điềm</strong>
+                                <p class="subtitle">Giám đốc trung tâm</p>
+                                <ul>
+                                    <li>Tốt nghiệp Đại học Y Dược TP. HCM.</li>
+                                    <li>30 năm kinh nghiệm trong việc khám và điều trị các loại hình như: nha khoa thẩm mỹ, cấy ghép implant, nha khoa tổng quát.</li>
+                                    <li>Tham gia nhiều chương trình báo cáo chuyên đề về nha khoa thẩm mỹ, phẫu thuật cấy ghép implant, tổ chức các lớp đào tạo chuyên sâu.</li>
+                                </ul>
+                            </div>
+                            <div class="id-guide__slide-image">
+                                <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/hinh-bs@4x.png" alt="Bác sĩ Lê Văn Điềm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide">
+                        <div class="id-guide__slide-inner">
+                            <div class="id-guide__slide-text">
+                                <strong>ThS.BS. Lê Văn Điềm</strong>
+                                <p class="subtitle">Giám đốc trung tâm</p>
+                                <ul>
+                                    <li>Tốt nghiệp Đại học Y Dược TP. HCM.</li>
+                                    <li>30 năm kinh nghiệm trong việc khám và điều trị các loại hình như: nha khoa thẩm mỹ, cấy ghép implant, nha khoa tổng quát.</li>
+                                    <li>Tham gia nhiều chương trình báo cáo chuyên đề về nha khoa thẩm mỹ, phẫu thuật cấy ghép implant, tổ chức các lớp đào tạo chuyên sâu.</li>
+                                </ul>
+                            </div>
+                            <div class="id-guide__slide-image">
+                                <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/hinh-bs@4x.png" alt="Bác sĩ Lê Văn Điềm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide">
+                        <div class="id-guide__slide-inner">
+                            <div class="id-guide__slide-text">
+                                <strong>ThS.BS. Lê Văn Điềm</strong>
+                                <p class="subtitle">Giám đốc trung tâm</p>
+                                <ul>
+                                    <li>Tốt nghiệp Đại học Y Dược TP. HCM.</li>
+                                    <li>30 năm kinh nghiệm trong việc khám và điều trị các loại hình như: nha khoa thẩm mỹ, cấy ghép implant, nha khoa tổng quát.</li>
+                                    <li>Tham gia nhiều chương trình báo cáo chuyên đề về nha khoa thẩm mỹ, phẫu thuật cVv ghép implant, tổ chức các lớp đào tạo chuyên sâu.</li>
+                                </ul>
+                            </div>
+                            <div class="id-guide__slide-image">
+                                <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/hinh-bs@4x.png" alt="Bác sĩ Lê Văn Điềm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide">
+                        <div class="id-guide__slide-inner">
+                            <div class="id-guide__slide-text">
+                                <strong>ThS.BS. Lê Văn Điềm</strong>
+                                <p class="subtitle">Giám đốc trung tâm</p>
+                                <ul>
+                                    <li>Tốt nghiệp Đại học Y Dược TP. HCM.</li>
+                                    <li>30 năm kinh nghiệm trong việc khám và điều trị các loại hình như: nha khoa thẩm mỹ, cấy ghép implant, nha khoa tổng quát.</li>
+                                    <li>Tham gia nhiều chương trình báo cáo chuyên đề về nha khoa thẩm mỹ, phẫu thuật cấy ghép implant, tổ chức các lớp đào tạo chuyên sâu.</li>
+                                </ul>
+                            </div>
+                            <div class="id-guide__slide-image">
+                                <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/hinh-bs@4x.png" alt="Bác sĩ Lê Văn Điềm">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="id-guide__controls">
+                <div class="id-guide__pagination swiper-pagination"></div>
+                <div class="id-guide__autoplay-control playing" role="button" aria-label="Pause autoplay">
+                    <svg class="id-guide__icon id-guide__icon--pause" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M5.5 3.5h1.5v9H5.5v-9zm3.5 0h1.5v9H9v-9z" />
+                    </svg>
+                    <svg class="id-guide__icon id-guide__icon--play" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path
+                            d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+
+    <script>
+        function init_id_4_guide() {
+            const container = document.querySelector('.id-guide');
+            if (!container) return;
+
+            const id_4_guide_autoplayDelay = 3000;
+
+            container.style.setProperty('--id4-autoplay-delay', (id_4_guide_autoplayDelay / 1000) + 's');
+
+            const id_4_guide_swiper = new Swiper('.id-guide__swiper', {
+                speed: 500,
+                loop: true,
+                centeredSlides: true,
+                slidesPerView: 'auto',
+                spaceBetween: 24,
+
+                autoplay: {
+                    delay: id_4_guide_autoplayDelay,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+                },
+                pagination: {
+                    el: '.id-guide__pagination',
+                    clickable: true,
+                },
+            });
+
+            const id_4_guide_controlButton = container.querySelector('.id-guide__autoplay-control');
+            if (id_4_guide_controlButton) {
+                id_4_guide_controlButton.addEventListener('click', () => {
+                    if (id_4_guide_swiper.autoplay.running) {
+                        id_4_guide_swiper.autoplay.stop();
+                    } else {
+                        id_4_guide_swiper.autoplay.start();
+                    }
+                });
+
+                id_4_guide_swiper.on('autoplayStart', () => {
+                    id_4_guide_controlButton.classList.remove('paused');
+                    id_4_guide_controlButton.classList.add('playing');
+                    container.classList.remove('autoplay-paused');
+                });
+
+                id_4_guide_swiper.on('autoplayStop', () => {
+                    id_4_guide_controlButton.classList.remove('playing');
+                    id_4_guide_controlButton.classList.add('paused');
+                    container.classList.add('autoplay-paused');
+                });
+            }
+        }
+        document.addEventListener('DOMContentLoaded', init_id_4_guide);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,354 @@
+:root {
+    --id4-background-color: #1a1a1a;
+    --id4-card-background: #282828;
+    --id4-text-color: #fff;
+    --id4-border-color: #555;
+    --id4-accent-color: #00aaff;
+    --id4-dot-inactive-color: #555;
+    --id4-bg-card: rgba(239, 240, 241, 0.2);
+    --id4-color-text: #000;
+    --id4-url-bg-card: url('http://localhost/iD4Center/wp-content/uploads/2025/09/bg-card-MHDPT@4x.png');
+}
+
+.id4-container {
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--id4-text-color);
+    transition: background-color 0.4s ease;
+}
+
+.id4-container.id4-modal-open {
+    overflow: hidden;
+}
+
+.id4-section {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.id4-section h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+}
+
+.id4-progress-bar-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background-color: var(--id4-border-color);
+    z-index: 10;
+}
+
+.id4-progress-bar {
+    height: 100%;
+    width: 0%;
+    background-color: var(--id4-accent-color);
+    transition: width 0.1s linear;
+}
+
+.id4-horizontal-track {
+    height: 400vh;
+    position: relative;
+}
+
+.id4-sticky-container {
+    position: sticky;
+    top: 5vh;
+    height: 100vh;
+    overflow: hidden;
+    perspective: 1000px;
+}
+
+.id4-horizontal-content {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding: 0 calc(50vw - 340px);
+}
+
+.id4-card {
+    width: clamp(300px, 60vw, 980px);
+    height: 600px;
+    max-height: 600px;
+    margin: 0 clamp(10px, 3vw, 30px);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    border-radius: 20px;
+    border: 1px solid var(--id4-border-color);
+    padding: clamp(20px, 5vw, 40px);
+    box-sizing: border-box;
+    flex-shrink: 0;
+    cursor: pointer;
+    transform: scale(1);
+    opacity: 1;
+    transition: transform 0.5s ease, opacity 0.5s ease;
+    position: relative;
+    background-size: cover;
+    background-position: center center;
+}
+
+
+/* Lớp phủ cho card để chữ dễ đọc hơn */
+
+.id4-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--id4-bg-card);
+    border-radius: 20px;
+    z-index: 1;
+}
+
+
+/* Đẩy nội dung lên trên lớp phủ */
+
+.id4-card-text,
+.id4-card-image {
+    position: relative;
+    z-index: 2;
+}
+
+
+/* Thêm ảnh nền cho từng card */
+
+.id4-card:nth-child(1) {
+    background-image: var(--id4-url-bg-card);
+}
+
+.id4-card:nth-child(2) {
+    background-image: var(--id4-url-bg-card);
+}
+
+.id4-card:nth-child(3) {
+    background-image: var(--id4-url-bg-card);
+}
+
+.id4-card:nth-child(4) {
+    background-image: var(--id4-url-bg-card);
+}
+
+.id4-card:nth-child(5) {
+    background-image: var(--id4-url-bg-card);
+}
+
+.id4-card-text {
+    flex: 1 1 55%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.id4-card-image {
+    flex: 1 1 45%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.id4-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+    /* transition: transform 0.5s ease-out; */
+}
+
+.id4-card h2 {
+    font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.id4-card p {
+    font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+    line-height: 1.6;
+    opacity: 0.8;
+    text-align: left;
+    color: var(--id4-color-text);
+}
+
+.id4-pagination-dots {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    flex-direction: row;
+    justify-content: center;
+    gap: 12px;
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 8px 15px;
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+}
+
+.id4-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--id4-dot-inactive-color);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
+}
+
+.id4-dot.id4-active {
+    background-color: var(--id4-text-color);
+    transform: scale(1.2);
+}
+
+.id4-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: rgba(26, 26, 26, 0.3);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.id4-modal-overlay.id4-active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.id4-modal-content {
+    background: rgba(40, 40, 40, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 800px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    transform: scale(0.9);
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 30px;
+}
+
+.id4-modal-content .id4-card-text {
+    flex: 1 1 55%;
+}
+
+.id4-modal-content .id4-card-image {
+    flex: 1 1 45%;
+}
+
+.id4-modal-content .id4-card-image img {
+    width: 100%;
+    border-radius: 15px;
+}
+
+.id4-modal-content h2,
+.id4-modal-content p {
+    text-align: left;
+}
+
+.id4-modal-overlay.id4-active .id4-modal-content {
+    transform: scale(1);
+}
+
+.id4-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 3rem;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.id4-modal-close:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+
+/* Responsive cho Tablet */
+
+@media (max-width: 1024px) {
+    .id4-card {
+        width: clamp(350px, 70vw, 570px);
+        height: 440px;
+        max-height: 440px;
+        padding: clamp(30px, 4vw, 35px);
+        gap: 20px;
+    }
+
+    .id4-card h2 {
+        font-size: clamp(1.4rem, 4vw, 2rem);
+    }
+}
+
+
+/* Responsive cho Mobile */
+
+@media (max-width: 768px) {
+    .id4-pagination-dots {
+        display: flex;
+    }
+
+    .id4-progress-bar-container {
+        display: none;
+    }
+
+    .id4-card,
+    .id4-modal-content {
+        flex-direction: column;
+        text-align: center;
+        height: auto;
+        max-height: 80vh;
+        padding: 30px;
+        width: 90vw;
+    }
+
+    .id4-card-image,
+    .id4-modal-content .id4-card-image {
+        order: -1;
+        width: 100%;
+        height: 200px;
+        margin-bottom: 20px;
+    }
+
+    .id4-card h2,
+    .id4-card p,
+    .id4-modal-content h2,
+    .id4-modal-content p {
+        text-align: center;
+    }
+
+    .id4-modal-content {
+        gap: 15px;
+    }
+}

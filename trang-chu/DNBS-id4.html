@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID4 Team Slider Component</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <style>
+        :root {
+            --progress-bar-color: #333;
+            --inactive-bar-color: #d8d8d8;
+            --control-icon-color: #a0a0a0;
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --id4-card-bg: #fff;
+            --id4-title-color: #005baa;
+            --id4-subtitle-color: #0073e6;
+            --id4-body-text: #333;
+            --size--width-card: 1000px;
+        }
+
+        body {
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+
+        .DNBS-iD4-container {
+            width: 100%;
+            /* padding: 40px 0; */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Center the title and slider */
+        }
+
+        /* Styles for the new title */
+
+        .DNBS-iD4__section-title {
+            font-family: var(--font-family);
+            font-size: 36px;
+            font-weight: 700;
+            color: #005baa;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .DNBS-iD4 {
+            font-family: var(--font-family);
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        .DNBS-iD4__swiper {
+            width: 100%;
+            /* padding: 20px 0; */
+            overflow: visible;
+        }
+
+        .DNBS-iD4 .swiper-wrapper {
+            will-change: transform;
+        }
+
+        .DNBS-iD4 .swiper-slide {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--id4-card-bg);
+            border-radius: 28px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            max-width: var(--size--width-card);
+            height: calc(var(--size--width-card)/2);
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            will-change: transform;
+            overflow: hidden;
+            position: relative;
+            transform: scale(0.9);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .DNBS-iD4 .swiper-slide-active {
+            transform: scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .DNBS-iD4 .swiper-slide .DNBS-iD4__slide-inner {
+            border-radius: 24px;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            background-image: url('http://localhost/iD4Center/wp-content/uploads/2025/09/bg-bs-id4guide@4x.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .DNBS-iD4__slide-text {
+            flex: 1 1 50%;
+            padding: 40px;
+            padding-left: 60px;
+            box-sizing: border-box;
+            color: var(--id4-body-text);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .DNBS-iD4__slide-text strong {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--id4-title-color);
+            display: block;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .DNBS-iD4__slide-text .subtitle {
+            font-size: 18px;
+            color: var(--id4-subtitle-color);
+            margin: 0;
+            margin-bottom: 24px;
+        }
+
+        .DNBS-iD4__slide-text ul {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        .DNBS-iD4__slide-text li {
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--id4-body-text);
+            margin-bottom: 12px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .DNBS-iD4__slide-text li::before {
+            content: '•';
+            color: var(--id4-title-color);
+            font-weight: bold;
+            display: inline-block;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .DNBS-iD4__slide-image {
+            flex: 1 1 50%;
+            height: 100%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            z-index: 2;
+        }
+
+        .DNBS-iD4__slide-image img {
+            max-width: 100%;
+            max-height: 90%;
+            height: auto;
+            object-fit: contain;
+            object-position: bottom center;
+        }
+
+        .DNBS-iD4__controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+            margin-top: 20px;
+        }
+
+        .DNBS-iD4__pagination.swiper-pagination-bullets {
+            position: static;
+            display: flex;
+            gap: 6px;
+            width: auto;
+        }
+
+        .DNBS-iD4__pagination .swiper-pagination-bullet {
+            width: 60px;
+            height: 6px;
+            border-radius: 3px;
+            background-color: var(--inactive-bar-color);
+            opacity: 1;
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.3s;
+        }
+
+        .DNBS-iD4__pagination .swiper-pagination-bullet-active {
+            background-color: var(--inactive-bar-color);
+        }
+
+        .DNBS-iD4__pagination .swiper-pagination-bullet-active::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--progress-bar-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            animation-name: id-guide-progressFill;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+            animation-duration: var(--id4-autoplay-delay, 5s);
+            animation-play-state: running;
+        }
+
+        .DNBS-iD4.autoplay-paused .swiper-pagination-bullet-active::after {
+            animation-play-state: paused;
+        }
+
+        @keyframes id-guide-progressFill {
+            from {
+                transform: scaleX(0);
+            }
+
+            to {
+                transform: scaleX(1);
+            }
+        }
+
+        .DNBS-iD4__autoplay-control {
+            cursor: pointer;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--control-icon-color);
+        }
+
+        .DNBS-iD4__autoplay-control .DNBS-iD4__icon {
+            display: none;
+        }
+
+        .DNBS-iD4__autoplay-control.playing .DNBS-iD4__icon--pause {
+            display: block;
+        }
+
+        .DNBS-iD4__autoplay-control.paused .DNBS-iD4__icon--play {
+            display: block;
+        }
+
+        @media (max-width: 1000px) {
+            .DNBS-iD4 .swiper-slide {
+                width: 90%;
+                height: auto;
+                min-height: 500px;
+                transform: scale(0.95);
+                opacity: 0.7;
+            }
+
+            .DNBS-iD4 .swiper-slide-active {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            .DNBS-iD4 .swiper-slide .DNBS-iD4__slide-inner {
+                flex-direction: column;
+            }
+
+            .DNBS-iD4__slide-text {
+                order: 2;
+                width: 100%;
+                flex: 1 1 auto;
+                padding: 24px;
+            }
+
+            .DNBS-iD4__slide-text strong {
+                font-size: 22px;
+            }
+
+            .DNBS-iD4__slide-text .subtitle {
+                font-size: 16px;
+            }
+
+            .DNBS-iD4__slide-text li {
+                font-size: 14px;
+            }
+
+            .DNBS-iD4__slide-image {
+                order: 1;
+                width: 100%;
+                flex: 1 1 250px;
+                min-height: 250px;
+            }
+
+            .DNBS-iD4__slide-image img {
+                max-height: 100%;
+            }
+
+            .DNBS-iD4__pagination .swiper-pagination-bullet {
+                width: 40px;
+                height: 5px;
+            }
+
+            .DNBS-iD4__autoplay-control {
+                width: 20px;
+                height: 20px;
+            }
+
+            .DNBS-iD4__autoplay-control svg {
+                width: 14px;
+                height: 14px;
+            }
+
+            .DNBS-iD4__section-title {
+                font-size: 28px;
+                /* Smaller title on mobile */
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="DNBS-iD4-container">
+        <h2 class="DNBS-iD4__section-title">ĐỘI NGŨ BÁC SĨ VÀ KỸ THUẬT VIÊN</h2>
+
+        <div class="DNBS-iD4">
+            <div class="DNBS-iD4__swiper swiper">
+                <div class="swiper-wrapper">
+
+                    <div class="swiper-slide">
+                        <div class="DNBS-iD4__slide-inner">
+                            <div class="DNBS-iD4__slide-text">
+                                <strong>ThS.BS. Lê Văn Điềm</strong>
+                                <p class="subtitle">Giám đốc trung tâm</p>
+                                <ul>
+                                    <li>Tốt nghiệp Đại học Y Dược TP. HCM.</li>
+                                    <li>30 năm kinh nghiệm trong việc khám và điều trị các loại hình như: nha khoa thẩm
+                                        mỹ, cấy ghép implant, nha khoa tổng quát.</li>
+                                    <li>Tham gia nhiều chương trình báo cáo chuyên đề về nha khoa thẩm mỹ, phẫu thuật
+                                        cấy ghép implant, tổ chức các lớp đào tạo chuyên sâu.</li>
+                                </ul>
+                            </div>
+                            <div class="DNBS-iD4__slide-image">
+                                <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/hinh-bs@4x.png"
+                                    alt="Bác sĩ Lê Văn Điềm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide">
+                        <div class="DNBS-iD4__slide-inner">
+                            <div class="DNBS-iD4__slide-text">
+                                <strong>ThS.BS. Lê Văn Điềm</strong>
+                                <p class="subtitle">Giám đốc trung tâm</p>
+                                <ul>
+                                    <li>Tốt nghiệp Đại học Y Dược TP. HCM.</li>
+                                    <li>30 năm kinh nghiệm trong việc khám và điều trị các loại hình như: nha khoa thẩm
+                                        mỹ, cấy ghép implant, nha khoa tổng quát.</li>
+                                    <li>Tham gia nhiều chương trình báo cáo chuyên đề về nha khoa thẩm mỹ, phẫu thuật
+                                        cấy ghép implant, tổ chức các lớp đào tạo chuyên sâu.</li>
+                                </ul>
+                            </div>
+                            <div class="DNBS-iD4__slide-image">
+                                <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/hinh-bs@4x.png"
+                                    alt="Bác sĩ Lê Văn Điềm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide">
+                        <div class="DNBS-iD4__slide-inner">
+                            <div class="DNBS-iD4__slide-text">
+                                <strong>ThS.BS. Lê Văn Điềm</strong>
+                                <p class="subtitle">Giám đốc trung tâm</p>
+                                <ul>
+                                    <li>Tốt nghiệp Đại học Y Dược TP. HCM.</li>
+                                    <li>30 năm kinh nghiệm trong việc khám và điều trị các loại hình như: nha khoa thẩm
+                                        mỹ, cấy ghép implant, nha khoa tổng quát.</li>
+                                    <li>Tham gia nhiều chương trình báo cáo chuyên đề về nha khoa thẩm mỹ, phẫu thuật
+                                        cấy ghép implant, tổ chức các lớp đào tạo chuyên sâu.</li>
+                                </ul>
+                            </div>
+                            <div class="DNBS-iD4__slide-image">
+                                <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/hinh-bs@4x.png"
+                                    alt="Bác sĩ Lê Văn Điềm">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swiper-slide">
+                        <div class="DNBS-iD4__slide-inner">
+                            <div class="DNBS-iD4__slide-text">
+                                <strong>ThS.BS. Lê Văn Điềm</strong>
+                                <p class="subtitle">Giám đốc trung tâm</p>
+                                <ul>
+                                    <li>Tốt nghiệp Đại học Y Dược TP. HCM.</li>
+                                    <li>30 năm kinh nghiệm trong việc khám và điều trị các loại hình như: nha khoa thẩm
+                                        mỹ, cấy ghép implant, nha khoa tổng quát.</li>
+                                    <li>Tham gia nhiều chương trình báo cáo chuyên đề về nha khoa thẩm mỹ, phẫu thuật
+                                        cấy ghép implant, tổ chức các lớp đào tạo chuyên sâu.</li>
+                                </ul>
+                            </div>
+                            <div class="DNBS-iD4__slide-image">
+                                <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/hinh-bs@4x.png"
+                                    alt="Bác sĩ Lê Văn Điềm">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="DNBS-iD4__controls">
+                <div class="DNBS-iD4__pagination swiper-pagination"></div>
+                <div class="DNBS-iD4__autoplay-control playing" role="button" aria-label="Pause autoplay">
+                    <svg class="DNBS-iD4__icon DNBS-iD4__icon--pause" xmlns="http://www.w3.org/2000/svg" width="16"
+                        height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M5.5 3.5h1.5v9H5.5v-9zm3.5 0h1.5v9H9v-9z" />
+                    </svg>
+                    <svg class="DNBS-iD4__icon DNBS-iD4__icon--play" xmlns="http://www.w3.org/2img/2000/svg" width="16"
+                        height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path
+                            d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+
+    <script>
+        function DNBS_iD4_init() {
+            const container = document.querySelector('.DNBS-iD4');
+            if (!container) return;
+
+            const DNBS_iD4_autoplayDelay = 3000;
+
+            container.style.setProperty('--id4-autoplay-delay', (DNBS_iD4_autoplayDelay / 1000) + 's');
+
+            const DNBS_iD4_swiper = new Swiper('.DNBS-iD4__swiper', {
+                speed: 500,
+                loop: true,
+                centeredSlides: true,
+                slidesPerView: 'auto',
+                spaceBetween: 24,
+
+                autoplay: {
+                    delay: DNBS_iD4_autoplayDelay,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+                },
+                pagination: {
+                    el: '.DNBS-iD4__pagination',
+                    clickable: true,
+                },
+            });
+
+            const DNBS_iD4_controlButton = container.querySelector('.DNBS-iD4__autoplay-control');
+            if (DNBS_iD4_controlButton) {
+                DNBS_iD4_controlButton.addEventListener('click', () => {
+                    if (DNBS_iD4_swiper.autoplay.running) {
+                        DNBS_iD4_swiper.autoplay.stop();
+                    } else {
+                        DNBS_iD4_swiper.autoplay.start();
+                    }
+                });
+
+                DNBS_iD4_swiper.on('autoplayStart', () => {
+                    DNBS_iD4_controlButton.classList.remove('paused');
+                    DNBS_iD4_controlButton.classList.add('playing');
+                    document.querySelector('.DNBS-iD4-container').classList.remove('autoplay-paused'); // Corrected parent selector
+                });
+
+                DNBS_iD4_swiper.on('autoplayStop', () => {
+                    DNBS_iD4_controlButton.classList.remove('playing');
+                    DNBS_iD4_controlButton.classList.add('paused');
+                    document.querySelector('.DNBS-iD4-container').classList.add('autoplay-paused'); // Corrected parent selector
+                });
+            }
+        }
+        document.addEventListener('DOMContentLoaded', DNBS_iD4_init);
+    </script>
+</body>
+
+</html>

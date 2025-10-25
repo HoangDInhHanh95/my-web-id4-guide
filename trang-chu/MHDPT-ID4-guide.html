@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID4 Guide Section</title>
+    <style>
+        :root {
+            /* màu sắc cho các thành phần */
+            --progress-bar-color: #333;
+            --control-icon-color: #a0a0a0;
+            --color-tilet: #02518a;
+            /* font size text */
+            --id4-font-size-title: 2rem;
+            --id4-font-size-title-left: 40px;
+            --font-size-des: 16px;
+            /* mau sắc background */
+            /* background chuẩn */
+            --id4-color-bg-section: #f0f1f2;
+            /* mau xanh nhat */
+            --id4-color-bg-section-2: #f9fdfe;
+            /* font chữ  */
+            --id4-font-family: 'SVN-Effra';
+            /* width 820px */
+            --max-width-section: 820px;
+            --maxw: 1200px;
+            /* background */
+            --id4-bg-khoa-hoc: url('http://localhost/iD4Center/wp-content/uploads/2025/10/bg-6.png');
+            --id4-bg-section-STACKABLE-GUIDE: url('http://localhost/iD4Center/wp-content/uploads/2025/10/bg-6.png');
+            /* border radius */
+            --id4-border-radius: 28px;
+        }
+
+        .id4-guide-section {
+            background-color: #f9fdfe;
+            display: flex;
+            justify-content: center;
+        }
+
+        .id4-guide-container {
+            max-width: var(--max-width-section);
+            margin: auto 0;
+            padding: 52px 0px 0px 0px;
+            overflow: hidden;
+        }
+
+        .id4-guide-top-container {
+            max-width: var(--max-width-section);
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .id4-guide-content-left h2 {
+            font-family: var(--id4-font-family);
+            font-size: var(--id4-font-size-title-left);
+            font-weight: 700;
+            color: var(--color-tilet);
+            line-height: 1.5;
+            margin: 0;
+            max-width: 330px;
+        }
+
+        .id4-guide-content-right {
+            flex: 1;
+        }
+
+        .id4-guide-content-right p {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #333333;
+            margin: 0;
+            text-align: justify;
+        }
+
+        .id4-guide-bottom-content {
+            max-width: 1100px;
+            margin: 40px auto 0 auto;
+            text-align: center;
+        }
+
+        .id4-guide-bottom-content h3 {
+            font-family: var(--id4-font-family);
+            font-size: var(--id4-font-size-title);
+            font-weight: 700;
+            color: var(--color-tilet);
+            margin-bottom: 40px;
+        }
+
+        .id4-guide-image-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .id4-guide-image-wrapper img {
+            max-width: 65%;
+            height: auto;
+            filter: drop-shadow(0px 10px 20px rgba(0, 0, 0, 0.1));
+        }
+
+        @media (max-width: 992px) {
+
+            .id4-guide-content-left h2,
+            .id4-guide-bottom-content h3 {
+                font-size: 2.2rem;
+            }
+
+            .id4-guide-top-container {
+                gap: 40px;
+            }
+
+            .id4-guide-image-wrapper img {
+                max-width: 80%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .id4-guide-section {
+                padding: 50px 20px;
+            }
+
+            .id4-guide-top-container {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+
+            .id4-guide-bottom-content {
+                margin-top: 40px;
+            }
+
+            .id4-guide-image-wrapper img {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <section class="id4-guide-section">
+        <div class="id4-guide-container">
+            <div class="id4-guide-top-container">
+                <div class="id4-guide-content-left">
+                    <h2>Máng hướng dẫn phẫu thuật cho bệnh nhân mất răng bán phần</h2>
+                </div>
+                <div class="id4-guide-content-right">
+                    <p>
+                        ID-4 GUIDE là máng hướng dẫn phẫu thuật được thiết kế bằng phần mềm kỹ thuật số theo kế hoạch
+                        điều trị từ trước, giúp bác sĩ cấy ghép Implant ở vị trí chính xác, với độ sâu và chiều hướng lý
+                        tưởng nhất. Máng được làm bằng nhựa acrylic in 3D chất lượng
+                        cao (tiêu chuẩn CE, FDA) cứng chắc, chống gãy đảm bảo sự ổn định và không biến dạng trong quá
+                        trình thao tác. Trên máng có một hoặc nhiều Sleeve bằng kim loại hoặc bằng nhựa in 3D được tích
+                        hợp vào trong nhựa acrylic, linh hoạt
+                        theo biệt là bộ KIT phẫu thuật máng theo hãng, hướng dẫn quá trình phẫu thuật thông qua cửa sổ
+                        mở.
+                    </p>
+                </div>
+            </div>
+
+            <div class="id4-guide-bottom-content">
+                <h3>ID – 4 GUIDE</h3>
+                <div class="id4-guide-image-wrapper">
+                    <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/MHDPT-implant-don-le@4x.png"
+                        alt="Máng hướng dẫn phẫu thuật ID-4 Guide">
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+
+</html>

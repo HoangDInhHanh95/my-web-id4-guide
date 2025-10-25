@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID4 Image MHDPT Component</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <style>
+        /* CSS được gói gọn trong class cha "id4-img-stackable-guide" */
+        
+        .id4-img-stackable-guide {
+            --progress-bar-color: #333;
+            --inactive-bar-color: #d8d8d8;
+            --control-icon-color: #a0a0a0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            padding: 40px 0;
+            width: 100%;
+            overflow-x: hidden;
+        }
+        /* Title Section */
+        
+        .id4-img-stackable-guide__title-section {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 0 20px;
+        }
+        
+        .id4-img-stackable-guide__main-title {
+            font-size: 2.5em;
+            /* Default for desktop */
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .id4-img-stackable-guide__sub-title {
+            font-size: 1.5em;
+            /* Default for desktop */
+            color: #007bff;
+            /* Blue color as in the image */
+            font-weight: 600;
+        }
+        /* Container chính của Swiper */
+        
+        .id4-img-stackable-guide__swiper {
+            width: 100%;
+            padding: 40px 0;
+            overflow: visible;
+        }
+        /* Tối ưu hóa hiệu năng cho wrapper */
+        
+        .id4-img-stackable-guide .swiper-wrapper {
+            will-change: transform;
+        }
+        /* Từng slide */
+        
+        .id4-img-stackable-guide .swiper-slide {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            /* Màu nền dự phòng */
+            border-radius: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            width: 88%;
+            max-width: 950px;
+            height: 450px;
+            transition: transform 0.4s ease, opacity 0.4s ease;
+            will-change: transform;
+            opacity: 0.4;
+            transform: scale(0.92);
+        }
+        
+        .id4-img-stackable-guide .swiper-slide-active {
+            opacity: 1;
+            transform: scale(1);
+        }
+        /* CSS CHO BACKGROUND CARD */
+        
+        .id4-img-stackable-guide .swiper-slide {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        
+        .id4-img-stackable-guide .swiper-slide .id4-img-stackable-guide__slide-inner {
+            border-radius: 24px;
+            height: 100%;
+            width: 100%;
+        }
+        /* === CẬP NHẬT: Thay thế link ảnh nền === */
+        
+        .id4-img-stackable-guide .swiper-slide:nth-child(1) {
+            background-image: url('http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-1@4x.png');
+        }
+        
+        .id4-img-stackable-guide .swiper-slide:nth-child(2) {
+            background-image: url('http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-2@4x.png');
+        }
+        
+        .id4-img-stackable-guide .swiper-slide:nth-child(3) {
+            background-image: url('http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-3@4x.png');
+        }
+        
+        .id4-img-stackable-guide .swiper-slide:nth-child(4) {
+            background-image: url('http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-4@4x.png');
+        }
+        
+        .id4-img-stackable-guide .swiper-slide:nth-child(5) {
+            background-image: url('http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-5@4x.png');
+        }
+        /* === KẾT THÚC CẬP NHẬT === */
+        
+        .id4-img-stackable-guide__slide-inner {
+            box-sizing: border-box;
+        }
+        
+        .id4-img-stackable-guide__controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .id4-img-stackable-guide__pagination.swiper-pagination-bullets {
+            position: static;
+            display: flex;
+            gap: 6px;
+            width: auto;
+        }
+        
+        .id4-img-stackable-guide__pagination .swiper-pagination-bullet {
+            width: 32px;
+            height: 6px;
+            border-radius: 3px;
+            background-color: var(--inactive-bar-color);
+            opacity: 1;
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.3s;
+        }
+        
+        .id4-img-stackable-guide__pagination .swiper-pagination-bullet-active {
+            background-color: var(--inactive-bar-color);
+        }
+        
+        .id4-img-stackable-guide__pagination .swiper-pagination-bullet-active::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--progress-bar-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            animation: id4-img-stackable-guide-progressFill 5s linear forwards;
+            animation-play-state: running;
+        }
+        
+        .id4-img-stackable-guide.autoplay-paused .swiper-pagination-bullet-active::after {
+            animation-play-state: paused;
+        }
+        
+        @keyframes id4-img-stackable-guide-progressFill {
+            from {
+                transform: scaleX(0);
+            }
+            to {
+                transform: scaleX(1);
+            }
+        }
+        
+        .id4-img-stackable-guide__autoplay-control {
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--control-icon-color);
+        }
+        
+        .id4-img-stackable-guide__autoplay-control .id4-img-stackable-guide__icon {
+            display: none;
+        }
+        
+        .id4-img-stackable-guide__autoplay-control.playing .id4-img-stackable-guide__icon--pause {
+            display: block;
+        }
+        
+        .id4-img-stackable-guide__autoplay-control.paused .id4-img-stackable-guide__icon--play {
+            display: block;
+        }
+        /* Responsive adjustments */
+        /* Mobile */
+        
+        @media (max-width: 767px) {
+            .id4-img-stackable-guide .swiper-slide {
+                width: 90%;
+                height: 300px;
+                /* Smaller height for mobile */
+            }
+            .id4-img-stackable-guide__main-title {
+                font-size: 1.8em;
+            }
+            .id4-img-stackable-guide__sub-title {
+                font-size: 1.1em;
+            }
+            .id4-img-stackable-guide {
+                padding: 20px 0;
+            }
+            .id4-img-stackable-guide__title-section {
+                margin-bottom: 25px;
+            }
+        }
+        /* Tablet */
+        
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .id4-img-stackable-guide .swiper-slide {
+                width: 90%;
+                height: 400px;
+                /* Medium height for tablet */
+            }
+            .id4-img-stackable-guide__main-title {
+                font-size: 2.2em;
+            }
+            .id4-img-stackable-guide__sub-title {
+                font-size: 1.3em;
+            }
+            .id4-img-stackable-guide {
+                padding: 30px 0;
+            }
+            .id4-img-stackable-guide__title-section {
+                margin-bottom: 30px;
+            }
+        }
+        /* Desktop - default styles are already for desktop, but explicitly set if needed */
+        
+        @media (min-width: 1025px) {
+            .id4-img-stackable-guide .swiper-slide {
+                width: 88%;
+                max-width: 950px;
+                height: 450px;
+            }
+            .id4-img-stackable-guide__main-title {
+                font-size: 2.5em;
+            }
+            .id4-img-stackable-guide__sub-title {
+                font-size: 1.5em;
+            }
+            .id4-img-stackable-guide {
+                padding: 40px 0;
+            }
+            .id4-img-stackable-guide__title-section {
+                margin-bottom: 40px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="id4-img-stackable-guide">
+        <div class="id4-img-stackable-guide__title-section">
+            <h2 class="id4-img-stackable-guide__main-title">CÁC THÀNH PHẦN</h2>
+            <p class="id4-img-stackable-guide__sub-title">ID-4 STACKABLE GUIDE</p>
+        </div>
+
+        <div class="id4-img-stackable-guide__swiper swiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <div class="id4-img-stackable-guide__slide-inner"></div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="id4-img-stackable-guide__slide-inner"></div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="id4-img-stackable-guide__slide-inner"></div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="id4-img-stackable-guide__slide-inner"></div>
+                </div>
+                <div class="swiper-slide">
+                    <div class="id4-img-stackable-guide__slide-inner"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="id4-img-stackable-guide__controls">
+            <div class="id4-img-stackable-guide__pagination swiper-pagination"></div>
+            <div class="id4-img-stackable-guide__autoplay-control playing" role="button" aria-label="Pause autoplay">
+                <svg class="id4-img-stackable-guide__icon id4-img-stackable-guide__icon--pause" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M5.5 3.5h1.5v9H5.5v-9zm3.5 0h1.5v9H9v-9z" />
+                </svg>
+                <svg class="id4-img-stackable-guide__icon id4-img-stackable-guide__icon--play" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path
+                        d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script>
+        function initId4ImgStackableGuide() {
+            const id4imgstackableguide_container = document.querySelector('.id4-img-stackable-guide');
+            if (!id4imgstackableguide_container) return;
+
+            const id4imgstackableguide_swiper = new Swiper('.id4-img-stackable-guide__swiper', {
+                speed: 500,
+                loop: true,
+                centeredSlides: true,
+                slidesPerView: 'auto',
+                spaceBetween: 24,
+
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                    pauseOnMouseEnter: true,
+                },
+                pagination: {
+                    el: '.id4-img-stackable-guide__pagination',
+                    clickable: true,
+                },
+            });
+
+            const id4imgstackableguide_controlButton = id4imgstackableguide_container.querySelector('.id4-img-stackable-guide__autoplay-control');
+
+            if (id4imgstackableguide_controlButton) {
+                id4imgstackableguide_controlButton.addEventListener('click', () => {
+                    if (id4imgstackableguide_swiper.autoplay.running) {
+                        id4imgstackableguide_swiper.autoplay.stop();
+                    } else {
+                        id4imgstackableguide_swiper.autoplay.start();
+                    }
+                });
+
+                id4imgstackableguide_swiper.on('autoplayStart', () => {
+                    id4imgstackableguide_controlButton.classList.remove('paused');
+                    id4imgstackableguide_controlButton.classList.add('playing');
+                    id4imgstackableguide_container.classList.remove('autoplay-paused');
+                });
+
+                id4imgstackableguide_swiper.on('autoplayStop', () => {
+                    id4imgstackableguide_controlButton.classList.remove('playing');
+                    id4imgstackableguide_controlButton.classList.add('paused');
+                    id4imgstackableguide_container.classList.add('autoplay-paused');
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initId4ImgStackableGuide);
+    </script>
+</body>
+
+</html>

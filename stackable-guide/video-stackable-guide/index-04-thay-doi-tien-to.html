@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID-4 STACKABLE GUIDE</title>
+    <style>
+        /* CSS Reset and Basic Styles */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body,
+        html {
+            height: 100%;
+            font-family: Arial, sans-serif;
+            background-color: #000;
+        }
+        /* Container for the video and content */
+        
+        .CBSD-id4-stackable-guide {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* Background Video */
+        
+        #CBSD-id4-stackable-guide__background-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: 1;
+            transform: translateX(-50%) translateY(-50%);
+            background: #000;
+        }
+        /* Content Overlay */
+        
+        .CBSD-id4-stackable-guide__content-overlay {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1200px;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            /* Aligns text to the left */
+            color: white;
+        }
+        /* Left side text content */
+        
+        .CBSD-id4-stackable-guide__text-content {
+            flex-basis: 45%;
+        }
+        
+        .CBSD-id4-stackable-guide__text-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            font-weight: 600;
+        }
+        
+        .CBSD-id4-stackable-guide__text-content p {
+            font-size: 1rem;
+            line-height: 1.6;
+            max-width: 450px;
+        }
+        /* --- Responsive Design --- */
+        /* Tablet view */
+        
+        @media (max-width: 992px) {
+            .CBSD-id4-stackable-guide__text-content h1 {
+                font-size: 2rem;
+            }
+            .CBSD-id4-stackable-guide__text-content p {
+                font-size: 0.9rem;
+            }
+        }
+        /* Mobile View (Portrait) */
+        
+        @media (max-width: 768px) {
+            .CBSD-id4-stackable-guide {
+                height: 100vh;
+                min-height: 600px;
+            }
+            .CBSD-id4-stackable-guide__content-overlay {
+                flex-direction: column;
+                justify-content: center;
+                text-align: center;
+                padding: 1.5rem;
+            }
+            .CBSD-id4-stackable-guide__text-content {
+                order: 1;
+                width: 100%;
+                margin-bottom: 2rem;
+                flex-basis: auto;
+                /* Reset flex-basis for mobile */
+            }
+            .CBSD-id4-stackable-guide__text-content h1 {
+                font-size: 1.8rem;
+            }
+            .CBSD-id4-stackable-guide__text-content p {
+                font-size: 0.9rem;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="CBSD-id4-stackable-guide">
+        <video autoplay muted loop playsinline id="CBSD-id4-stackable-guide__background-video">
+        </video>
+
+        <div class="CBSD-id4-stackable-guide__content-overlay">
+            <div class="CBSD-id4-stackable-guide__text-content">
+                <h1>CÁC BƯỚC SỬ DỤNG<br>ID-4 STACKABLE GUIDE</h1>
+                <p>Máng hướng dẫn phẫu thuật Implant là dụng cụ chuyên dụng, được thiết kế dựa trên phim chụp CT Conebeam và dấu hàm của từng bệnh nhân. Máng 3D trong suốt được ứng dụng chủ yếu trong phẫu thuật Implant.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const CBSD_id4_stackable_guide_videoPlayer = document.getElementById('CBSD-id4-stackable-guide__background-video');
+
+            // --- THAY ĐỔI LINK VIDEO TẠI ĐÂY ---
+            const CBSD_id4_stackable_guide_desktopVideoURL = 'http://localhost/iD4Center/wp-content/uploads/2025/09/0001.mp4';
+            const CBSD_id4_stackable_guide_mobileVideoURL = 'https://assets.mixkit.co/videos/preview/mixkit-vertical-shot-of-a-lake-near-a-forest-31158-large.mp4'; // Link video cho mobile (dạng dọc)
+
+            function CBSD_id4_stackable_guide_switchVideoSource() {
+                const CBSD_id4_stackable_guide_currentSrc = CBSD_id4_stackable_guide_videoPlayer.currentSrc;
+                const CBSD_id4_stackable_guide_screenWidth = window.innerWidth;
+
+                if (CBSD_id4_stackable_guide_screenWidth <= 768) {
+                    // Chuyển sang giao diện Mobile
+                    if (CBSD_id4_stackable_guide_currentSrc !== CBSD_id4_stackable_guide_mobileVideoURL && CBSD_id4_stackable_guide_videoPlayer.src !== CBSD_id4_stackable_guide_mobileVideoURL) {
+                        CBSD_id4_stackable_guide_videoPlayer.src = CBSD_id4_stackable_guide_mobileVideoURL;
+                        CBSD_id4_stackable_guide_videoPlayer.load(); // Tải video mới
+                        CBSD_id4_stackable_guide_videoPlayer.play();
+                    }
+                } else {
+                    // Chuyển sang giao diện Desktop/Tablet
+                    if (CBSD_id4_stackable_guide_currentSrc !== CBSD_id4_stackable_guide_desktopVideoURL && CBSD_id4_stackable_guide_videoPlayer.src !== CBSD_id4_stackable_guide_desktopVideoURL) {
+                        CBSD_id4_stackable_guide_videoPlayer.src = CBSD_id4_stackable_guide_desktopVideoURL;
+                        CBSD_id4_stackable_guide_videoPlayer.load(); // Tải video mới
+                        CBSD_id4_stackable_guide_videoPlayer.play();
+                    }
+                }
+            }
+
+            // Gọi hàm khi tải trang lần đầu
+            CBSD_id4_stackable_guide_switchVideoSource();
+
+            // Gọi hàm mỗi khi thay đổi kích thước cửa sổ
+            window.addEventListener('resize', CBSD_id4_stackable_guide_switchVideoSource);
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Video Gallery</title>
+    <style>
+         :root {
+            --transition-speed: 0.3s;
+        }
+        
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+        
+        .page-wrapper {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #f0f0f0;
+            padding: 50px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        
+        .gallery-container {
+            width: 100%;
+            max-width: 1400px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .video-gallery {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .gallery-item {
+            position: relative;
+            width: 180px;
+            height: 320px;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform var(--transition-speed) ease;
+            flex-shrink: 0;
+        }
+        
+        .gallery-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .gallery-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .item-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 15px 15px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1em;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            text-align: left;
+            pointer-events: none;
+        }
+        
+        .play-button-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            transition: transform var(--transition-speed) ease;
+        }
+        
+        .play-icon,
+        .expand-icon {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: opacity var(--transition-speed) ease;
+        }
+        
+        .play-icon::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-40%, -50%);
+            width: 0;
+            height: 0;
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            border-left: 20px solid #333;
+        }
+        
+        .expand-icon {
+            opacity: 0;
+        }
+        
+        .expand-icon::before,
+        .expand-icon::after {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            border-color: #333;
+            border-style: solid;
+        }
+        
+        .expand-icon::before {
+            top: 16px;
+            left: 16px;
+            border-width: 3px 0 0 3px;
+        }
+        
+        .expand-icon::after {
+            bottom: 16px;
+            right: 16px;
+            border-width: 0 3px 3px 0;
+        }
+        
+        .gallery-item:hover .play-icon {
+            opacity: 0;
+        }
+        
+        .gallery-item:hover .expand-icon {
+            opacity: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .gallery-container {
+                padding: 20px 0;
+            }
+            .video-gallery {
+                justify-content: flex-start;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                padding: 0 20px;
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+            .video-gallery::-webkit-scrollbar {
+                display: none;
+            }
+            .gallery-item {
+                width: 90px;
+                height: 90px;
+                border-radius: 50%;
+                border: 3px solid #ccc;
+                scroll-snap-align: start;
+            }
+            .item-overlay {
+                display: none;
+            }
+            .play-button-overlay {
+                width: 40px;
+                height: 40px;
+            }
+            .play-icon::after {
+                border-top-width: 8px;
+                border-bottom-width: 8px;
+                border-left-width: 13px;
+            }
+            .expand-icon::before {
+                top: 10px;
+                left: 10px;
+                width: 10px;
+                height: 10px;
+            }
+            .expand-icon::after {
+                bottom: 10px;
+                right: 10px;
+                width: 10px;
+                height: 10px;
+            }
+        }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity var(--transition-speed) ease, visibility var(--transition-speed) ease;
+        }
+        
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            transition: width var(--transition-speed) ease, height var(--transition-speed) ease;
+            max-width: 95vw;
+            max-height: 95vh;
+        }
+        
+        #modal-video {
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+            display: block;
+        }
+        
+        .modal-progress-container {
+            position: absolute;
+            top: 10px;
+            width: calc(100% - 30px);
+            left: 15px;
+            display: flex;
+            gap: 4px;
+            z-index: 1002;
+        }
+        
+        .progress-segment {
+            flex: 1;
+            height: 3px;
+            background-color: rgba(255, 255, 255, 0.4);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background-color: white;
+            border-radius: 3px;
+            transition: width 0.1s linear;
+        }
+        
+        .progress-segment.active .progress-fill {
+            background-color: #ff4500;
+        }
+        
+        .modal-close,
+        .modal-nav {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1001;
+            font-size: 20px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-close {
+            top: 25px;
+            right: 15px;
+        }
+        
+        .modal-nav {
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .modal-nav.prev {
+            left: 15px;
+        }
+        
+        .modal-nav.next {
+            right: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="page-wrapper">
+        <div class="gallery-container">
+            <ul class="video-gallery">
+            </ul>
+        </div>
+
+        <div id="video-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-progress-container">
+                </div>
+                <video id="modal-video" controls autoplay></video>
+                <button class="modal-close" onclick="closeModal()" aria-label="Đóng cửa sổ video">×</button>
+                <button class="modal-nav prev" onclick="showPrevVideo()" aria-label="Xem video trước">&#10094;</button>
+                <button class="modal-nav next" onclick="showNextVideo()" aria-label="Xem video tiếp theo">&#10095;</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const videoLink = "https://stories.join-stories.com/asus-hq/ec4c7026-99a2-4813-b330-f2e863f34f76/story.mp4";
+
+        const videoData = [{
+            thumb: videoLink,
+            full: videoLink,
+            title: "Inside the Box 🔒"
+        }, {
+            thumb: videoLink,
+            full: videoLink,
+            title: "Feel the design"
+        }, {
+            thumb: videoLink,
+            full: videoLink,
+            title: "Motion Brief ♾️"
+        }, {
+            thumb: videoLink,
+            full: videoLink,
+            title: "Watch the film"
+        }, {
+            thumb: videoLink,
+            full: videoLink,
+            title: "Styled with Beige 🏃"
+        }, {
+            thumb: videoLink,
+            full: videoLink,
+            title: "Cool with Gray 🏃"
+        }, {
+            thumb: videoLink,
+            full: videoLink,
+            title: "More Features"
+        }];
+
+        const gallery = document.querySelector('.video-gallery');
+        const modal = document.getElementById('video-modal');
+        const modalContent = document.querySelector('.modal-content');
+        const modalVideo = document.getElementById('modal-video');
+        const progressContainer = document.querySelector('.modal-progress-container');
+        const galleryContainer = document.querySelector('.gallery-container');
+        let currentVideoIndex = 0;
+
+        function createGalleryItems() {
+            videoData.forEach((data, index) => {
+                const item = document.createElement('li');
+                item.className = 'gallery-item';
+                item.setAttribute('data-index', index);
+
+                const video = document.createElement('video');
+                video.src = data.thumb + '#t=0.5';
+                video.muted = true;
+                video.loop = true;
+                video.playsInline = true;
+                video.preload = "metadata";
+
+                if (index === 0) {
+                    video.autoplay = true;
+                }
+
+                const textOverlay = document.createElement('div');
+                textOverlay.className = 'item-overlay';
+                textOverlay.innerHTML = data.title;
+
+                const playButton = document.createElement('div');
+                playButton.className = 'play-button-overlay';
+                playButton.innerHTML = `<div class="play-icon"></div><div class="expand-icon"></div>`;
+
+                item.append(video, playButton, textOverlay);
+                gallery.appendChild(item);
+
+                const progressSegment = document.createElement('div');
+                progressSegment.className = 'progress-segment';
+                progressSegment.innerHTML = `<div class="progress-fill"></div>`;
+                progressContainer.appendChild(progressSegment);
+            });
+        }
+
+        function resizeModalToFitVideo() {
+            const videoRatio = modalVideo.videoWidth / modalVideo.videoHeight;
+            const screenHeight = window.innerHeight * 0.95;
+            const screenWidth = window.innerWidth * 0.95;
+            let newWidth = screenWidth;
+            let newHeight = newWidth / videoRatio;
+            if (newHeight > screenHeight) {
+                newHeight = screenHeight;
+                newWidth = newHeight * videoRatio;
+            }
+            modalContent.style.width = `${newWidth}px`;
+            modalContent.style.height = `${newHeight}px`;
+        }
+
+        function updateProgressBar() {
+            const percent = (modalVideo.currentTime / modalVideo.duration) * 100;
+            const progressFills = document.querySelectorAll('.progress-fill');
+            if (progressFills[currentVideoIndex]) {
+                progressFills[currentVideoIndex].style.width = `${percent}%`;
+            }
+        }
+
+        function openModal(index) {
+            currentVideoIndex = index;
+            modalVideo.src = videoData[index].full;
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+
+            const segments = document.querySelectorAll('.progress-segment');
+            segments.forEach((seg, i) => {
+                seg.classList.toggle('active', i === index);
+                seg.querySelector('.progress-fill').style.width = i < index ? '100%' : '0%';
+            });
+        }
+
+        function closeModal() {
+            modal.classList.remove('show');
+            modalVideo.pause();
+            modalVideo.src = '';
+            document.body.style.overflow = 'auto';
+            modalContent.style.width = 'auto';
+            modalContent.style.height = 'auto';
+        }
+
+        function showNextVideo() {
+            currentVideoIndex = (currentVideoIndex + 1) % videoData.length;
+            openModal(currentVideoIndex);
+        }
+
+        function showPrevVideo() {
+            currentVideoIndex = (currentVideoIndex - 1 + videoData.length) % videoData.length;
+            openModal(currentVideoIndex);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            createGalleryItems();
+
+            const items = document.querySelectorAll('.gallery-item');
+            const firstVideo = items.length > 0 ? items[0].querySelector('video') : null;
+
+            if (window.innerWidth > 768 && firstVideo) {
+                items.forEach(item => {
+                    const video = item.querySelector('video');
+
+                    item.addEventListener('mouseenter', () => {
+                        firstVideo.pause();
+                        video.play();
+                    });
+
+                    item.addEventListener('mouseleave', () => {
+                        video.pause();
+                    });
+                });
+
+                galleryContainer.addEventListener('mouseleave', () => {
+                    firstVideo.play();
+                });
+            }
+
+            gallery.addEventListener('click', (e) => {
+                const item = e.target.closest('.gallery-item');
+                if (item) {
+                    const index = parseInt(item.getAttribute('data-index'));
+                    openModal(index);
+                }
+            });
+
+            modalVideo.addEventListener('loadedmetadata', resizeModalToFitVideo);
+            modalVideo.addEventListener('timeupdate', updateProgressBar);
+            modalVideo.addEventListener('ended', showNextVideo);
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeModal();
+            });
+        });
+    </script>
+
+</body>
+
+</html>

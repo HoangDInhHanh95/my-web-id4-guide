@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Player Giao Diện (Refactored)</title>
+    <style>
+        /* --- BỘ BAO BỌC TRANG DEMO --- */
+        /* Các style trước đây của thẻ BODY đã được chuyển vào đây  f9fdfe*/
+        
+        .LDC-id4-stacktable-guide-page-wrapper {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f9fdfe;
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        /* --- PHẦN CODE CỦA COMPONENT GIỮ NGUYÊN --- */
+        
+        .LDC-id4-stacktable-guide-video-section-container {
+            width: 100%;
+            max-width: 900px;
+            text-align: center;
+        }
+        
+        .LDC-id4-stacktable-guide-video-main-title {
+            color: #0d2a4e;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .LDC-id4-stacktable-guide-custom-video-player {
+            width: 100%;
+            margin: 0 auto;
+        }
+        
+        .LDC-id4-stacktable-guide-video-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%;
+            background-color: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        
+        .LDC-id4-stacktable-guide-video-wrapper img,
+        .LDC-id4-stacktable-guide-video-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s ease;
+        }
+        /* Thêm class mới cho thumbnail với object-fit: cover */
+        
+        .LDC-id4-stacktable-guide-video-thumbnail-cover {
+            object-fit: cover !important;
+        }
+        
+        .LDC-id4-stacktable-guide-video-wrapper video:focus {
+            outline: none;
+        }
+        
+        .LDC-id4-stacktable-guide-hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .LDC-id4-stacktable-guide-play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            z-index: 10;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.3s ease;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        
+        .LDC-id4-stacktable-guide-play-button:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .LDC-id4-stacktable-guide-play-button-icon {
+            width: 40%;
+            height: 40%;
+            fill: #ffffff;
+            margin-left: 5px;
+            filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.4));
+        }
+        
+        .LDC-id4-stacktable-guide-video-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        
+        .LDC-id4-stacktable-guide-modal-content {
+            position: relative;
+            width: 95%;
+            max-width: 800px;
+        }
+        
+        .LDC-id4-stacktable-guide-close-modal-button {
+            position: absolute;
+            top: -35px;
+            right: 0px;
+            color: #ffffff;
+            font-size: 35px;
+            font-weight: bold;
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 1001;
+        }
+        
+        @media (max-width: 767px) {
+            .LDC-id4-stacktable-guide-video-main-title {
+                font-size: 22px;
+            }
+            .LDC-id4-stacktable-guide-play-button {
+                width: 70px;
+                height: 70px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="LDC-id4-stacktable-guide-page-wrapper">
+
+        <div class="LDC-id4-stacktable-guide-video-section-container">
+            <h2 class="LDC-id4-stacktable-guide-video-main-title">NHỮNG LÝ DO NÊN LỰA CHỌN ID-4 STACKABLE GUIDE</h2>
+            <div class="LDC-id4-stacktable-guide-custom-video-player" id="LDC-id4-stacktable-guide-videoPlayer">
+                <div class="LDC-id4-stacktable-guide-video-wrapper">
+                    <video class="LDC-id4-stacktable-guide-main-video" src="https://www.w3schools.com/html/mov_bbb.mp4" playsinline preload="metadata"></video>
+                    <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/MHDPT-stackble-guide@4x.png" alt="ID-4 Stackable Guide Thumbnail" class="LDC-id4-stacktable-guide-video-thumbnail LDC-id4-stacktable-guide-video-thumbnail-cover">
+                    <button class="LDC-id4-stacktable-guide-play-button" aria-label="Play Video">
+                        <svg class="LDC-id4-stacktable-guide-play-button-icon" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="LDC-id4-stacktable-guide-video-modal" id="LDC-id4-stacktable-guide-videoModal">
+        <div class="LDC-id4-stacktable-guide-modal-content">
+            <button class="LDC-id4-stacktable-guide-close-modal-button">&times;</button>
+            <div class="LDC-id4-stacktable-guide-modal-video-wrapper"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const LDC_id4_stacktable_guide_player = document.getElementById('LDC-id4-stacktable-guide-videoPlayer');
+            const LDC_id4_stacktable_guide_videoWrapper = LDC_id4_stacktable_guide_player.querySelector('.LDC-id4-stacktable-guide-video-wrapper');
+            const LDC_id4_stacktable_guide_video = LDC_id4_stacktable_guide_player.querySelector('.LDC-id4-stacktable-guide-main-video');
+            const LDC_id4_stacktable_guide_thumbnail = LDC_id4_stacktable_guide_player.querySelector('.LDC-id4-stacktable-guide-video-thumbnail');
+            const LDC_id4_stacktable_guide_playButton = LDC_id4_stacktable_guide_player.querySelector('.LDC-id4-stacktable-guide-play-button');
+            const LDC_id4_stacktable_guide_modal = document.getElementById('LDC-id4-stacktable-guide-videoModal');
+            const LDC_id4_stacktable_guide_modalVideoWrapper = LDC_id4_stacktable_guide_modal.querySelector('.LDC-id4-stacktable-guide-modal-video-wrapper');
+            const LDC_id4_stacktable_guide_closeModalButton = LDC_id4_stacktable_guide_modal.querySelector('.LDC-id4-stacktable-guide-close-modal-button');
+            const LDC_id4_stacktable_guide_isMobile = () => window.innerWidth <= 767;
+
+            function LDC_id4_stacktable_guide_initiatePlay() {
+                if (LDC_id4_stacktable_guide_isMobile()) {
+                    LDC_id4_stacktable_guide_modalVideoWrapper.appendChild(LDC_id4_stacktable_guide_video);
+                    LDC_id4_stacktable_guide_modal.style.display = 'flex';
+                }
+                LDC_id4_stacktable_guide_video.controls = true;
+                LDC_id4_stacktable_guide_video.play();
+            }
+
+            function LDC_id4_stacktable_guide_resetPlayerUI() {
+                LDC_id4_stacktable_guide_video.controls = false;
+                LDC_id4_stacktable_guide_thumbnail.classList.remove('LDC-id4-stacktable-guide-hidden');
+                LDC_id4_stacktable_guide_playButton.classList.remove('LDC-id4-stacktable-guide-hidden');
+                LDC_id4_stacktable_guide_videoWrapper.style.cursor = 'pointer';
+            }
+
+            // SỬA LẠI: Khi video chạy, ẩn thumbnail và nút play đi
+            LDC_id4_stacktable_guide_video.addEventListener('play', () => {
+                LDC_id4_stacktable_guide_playButton.classList.add('LDC-id4-stacktable-guide-hidden');
+                LDC_id4_stacktable_guide_thumbnail.classList.add('LDC-id4-stacktable-guide-hidden');
+                LDC_id4_stacktable_guide_videoWrapper.style.cursor = 'default';
+            });
+
+            // SỬA LẠI: Khi video dừng, hiện lại thumbnail và nút play
+            LDC_id4_stacktable_guide_video.addEventListener('pause', () => {
+                if (!LDC_id4_stacktable_guide_video.ended) {
+                    LDC_id4_stacktable_guide_playButton.classList.remove('LDC-id4-stacktable-guide-hidden');
+                    LDC_id4_stacktable_guide_thumbnail.classList.remove('LDC-id4-stacktable-guide-hidden');
+                    LDC_id4_stacktable_guide_videoWrapper.style.cursor = 'pointer';
+                }
+            });
+
+            LDC_id4_stacktable_guide_video.addEventListener('ended', () => {
+                if (!LDC_id4_stacktable_guide_isMobile()) {
+                    LDC_id4_stacktable_guide_resetPlayerUI();
+                }
+            });
+
+            function LDC_id4_stacktable_guide_closeModal() {
+                LDC_id4_stacktable_guide_modal.style.display = 'none';
+                LDC_id4_stacktable_guide_video.pause();
+                LDC_id4_stacktable_guide_player.querySelector('.LDC-id4-stacktable-guide-video-wrapper').prepend(LDC_id4_stacktable_guide_video);
+                LDC_id4_stacktable_guide_resetPlayerUI();
+            }
+
+            LDC_id4_stacktable_guide_closeModalButton.addEventListener('click', LDC_id4_stacktable_guide_closeModal);
+            LDC_id4_stacktable_guide_modal.addEventListener('click', (e) => {
+                if (e.target === LDC_id4_stacktable_guide_modal) {
+                    LDC_id4_stacktable_guide_closeModal();
+                }
+            });
+
+            LDC_id4_stacktable_guide_playButton.addEventListener('click', () => {
+                // Nếu video đang dừng thì chạy, ngược lại thì dừng
+                if (LDC_id4_stacktable_guide_video.paused) {
+                    LDC_id4_stacktable_guide_initiatePlay();
+                } else {
+                    LDC_id4_stacktable_guide_video.pause();
+                }
+            });
+            LDC_id4_stacktable_guide_thumbnail.addEventListener('click', LDC_id4_stacktable_guide_initiatePlay);
+        });
+    </script>
+
+</body>
+
+</html>

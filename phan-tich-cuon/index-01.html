@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID4 Guide - Unique Backgrounds for Each Card</title>
+    <style>
+        /*
+        ============================================================
+        CSS FOR ID4 GUIDE COMPONENT
+        ============================================================
+        */
+        
+         :root {
+            --id4-guide-background-color: #1a1a1a;
+            --id4-guide-card-background: #282828;
+            --id4-guide-text-color: #fff;
+            --id4-guide-border-color: #555;
+            --id4-guide-accent-color: #00aaff;
+            --id4-guide-dot-inactive-color: #555;
+            --id4-guide-bg-card: rgba(239, 240, 241, 0.2);
+            --id4-guide-color-text: #000;
+            --id4-font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        }
+        
+        .id4-guide-container {
+            margin: 0;
+            font-family: var(--id4-font-family);
+            color: var(--id4-guide-text-color);
+            transition: background-color 0.4s ease;
+        }
+        
+        body.id4-guide-modal-open {
+            overflow: hidden;
+        }
+        
+        .id4-guide-horizontal-track {
+            height: 400vh;
+            position: relative;
+        }
+        
+        .id4-guide-sticky-container {
+            position: sticky;
+            top: 5vh;
+            height: 100vh;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+        
+        .id4-guide-horizontal-content {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            padding: 0 calc(50vw - 340px);
+        }
+        
+        .id4-guide-card {
+            width: clamp(300px, 60vw, 980px);
+            height: 600px;
+            max-height: 600px;
+            margin: 0 clamp(10px, 3vw, 30px);
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 20px;
+            border-radius: 20px;
+            border: 1px solid var(--id4-guide-border-color);
+            padding: clamp(20px, 5vw, 40px);
+            box-sizing: border-box;
+            flex-shrink: 0;
+            cursor: pointer;
+            transform: scale(1);
+            opacity: 1;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            position: relative;
+            background-size: cover;
+            background-position: center center;
+        }
+        
+        .id4-guide-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--id4-guide-bg-card);
+            border-radius: 20px;
+            z-index: 1;
+        }
+        
+        .id4-guide-card-text,
+        .id4-guide-card-image {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .id4-guide-card-text {
+            flex: 1 1 55%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .id4-guide-card-image {
+            flex: 1 1 45%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .id4-guide-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+        }
+        
+        .id4-guide-card h2 {
+            font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+            margin-top: 0;
+            margin-bottom: 15px;
+            text-align: left;
+            color: #111;
+        }
+        
+        .id4-guide-card p {
+            font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+            line-height: 1.6;
+            opacity: 0.8;
+            text-align: left;
+            color: var(--id4-guide-color-text);
+        }
+        
+        .id4-guide-pagination-dots {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            flex-direction: row;
+            justify-content: center;
+            gap: 12px;
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .id4-guide-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--id4-guide-dot-inactive-color);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .id4-guide-dot.id4-guide-active {
+            background-color: var(--id4-guide-text-color);
+            transform: scale(1.2);
+        }
+        
+        .id4-guide-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: rgba(26, 26, 26, 0.3);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .id4-guide-modal-overlay.id4-guide-active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .id4-guide-modal-content {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transform: scale(0.9);
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .id4-guide-modal-content .id4-guide-card-text {
+            flex: 1 1 55%;
+        }
+        
+        .id4-guide-modal-content .id4-guide-card-text h2 {
+            color: #fff;
+        }
+        
+        .id4-guide-modal-content .id4-guide-card-text p {
+            color: #eee;
+        }
+        
+        .id4-guide-modal-content .id4-guide-card-image {
+            flex: 1 1 45%;
+        }
+        
+        .id4-guide-modal-content .id4-guide-card-image img {
+            width: 100%;
+            border-radius: 15px;
+        }
+        
+        .id4-guide-modal-content h2,
+        .id4-guide-modal-content p {
+            text-align: left;
+        }
+        
+        .id4-guide-modal-overlay.id4-guide-active .id4-guide-modal-content {
+            transform: scale(1);
+        }
+        
+        .id4-guide-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 3rem;
+            line-height: 1;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        
+        .id4-guide-modal-close:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        
+        @media (max-width: 768px) {
+            .id4-guide-pagination-dots {
+                display: flex;
+            }
+            .id4-guide-card,
+            .id4-guide-modal-content {
+                flex-direction: column;
+                text-align: center;
+                height: auto;
+                max-height: 80vh;
+                padding: 30px;
+                width: 90vw;
+            }
+            .id4-guide-card-image,
+            .id4-guide-modal-content .id4-guide-card-image {
+                order: -1;
+                width: 100%;
+                height: 200px;
+                margin-bottom: 20px;
+            }
+            .id4-guide-card h2,
+            .id4-guide-card p,
+            .id4-guide-modal-content h2,
+            .id4-guide-modal-content p {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div style="height: 50vh; display: flex; align-items: center; justify-content: center;">
+        <h1>Kéo xuống để trải nghiệm</h1>
+    </div>
+
+    <div id="my-first-guide" class="id4-guide-container">
+        <div class="id4-guide-horizontal-track">
+            <div class="id4-guide-sticky-container">
+                <div class="id4-guide-horizontal-content">
+                </div>
+            </div>
+        </div>
+        <div class="id4-guide-pagination-dots"></div>
+        <div class="id4-guide-modal-overlay">
+            <div class="id4-guide-modal-content"></div>
+            <button class="id4-guide-modal-close" aria-label="Đóng">&times;</button>
+        </div>
+    </div>
+
+    <div style="height: 50vh; display: flex; align-items: center; justify-content: center;">
+        <h2>Tiếp tục kéo xuống để xem khối thứ hai</h2>
+    </div>
+
+    <div id="my-second-guide" class="id4-guide-container">
+        <div class="id4-guide-horizontal-track">
+            <div class="id4-guide-sticky-container">
+                <div class="id4-guide-horizontal-content">
+                </div>
+            </div>
+        </div>
+        <div class="id4-guide-pagination-dots"></div>
+        <div class="id4-guide-modal-overlay">
+            <div class="id4-guide-modal-content"></div>
+            <button class="id4-guide-modal-close" aria-label="Đóng">&times;</button>
+        </div>
+    </div>
+
+    <div style="height: 50vh; display: flex; align-items: center; justify-content: center;">
+        <h1>Bạn đã cuộn qua khu vực hiệu ứng</h1>
+    </div>
+
+    <script>
+        /*
+                                                        ============================================================
+                                                        JAVASCRIPT COMPONENT PATTERN
+                                                        ============================================================
+                                                        */
+        class ID4GuideHorizontalScroll {
+            constructor(containerSelector, cardData) {
+                this.id4_guide_container = document.querySelector(containerSelector);
+                if (!this.id4_guide_container) {
+                    console.error(`ID4 Guide Error: Container with selector "${containerSelector}" not found.`);
+                    return;
+                }
+                this.id4_guide_cardData = cardData;
+                this.id4_guide_currentX = 0;
+                this.id4_guide_targetX = 0;
+                this.id4_guide_easingFactor = 0.08;
+                this.id4_guide_isTrackInView = false;
+                this.id4_guide_contentContainer = this.id4_guide_container.querySelector('.id4-guide-horizontal-content');
+                this.id4_guide_track = this.id4_guide_container.querySelector('.id4-guide-horizontal-track');
+                this.id4_guide_modalOverlay = this.id4_guide_container.querySelector('.id4-guide-modal-overlay');
+                this.id4_guide_modalContent = this.id4_guide_container.querySelector('.id4-guide-modal-content');
+                this.id4_guide_modalClose = this.id4_guide_container.querySelector('.id4-guide-modal-close');
+                this.id4_guide_paginationContainer = this.id4_guide_container.querySelector('.id4-guide-pagination-dots');
+                this.id4_guide_cards = [];
+                this.id4_guide_dots = [];
+                this._init();
+            }
+            _init() {
+                this._id4_guide_generateCards();
+                this._id4_guide_setupPagination();
+                this._id4_guide_bindEventListeners();
+                this._id4_guide_startAnimationLoop();
+                this._id4_guide_observeTrack();
+            }
+
+            // === CẬP NHẬT TẠI ĐÂY ===
+            _id4_guide_generateCards() {
+                    this.id4_guide_contentContainer.innerHTML = this.id4_guide_cardData.map(data => `
+                    <div 
+                        class="id4-guide-card" 
+                        tabindex="0" 
+                        style="background-image: url('${data.backgroundImageUrl}')"
+                    >
+                        <div class="id4-guide-card-text">
+                            <h2>${data.title}</h2>
+                            <p>${data.description}</p>
+                        </div>
+                        <div class="id4-guide-card-image">
+                            <img src="${data.imageUrl}" alt="${data.title}" loading="lazy">
+                        </div>
+                    </div>
+                `).join('');
+                    this.id4_guide_cards = Array.from(this.id4_guide_contentContainer.children);
+                }
+                // =========================
+
+            _id4_guide_setupPagination() {
+                if (!this.id4_guide_paginationContainer) return;
+                this.id4_guide_cards.forEach((_, index) => {
+                    const dot = document.createElement('div');
+                    dot.classList.add('id4-guide-dot');
+                    dot.addEventListener('click', () => {
+                        const scrollableDistance = this.id4_guide_track.offsetHeight - window.innerHeight;
+                        const progressPerCard = this.id4_guide_cards.length > 1 ? 1 / (this.id4_guide_cards.length - 1) : 0;
+                        const targetScrollTop = this.id4_guide_track.offsetTop + (scrollableDistance * progressPerCard * index);
+                        window.scrollTo({
+                            top: targetScrollTop,
+                            behavior: 'smooth'
+                        });
+                    });
+                    this.id4_guide_paginationContainer.appendChild(dot);
+                });
+                this.id4_guide_dots = Array.from(this.id4_guide_paginationContainer.children);
+            }
+            _id4_guide_openModal(contentHTML) {
+                this.id4_guide_modalContent.innerHTML = contentHTML;
+                this.id4_guide_modalOverlay.classList.add('id4-guide-active');
+                document.body.classList.add('id4-guide-modal-open');
+            }
+            _id4_guide_closeModal() {
+                this.id4_guide_modalOverlay.classList.remove('id4-guide-active');
+                document.body.classList.remove('id4-guide-modal-open');
+            }
+            _id4_guide_bindEventListeners() {
+                this.id4_guide_cards.forEach(card => card.addEventListener('click', () => this._id4_guide_openModal(card.innerHTML)));
+                this.id4_guide_modalClose.addEventListener('click', () => this._id4_guide_closeModal());
+                this.id4_guide_modalOverlay.addEventListener('click', (e) => {
+                    if (e.target === this.id4_guide_modalOverlay) this._id4_guide_closeModal();
+                });
+                this.id4_guide_handleKeydown = (e) => {
+                    if (e.key === 'Escape' && this.id4_guide_modalOverlay.classList.contains('id4-guide-active')) {
+                        this._id4_guide_closeModal();
+                    }
+                };
+                window.addEventListener('keydown', this.id4_guide_handleKeydown);
+            }
+            _id4_guide_lerp(start, end, t) {
+                return start * (1 - t) + end * t;
+            }
+            _id4_guide_updateActiveDot(progress) {
+                if (this.id4_guide_dots.length > 0) {
+                    const activeIndex = this.id4_guide_cards.length > 1 ? Math.min(this.id4_guide_dots.length - 1, Math.round(progress * (this.id4_guide_cards.length - 1))) : 0;
+                    this.id4_guide_dots.forEach((dot, index) => dot.classList.toggle('id4-guide-active', index === activeIndex));
+                }
+            }
+            _id4_guide_updatePositions() {
+                const trackRect = this.id4_guide_track.getBoundingClientRect();
+                if (trackRect.top <= 0 && trackRect.bottom >= window.innerHeight) {
+                    const scrollInTrack = -trackRect.top;
+                    const scrollableDistance = trackRect.height - window.innerHeight;
+                    const scrollProgress = scrollableDistance > 0 ? Math.max(0, Math.min(1, scrollInTrack / scrollableDistance)) : 0;
+                    const firstCard = this.id4_guide_cards[0];
+                    const lastCard = this.id4_guide_cards.length > 1 ? this.id4_guide_cards[this.id4_guide_cards.length - 1] : firstCard;
+                    const contentScrollWidth = lastCard.offsetLeft - firstCard.offsetLeft;
+                    this.id4_guide_targetX = -contentScrollWidth * scrollProgress;
+                    this._id4_guide_updateActiveDot(scrollProgress);
+                }
+                this.id4_guide_currentX = this._id4_guide_lerp(this.id4_guide_currentX, this.id4_guide_targetX, this.id4_guide_easingFactor);
+                this.id4_guide_contentContainer.style.transform = `translateX(${this.id4_guide_currentX}px)`;
+            }
+            _id4_guide_applyParallax() {
+                const windowCenterX = window.innerWidth / 2;
+                this.id4_guide_cards.forEach(card => {
+                    const rect = card.getBoundingClientRect();
+                    const cardCenterX = rect.left + rect.width / 2;
+                    const distance = (cardCenterX - windowCenterX) / windowCenterX;
+                    const parallaxOffset = -distance * 30;
+                    const img = card.querySelector('.id4-guide-card-image img');
+                    if (img) {
+                        img.style.transform = `translateX(${parallaxOffset}px)`;
+                    }
+                });
+            }
+            _id4_guide_animationLoop() {
+                if (this.id4_guide_isTrackInView) {
+                    this._id4_guide_updatePositions();
+                    this._id4_guide_applyParallax();
+                }
+                requestAnimationFrame(() => this._id4_guide_animationLoop());
+            }
+            _id4_guide_startAnimationLoop() {
+                this._id4_guide_animationLoop();
+            }
+            _id4_guide_observeTrack() {
+                const observer = new IntersectionObserver((entries) => {
+                    this.id4_guide_isTrackInView = entries[0].isIntersecting;
+                }, {
+                    threshold: 0
+                });
+                observer.observe(this.id4_guide_track);
+            }
+        }
+
+        /*
+        ============================================================
+        KHỞI TẠO CÁC COMPONENT
+        ============================================================
+        */
+        document.addEventListener("DOMContentLoaded", function() {
+
+            // === CẬP NHẬT TẠI ĐÂY ===
+            // --- DỮ LIỆU CHO BLOCK 1 ---
+            const id4_guide_firstData = [{
+                title: 'Kế hoạch chính xác',
+                description: 'Vị trí hạ mào xương, vị trí Implant, Abutment và phục hình đều được phân tích, lên kế hoạch và thiết kế một cách chính xác.',
+                imageUrl: 'https://i.imgur.com/gS9412X.png',
+                backgroundImageUrl: 'https://i.imgur.com/Gk3f3pW.jpeg'
+            }, {
+                title: '🚀 Hiệu năng cao',
+                description: 'Sử dụng Intersection Observer và các kỹ thuật hiện đại để đảm bảo hoạt ảnh mượt mà, không ảnh hưởng đến hiệu suất trang.',
+                imageUrl: 'https://i.imgur.com/T0a0o1r.png',
+                backgroundImageUrl: 'https://i.imgur.com/mAmT2qJ.jpeg'
+            }, {
+                title: '🎨 Giàu tương tác',
+                description: 'Phản hồi với thao tác cuộn, nhấp chuột để xem chi tiết và hiệu ứng parallax tinh tế tạo ra một trải nghiệm sống động.',
+                imageUrl: 'https://i.imgur.com/dSOi7m0.png',
+                backgroundImageUrl: 'https://i.imgur.com/Q28eA4s.jpeg'
+            }];
+
+            // --- DỮ LIỆU CHO BLOCK 2 ---
+            const id4_guide_secondData = [{
+                title: '💡 Ý tưởng sáng tạo',
+                description: 'Chúng tôi biến những ý tưởng phức tạp thành các giải pháp kỹ thuật số đơn giản, thanh lịch và hiệu quả.',
+                imageUrl: 'https://i.imgur.com/u5E8yE4.png',
+                backgroundImageUrl: 'https://i.imgur.com/7xQ8z01.jpeg'
+            }, {
+                title: '🛠️ Xây dựng vững chắc',
+                description: 'Với nền tảng mã nguồn sạch, có thể mở rộng và bảo trì, sản phẩm của bạn được xây dựng để tồn tại lâu dài.',
+                imageUrl: 'https://i.imgur.com/e2oA27L.png',
+                backgroundImageUrl: 'https://i.imgur.com/sWj5R6b.jpeg'
+            }, {
+                title: '🤝 Hỗ trợ tận tâm',
+                description: 'Chúng tôi luôn đồng hành cùng bạn sau khi ra mắt, đảm bảo mọi thứ hoạt động trơn tru và hiệu quả.',
+                imageUrl: 'https://i.imgur.com/W2Uv1D5.png',
+                backgroundImageUrl: 'https://i.imgur.com/pDp4sBv.jpeg'
+            }, {
+                title: '📈 Tăng trưởng bền vững',
+                description: 'Giải pháp của chúng tôi không chỉ giải quyết vấn đề hiện tại mà còn mở đường cho sự phát triển trong tương lai.',
+                imageUrl: 'https.imgur.com/Y1L9Gv8.png',
+                backgroundImageUrl: 'https://i.imgur.com/BQR8aww.jpeg'
+            }];
+            // =========================
+
+
+            // Khởi tạo component 1
+            new ID4GuideHorizontalScroll('#my-first-guide', id4_guide_firstData);
+
+            // Khởi tạo component 2
+            new ID4GuideHorizontalScroll('#my-second-guide', id4_guide_secondData);
+
+        });
+    </script>
+</body>
+
+</html>

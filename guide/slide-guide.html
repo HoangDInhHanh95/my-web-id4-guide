@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cập nhật Slider - Cơ sở vật chất</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4ff;
+            overflow-x: hidden;
+        }
+        /* Lớp giả để tạo đường cong lớn ở top */
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 500px;
+            /* Chiều cao của vùng cong */
+            background-color: white;
+            z-index: -1;
+            border-bottom-left-radius: 50% 10%;
+            border-bottom-right-radius: 50% 10%;
+        }
+        /* Các khối trang trí ở góc */
+        
+        .decorative-box-1 {
+            position: absolute;
+            top: 20px;
+            right: 15%;
+            width: 150px;
+            height: 70px;
+            border: 2px solid #fecaca;
+            /* red-200 */
+            border-radius: 1.5rem;
+            /* rounded-3xl */
+            z-index: 1;
+        }
+        
+        .decorative-box-2 {
+            position: absolute;
+            top: 50px;
+            right: calc(15% + 20px);
+            width: 100px;
+            height: 50px;
+            background-color: #93c5fd;
+            /* blue-300 */
+            border-radius: 1rem;
+            /* rounded-xl */
+            z-index: 0;
+        }
+        
+        .dots-pattern {
+            position: absolute;
+            top: 50px;
+            right: calc(15% - 50px);
+            width: 60px;
+            height: 60px;
+            background-image: radial-gradient(circle, #93c5fd 2px, transparent 2px);
+            background-size: 12px 12px;
+        }
+        
+        .slider-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            height: 550px;
+            /* Tăng chiều cao để chứa slide và khoảng trống */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .slide {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            background-color: white;
+            border-radius: 1.5rem;
+            /* rounded-3xl */
+            box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.07), 0 8px 10px -6px rgb(0 0 0 / 0.07);
+            transition: transform 0.6s ease-in-out, height 0.6s ease-in-out, opacity 0.6s ease-in-out, z-index 0s;
+            overflow: hidden;
+            width: 300px;
+            /* Chiều rộng cố định cho các slide */
+        }
+        
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="relative min-h-screen">
+        <div class="decorative-box-1"></div>
+        <div class="decorative-box-2"></div>
+        <div class="dots-pattern"></div>
+
+        <section class="container mx-auto text-center pt-24 pb-12 px-4">
+            <h2 class="text-4xl font-bold text-gray-800">Cơ sở vật chất & Công nghệ</h2>
+            <p class="mt-4 max-w-3xl mx-auto text-gray-600 leading-relaxed">
+                Tại iD-4™, GUIDE Centex, mỗi sản phẩm đều được thiết kế trên nền tảng số hóa toàn diện: từ phim CT Cone Beam, dữ liệu quét trong miệng 3D, đến phần mềm thiết kế implant chuyên dụng. Chúng tôi sử dụng công nghệ in kim loại Cobalt-Chrome hoặc Titanium kết
+                hợp nhựa quang polymer 3D resin, đảm bảo độ chính xác cao, tính ổn định và độ bền vượt trội.
+            </p>
+        </section>
+
+        <div class="slider-wrapper">
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sliderWrapper = document.querySelector('.slider-wrapper');
+
+            // --- Cấu hình Slider ---
+            const images = [
+                'https://placehold.co/600x800/e2e8f0/4a5568?text=Image+1',
+                'https://placehold.co/600x800/cbd5e1/2d3748?text=Image+2',
+                'https://placehold.co/600x800/94a3b8/1a202c?text=Image+3',
+                'https://placehold.co/600x800/64748b/1a202c?text=Image+4',
+                'https://placehold.co/600x800/475569/ffffff?text=Image+5',
+                'https://placehold.co/600x800/334155/e2e8f0?text=Image+6'
+            ];
+            // --- Kết thúc cấu hình ---
+
+            let currentIndex = 0;
+
+            images.forEach((src) => {
+                const slide = document.createElement('div');
+                slide.classList.add('slide');
+                const img = document.createElement('img');
+                img.src = src;
+                slide.appendChild(img);
+                sliderWrapper.appendChild(slide);
+            });
+
+            const slides = document.querySelectorAll('.slide');
+            const totalSlides = slides.length;
+
+            function updateSlider() {
+                slides.forEach((slide, index) => {
+                    let offset = index - currentIndex;
+
+                    if (offset < -Math.floor(totalSlides / 2)) offset += totalSlides;
+                    if (offset > Math.floor(totalSlides / 2)) offset -= totalSlides;
+
+                    let height, opacity, zIndex, transform;
+
+                    if (offset === 0) {
+                        // Slide ở giữa
+                        height = '480px';
+                        opacity = 1;
+                        zIndex = 100;
+                        transform = `translateX(-50%) translateY(-50%)`;
+                    } else if (Math.abs(offset) === 1) {
+                        // 2 slide hai bên
+                        const direction = Math.sign(offset);
+                        height = '380px';
+                        opacity = 1;
+                        zIndex = 90;
+                        transform = `translateX(calc(-50% + ${direction * 100}%)) translateY(calc(-50% + 40px)) scale(0.85)`;
+                    } else {
+                        // Các slide khác (ẩn đi)
+                        height = '380px';
+                        opacity = 0;
+                        zIndex = 0;
+                        const direction = Math.sign(offset);
+                        transform = `translateX(calc(-50% + ${direction * 120}%)) translateY(calc(-50% + 40px)) scale(0.7)`;
+                    }
+
+                    slide.style.height = height;
+                    slide.style.opacity = opacity;
+                    slide.style.zIndex = zIndex;
+                    slide.style.transform = transform;
+                });
+            }
+
+            function nextSlide() {
+                currentIndex = (currentIndex + 1) % totalSlides;
+                updateSlider();
+            }
+
+            setInterval(nextSlide, 3000);
+
+            updateSlider(); // Chạy lần đầu để thiết lập vị trí
+        });
+    </script>
+
+</body>
+
+</html>

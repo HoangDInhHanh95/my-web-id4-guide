@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID-4 STACKABLE GUIDE</title>
+    <style>
+        /* CSS Reset and Basic Styles */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body,
+        html {
+            height: 100%;
+            font-family: Arial, sans-serif;
+            background-color: #000;
+        }
+        /* Container for the video and content */
+        
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* Background Video */
+        
+        #background-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: 1;
+            transform: translateX(-50%) translateY(-50%);
+            background: #000;
+        }
+        /* Content Overlay */
+        
+        .content-overlay {
+            position: relative;
+            /* === THAY ĐỔI Ở ĐÂY === */
+            /* bottom: 8vh; */
+            /* Đẩy khối nội dung lên trên 8% chiều cao màn hình */
+            z-index: 2;
+            width: 100%;
+            max-width: 1200px;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            /* Aligns text to the left */
+            color: white;
+        }
+        /* Left side text content */
+        
+        .text-content {
+            flex-basis: 45%;
+        }
+        
+        .text-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            font-weight: 600;
+        }
+        
+        .text-content p {
+            font-size: 1rem;
+            line-height: 1.6;
+            max-width: 450px;
+        }
+        /* --- Responsive Design --- */
+        /* Tablet view */
+        
+        @media (max-width: 992px) {
+            .text-content h1 {
+                font-size: 2rem;
+            }
+            .text-content p {
+                font-size: 0.9rem;
+            }
+        }
+        /* Mobile View (Portrait) */
+        
+        @media (max-width: 768px) {
+            .video-wrapper {
+                height: 100vh;
+                min-height: 600px;
+            }
+            .content-overlay {
+                flex-direction: column;
+                justify-content: center;
+                text-align: center;
+                padding: 1.5rem;
+            }
+            .text-content {
+                order: 1;
+                width: 100%;
+                margin-bottom: 2rem;
+                flex-basis: auto;
+                /* Reset flex-basis for mobile */
+            }
+            .text-content h1 {
+                font-size: 1.8rem;
+            }
+            .text-content p {
+                font-size: 0.9rem;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="video-wrapper">
+        <video autoplay muted loop playsinline id="background-video">
+             </video>
+
+        <div class="content-overlay">
+            <div class="text-content">
+                <h1>CÁC BƯỚC SỬ DỤNG<br>ID-4 STACKABLE GUIDE</h1>
+                <p>Máng hướng dẫn phẫu thuật Implant là dụng cụ chuyên dụng, được thiết kế dựa trên phim chụp CT Conebeam và dấu hàm của từng bệnh nhân. Máng 3D trong suốt được ứng dụng chủ yếu trong phẫu thuật Implant.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const videoPlayer = document.getElementById('background-video');
+
+            // --- THAY ĐỔI LINK VIDEO TẠI ĐÂY ---
+            const desktopVideoURL = 'http://localhost/iD4Center/wp-content/uploads/2025/09/0001.mp4';
+            const mobileVideoURL = 'https://assets.mixkit.co/videos/preview/mixkit-vertical-shot-of-a-lake-near-a-forest-31158-large.mp4'; // Link video cho mobile (dạng dọc)
+
+            function switchVideoSource() {
+                const currentSrc = videoPlayer.currentSrc;
+                const screenWidth = window.innerWidth;
+
+                if (screenWidth <= 768) {
+                    // Chuyển sang giao diện Mobile
+                    if (currentSrc !== mobileVideoURL && videoPlayer.src !== mobileVideoURL) {
+                        videoPlayer.src = mobileVideoURL;
+                        videoPlayer.load(); // Tải video mới
+                        videoPlayer.play();
+                    }
+                } else {
+                    // Chuyển sang giao diện Desktop/Tablet
+                    if (currentSrc !== desktopVideoURL && videoPlayer.src !== desktopVideoURL) {
+                        videoPlayer.src = desktopVideoURL;
+                        videoPlayer.load(); // Tải video mới
+                        videoPlayer.play();
+                    }
+                }
+            }
+
+            // Gọi hàm khi tải trang lần đầu
+            switchVideoSource();
+
+            // Gọi hàm mỗi khi thay đổi kích thước cửa sổ
+            window.addEventListener('resize', switchVideoSource);
+        });
+    </script>
+</body>
+
+</html>

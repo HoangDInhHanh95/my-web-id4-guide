@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiệu ứng Cuộn Ngang Hoàn Chỉnh</title>
+    <style>
+         :root {
+            --background-color: #1a1a1a;
+            --card-background: #282828;
+            --text-color: #fff;
+            --border-color: #444;
+            --accent-color: #00aaff;
+            --dot-inactive-color: #555;
+        }
+        
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            transition: background-color 0.4s ease;
+        }
+        
+        body.modal-open {
+            overflow: hidden;
+            /* Chặn cuộn nền khi modal mở */
+        }
+        
+        .section {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+        
+        .section h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+        }
+        /* ----- THANH TIẾN TRÌNH (DESKTOP) ----- */
+        
+        .progress-bar-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background-color: var(--border-color);
+            z-index: 10;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--accent-color);
+            transition: width 0.1s linear;
+        }
+        /* ----- LOGIC CHO DESKTOP (> 768px) ----- */
+        
+        .horizontal-track {
+            height: 400vh;
+            position: relative;
+        }
+        
+        .sticky-container {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+        
+        .horizontal-content {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            /* Width sẽ được tính tự động, không cần set cứng */
+        }
+        
+        .card {
+            width: 600px;
+            height: 60vh;
+            margin: 0 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--card-background);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            font-size: 1.5em;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            padding: 40px;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            /* Ngăn thẻ bị co lại */
+            cursor: pointer;
+        }
+        
+        .card h2 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 2.5rem;
+        }
+        
+        .card p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            opacity: 0.8;
+        }
+        
+        .pagination-dots {
+            display: none;
+        }
+        /* ----- LOGIC CHO MOBILE (<= 768px) ----- */
+        
+        @media (max-width: 768px) {
+            .progress-bar-container {
+                display: none;
+            }
+            .horizontal-track {
+                height: auto;
+            }
+            .sticky-container {
+                position: static;
+                height: auto;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                scroll-snap-type: x mandatory;
+                scroll-padding: 0 25px;
+                padding: 0 25px;
+                box-sizing: border-box;
+                perspective: none;
+            }
+            .sticky-container::-webkit-scrollbar {
+                display: none;
+            }
+            .horizontal-content {
+                position: static;
+                width: max-content;
+                transform: none !important;
+                padding: 30px 0;
+                gap: 15px;
+            }
+            .card {
+                width: 80vw;
+                height: auto;
+                min-height: 50vh;
+                min-width: unset;
+                scroll-snap-align: center;
+                transform: scale(0.95) !important;
+                opacity: 0.7;
+                transition: transform 0.4s ease, opacity 0.4s ease;
+            }
+            .card.is-active {
+                transform: scale(1) !important;
+                opacity: 1;
+            }
+            .card h2 {
+                font-size: 1.5rem;
+            }
+            .card p {
+                font-size: 1rem;
+            }
+            .pagination-dots {
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+                margin-top: -20px;
+                padding-bottom: 30px;
+            }
+            .dot {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background-color: var(--dot-inactive-color);
+                transition: background-color 0.3s ease, transform 0.3s ease;
+            }
+            .dot.active {
+                background-color: var(--text-color);
+                transform: scale(1.2);
+            }
+        }
+        /* ----- CSS CHO MODAL HIỆU ỨNG LIQUID GLASS ----- */
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: rgba(26, 26, 26, 0.5);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .modal-content {
+            background: rgba(40, 40, 40, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transform: scale(0.9);
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 3rem;
+            line-height: 1;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        
+        .modal-close:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+
+<body>
+
+    <section class="section">
+        <h1>Một Trải nghiệm Cuộn <br> Hoàn toàn Mới</h1>
+    </section>
+
+    <div class="progress-bar-container">
+        <div class="progress-bar"></div>
+    </div>
+
+    <div class="horizontal-track">
+        <div class="sticky-container">
+            <div class="horizontal-content">
+            </div>
+        </div>
+    </div>
+
+    <div class="pagination-dots"></div>
+
+    <section class="section">
+        <h1>Thật ấn tượng! 🤯</h1>
+    </section>
+
+    <div class="modal-overlay">
+        <div class="modal-content">
+        </div>
+        <button class="modal-close" aria-label="Đóng">&times;</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // --- DỮ LIỆU VÀ KHỞI TẠO NỘI DUNG ---
+            const cardData = [{
+                title: '✨ Linh hoạt',
+                description: 'Tự động thích ứng từ hiệu ứng desktop sang giao diện vuốt thân thiện trên di động.'
+            }, {
+                title: '🚀 Hiệu năng cao',
+                description: 'Sử dụng Intersection Observer và các kỹ thuật hiện đại để đảm bảo độ mượt mà tối đa.'
+            }, {
+                title: '🎨 Giàu tương tác',
+                description: 'Phản hồi với thao tác di chuột trên desktop và làm nổi bật thẻ đang xem trên di động.'
+            }, {
+                title: '♿ Dễ tiếp cận',
+                description: 'Hỗ trợ điều hướng bằng bàn phím, giúp mọi người dùng đều có thể trải nghiệm trọn vẹn.'
+            }, {
+                title: '📱 Thân thiện',
+                description: 'Giao diện vuốt, "nhá hàng" và dấu chấm điều hướng tạo cảm giác như một ứng dụng gốc.'
+            }];
+
+            const contentContainer = document.querySelector('.horizontal-content');
+            contentContainer.innerHTML = cardData.map(data => `
+                <div class="card">
+                    <h2>${data.title}</h2>
+                    <p>${data.description}</p>
+                </div>
+            `).join('');
+
+            // --- CÁC BIẾN TOÀN CỤC ---
+            const cards = Array.from(contentContainer.children);
+            const isMobile = window.innerWidth <= 768;
+            const track = document.querySelector('.horizontal-track');
+
+            // --- LOGIC CHO MODAL ---
+            const modalOverlay = document.querySelector('.modal-overlay');
+            const modalContent = document.querySelector('.modal-content');
+            const modalClose = document.querySelector('.modal-close');
+
+            function openModal(contentHTML) {
+                modalContent.innerHTML = contentHTML;
+                modalOverlay.classList.add('active');
+                document.body.classList.add('modal-open');
+            }
+
+            function closeModal() {
+                modalOverlay.classList.remove('active');
+                document.body.classList.remove('modal-open');
+            }
+
+            cards.forEach(card => {
+                card.addEventListener('click', () => openModal(card.innerHTML));
+            });
+
+            modalClose.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) closeModal();
+            });
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modalOverlay.classList.contains('active')) closeModal();
+            });
+
+            // --- LOGIC CHO GIAO DIỆN DI ĐỘNG ---
+            if (isMobile) {
+                const paginationContainer = document.querySelector('.pagination-dots');
+                if (!paginationContainer) return;
+
+                cards.forEach(() => {
+                    paginationContainer.innerHTML += `<div class="dot"></div>`;
+                });
+
+                const dots = paginationContainer.querySelectorAll('.dot');
+                if (dots.length > 0) dots[0].classList.add('active');
+
+                const cardsContainer = document.querySelector('.sticky-container');
+                const cardObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        entry.target.classList.toggle('is-active', entry.isIntersecting);
+                        if (entry.isIntersecting) {
+                            const activeIndex = cards.findIndex(card => card === entry.target);
+                            dots.forEach((dot, index) => {
+                                dot.classList.toggle('active', index === activeIndex);
+                            });
+                        }
+                    });
+                }, {
+                    root: cardsContainer,
+                    threshold: 0.6
+                });
+
+                cards.forEach(card => cardObserver.observe(card));
+            }
+            // --- LOGIC CHO GIAO DIỆN DESKTOP ---
+            else {
+                const progressBar = document.querySelector('.progress-bar');
+                let currentX = 0,
+                    targetX = 0,
+                    easingFactor = 0.08,
+                    isTrackInView = false;
+
+                function lerp(start, end, t) {
+                    return start * (1 - t) + end * t;
+                }
+
+                function updatePositions() {
+                    const trackRect = track.getBoundingClientRect();
+                    if (trackRect.top <= 0 && trackRect.bottom >= window.innerHeight) {
+                        const scrollInTrack = -trackRect.top;
+                        const scrollableDistance = trackRect.height - window.innerHeight;
+                        const scrollProgress = Math.max(0, Math.min(1, scrollInTrack / scrollableDistance));
+
+                        const firstCard = cards[0],
+                            lastCard = cards[cards.length - 1];
+                        const contentScrollWidth = lastCard.offsetLeft - firstCard.offsetLeft;
+
+                        targetX = -contentScrollWidth * scrollProgress;
+                        if (progressBar) progressBar.style.width = (scrollProgress * 100) + '%';
+                    }
+                    currentX = lerp(currentX, targetX, easingFactor);
+                    contentContainer.style.transform = `translateX(${currentX}px)`;
+                }
+
+                function animationLoop() {
+                    if (isTrackInView) updatePositions();
+                    requestAnimationFrame(animationLoop);
+                }
+
+                const trackObserver = new IntersectionObserver((entries) => {
+                    isTrackInView = entries[0].isIntersecting;
+                });
+
+                trackObserver.observe(track);
+                animationLoop();
+
+                cards.forEach(card => {
+                    card.setAttribute('tabindex', '0');
+                    card.addEventListener('mousemove', (e) => {
+                        const rect = card.getBoundingClientRect(),
+                            x = e.clientX - rect.left,
+                            y = e.clientY - rect.top;
+                        const centerX = rect.width / 2,
+                            centerY = rect.height / 2;
+                        const rotateX = ((y - centerY) / centerY) * -8,
+                            rotateY = ((x - centerX) / centerX) * 8;
+                        card.style.transition = 'transform 0.1s linear';
+                        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                    });
+                    card.addEventListener('mouseleave', () => {
+                        card.style.transition = 'transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                        card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
+                    });
+                });
+
+                window.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                        const trackRect = track.getBoundingClientRect();
+                        if (trackRect.top > 0 || trackRect.bottom < window.innerHeight) return;
+                        e.preventDefault();
+
+                        const scrollableDistance = track.offsetHeight - window.innerHeight;
+                        const progressPerCard = 1 / (cards.length - 1);
+                        const currentProgress = -trackRect.top / scrollableDistance;
+                        const currentIndex = Math.round(currentProgress / progressPerCard);
+
+                        let targetIndex = currentIndex;
+                        if (e.key === 'ArrowRight') targetIndex = Math.min(cards.length - 1, currentIndex + 1);
+                        else if (e.key === 'ArrowLeft') targetIndex = Math.max(0, currentIndex - 1);
+
+                        if (targetIndex !== currentIndex) {
+                            const targetScrollTop = track.offsetTop + (scrollableDistance * progressPerCard * targetIndex);
+                            window.scrollTo({
+                                top: targetScrollTop,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+
+</body>
+
+</html>

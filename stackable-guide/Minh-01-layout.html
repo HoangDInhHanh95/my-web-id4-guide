@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Profile Links — Responsive</title>
+    <meta name="description" content="Responsive Link-card UI (Linktree-like)">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-1: #2e3436;
+            /* page side */
+            --bg-2: #202627;
+            /* outer dark */
+            --panel: #262c2d;
+            /* center panel */
+            --card: #ffffff;
+            --muted: #b8bfc1;
+            --accent: #ff8c42;
+            --accent-2: #ffb56b;
+            --glass: rgba(255, 255, 255, 0.06);
+            --radius: 16px;
+            --maxw: 550px;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: Inter, system-ui, Segoe UI, Roboto, Arial;
+            color: #eef0f2;
+            background: linear-gradient(90deg, var(--bg-2), var(--bg-1));
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* wide decorative side panels */
+
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            width: 28%;
+            pointer-events: none;
+            z-index: 0;
+            box-shadow: inset 0 0 140px rgba(0, 0, 0, 0.45);
+        }
+
+        body::before {
+            left: 0;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.02));
+        }
+
+        body::after {
+            right: 0;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.18), rgba(255, 255, 255, 0.02));
+        }
+
+        .page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card {
+            width: 100%;
+            max-width: var(--maxw);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            border-radius: calc(var(--radius) + 8px);
+            padding: 28px 20px 20px;
+            /* box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6); */
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* small top controls */
+
+        .top-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 999px;
+            display: inline-grid;
+            place-items: center;
+            background: var(--glass);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            color: var(--muted);
+            cursor: pointer;
+        }
+
+        .avatar-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 0 14px
+        }
+
+        .avatar {
+            width: 84px;
+            height: 84px;
+            border-radius: 999px;
+            border: 6px solid rgba(255, 255, 255, 0.03);
+            background: #fff;
+            display: grid;
+            place-items: center;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block
+        }
+
+        .handle {
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.6px
+        }
+
+        .subhandle {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: -2px
+        }
+
+        /* links list */
+
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 6px;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--card);
+            color: #222;
+            padding: 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: transform .18s, box-shadow .18s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .link-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+        }
+
+        .link-left {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            flex: 0 0 44px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(180deg, var(--accent), var(--accent-2));
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .link-title {
+            flex: 1;
+            font-weight: 600;
+            font-size: 14px;
+            color: #222;
+            line-height: 1.1
+        }
+
+        .link-meta {
+            font-size: 12px;
+            color: #666;
+            margin-top: 6px
+        }
+
+        .link-right {
+            width: 18px;
+            height: 18px;
+            opacity: 0.6;
+            display: grid;
+            place-items: center
+        }
+
+        /* section divider */
+
+        .divider {
+            text-align: center;
+            color: var(--muted);
+            font-weight: 700;
+            font-size: 13px;
+            margin: 16px 0 6px;
+            letter-spacing: 0.6px;
+        }
+
+        /* CTA */
+
+        .cta {
+            display: block;
+            margin: 18px auto 8px;
+            padding: 12px 22px;
+            background: linear-gradient(180deg, var(--accent), var(--accent-2));
+            color: white;
+            border-radius: 999px;
+            font-weight: 700;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(255, 140, 66, 0.18);
+            max-width: 260px;
+        }
+
+        /* footer small links */
+
+        .small-footer {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 12px
+        }
+
+        .small-footer a {
+            color: var(--muted);
+            text-decoration: none
+        }
+
+        /* QR (desktop fixed bottom-right) */
+
+        .qr-wrap {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            z-index: 2;
+        }
+
+        .qr-wrap img {
+            width: 92px;
+            height: 92px;
+            display: block;
+            border-radius: 6px
+        }
+
+        /* responsive rules */
+
+        @media (max-width:880px) {
+
+            body::before,
+            body::after {
+                width: 20%
+            }
+        }
+
+        @media (max-width:640px) {
+            :root {
+                --maxw: 92vw
+            }
+
+            body::before,
+            body::after {
+                display: none
+            }
+
+            .card {
+                padding: 20px 14px;
+                border-radius: 14px
+            }
+
+            .avatar {
+                width: 72px;
+                height: 72px
+            }
+
+            .qr-wrap {
+                display: none
+            }
+        }
+
+        @media (min-width:1100px) {
+            .page {
+                padding: 80px 0
+            }
+
+            .card {
+                box-shadow: 0 20px 80px rgba(0, 0, 0, 0.7)
+            }
+        }
+
+        /* small utilities */
+
+        .muted {
+            color: var(--muted);
+            font-size: 13px
+        }
+
+        .center {
+            display: flex;
+            justify-content: center
+        }
+    </style>
+</head>
+
+<body>
+    <main class="page">
+        <section class="card" role="region" aria-label="Profile links">
+            <div class="top-controls" aria-hidden="true">
+                <div class="icon-btn" title="Settings" aria-hidden="true">⚙</div>
+                <div class="icon-btn" title="Share" aria-hidden="true">🔗</div>
+            </div>
+
+            <div class="avatar-wrap">
+                <div class="avatar" aria-hidden="true">
+                    <img alt="avatar"
+                        src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=600&auto=format&fit=crop&ixlib=rb-4.0.3&s=3d9a1bc2d4f1d7e9a7b6b3b7b3b0f8cb">
+                </div>
+                <div class="handle">@BlenderVitals</div>
+                <div class="subhandle muted">Creator • tips & resources</div>
+            </div>
+
+            <div class="links" aria-label="Links list">
+                <a class="link-item" href="#" role="link">
+                    <div class="link-left" aria-hidden="true">RZ</div>
+                    <div>
+                        <div class="link-title">RizomUV</div>
+                        <div class="link-meta muted">UV tools and tips</div>
+                    </div>
+                    <div class="link-right" aria-hidden="true">⋮</div>
+                </a>
+
+                <a class="link-item" href="#" role="link">
+                    <div class="link-left" aria-hidden="true">DR</div>
+                    <div>
+                        <div class="link-title">Drop & Render</div>
+                        <div class="link-meta muted">Render helpers</div>
+                    </div>
+                    <div class="link-right" aria-hidden="true">⋮</div>
+                </a>
+
+                <a class="link-item" href="#" role="link">
+                    <div class="link-left" aria-hidden="true">BK</div>
+                    <div>
+                        <div class="link-title">100 Pages of Blender Tips</div>
+                        <div class="link-meta muted">PDF / resource</div>
+                    </div>
+                    <div class="link-right" aria-hidden="true">⋮</div>
+                </a>
+            </div>
+
+            <div class="divider">Check me out on all Platforms</div>
+
+            <div class="links" aria-label="Social platforms">
+                <a class="link-item" href="#" role="link">
+                    <div class="link-left" aria-hidden="true">DC</div>
+                    <div>
+                        <div class="link-title">Discord</div>
+                    </div>
+                    <div class="link-right" aria-hidden="true">⋮</div>
+                </a>
+
+                <a class="link-item" href="#" role="link">
+                    <div class="link-left" aria-hidden="true">YT</div>
+                    <div>
+                        <div class="link-title">YouTube</div>
+                    </div>
+                    <div class="link-right" aria-hidden="true">⋮</div>
+                </a>
+
+                <a class="link-item" href="#" role="link">
+                    <div class="link-left" aria-hidden="true">IG</div>
+                    <div>
+                        <div class="link-title">Instagram</div>
+                    </div>
+                    <div class="link-right" aria-hidden="true">⋮</div>
+                </a>
+
+                <a class="link-item" href="#" role="link">
+                    <div class="link-left" aria-hidden="true">TT</div>
+                    <div>
+                        <div class="link-title">TikTok</div>
+                    </div>
+                    <div class="link-right" aria-hidden="true">⋮</div>
+                </a>
+            </div>
+
+            <a class="cta" href="#" role="button">Tham gia cùng BlenderVitals trên Linktree</a>
+
+            <div class="small-footer" aria-hidden="true">
+                <a href="#">Cookie Preferences</a>
+                <span>•</span>
+                <a href="#">Report</a>
+                <span>•</span>
+                <a href="#">Privacy</a>
+            </div>
+        </section>
+
+        <!-- QR code for desktop -->
+        <aside class="qr-wrap" aria-hidden="true">
+            <small class="muted">View on mobile</small>
+            <img alt="QR" src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://example.com">
+        </aside>
+    </main>
+
+    <script>
+        // small accessibility & keyboard focus improvement
+        (function () {
+            // allow keyboard focus on links inside card to enable arrow key navigation
+            const card = document.querySelector('.card');
+            card.addEventListener('keydown', (e) => {
+                const focusable = Array.from(card.querySelectorAll('a, button')).filter(el => !el.hasAttribute('aria-hidden'));
+                const idx = focusable.indexOf(document.activeElement);
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    focusable[Math.min(focusable.length - 1, Math.max(0, idx + 1))].focus();
+                }
+                if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    focusable[Math.min(focusable.length - 1, Math.max(0, idx - 1))].focus();
+                }
+            });
+        })();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merged Components</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer"
+    />
+
+    <style>
+        .id4-produc-surgical-guide-container {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f3f4f6;
+            padding: 50px 20px;
+            text-align: center;
+        }
+        
+        .id4-produc-surgical-guide-container h1 {
+            color: #1e3a8a;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+        
+        .id4-produc-surgical-guide-container p {
+            font-size: 1rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .id4-produc-surgical-guide-container {
+                padding: 40px 15px;
+            }
+            .id4-produc-surgical-guide-container h1 {
+                font-size: 2rem;
+            }
+            .id4-produc-surgical-guide-container p {
+                font-size: 0.95rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .id4-produc-surgical-guide-container h1 {
+                font-size: 1.75rem;
+                line-height: 1.3;
+            }
+            .id4-produc-surgical-guide-container p {
+                font-size: 0.9rem;
+            }
+        }
+        /* --- --- */
+        
+         :root {
+            --id4-color-bg-section: #f0f2f5;
+        }
+        
+        body {
+            font-family: sans-serif;
+            margin: 0;
+        }
+        
+        .id4-product-gallery-wrapper {
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--id4-color-bg-section);
+            padding: 36px 20px 20px 20px;
+            /* gỡ bỏ min-height: 100vh để 2 section hiển thị cùng nhau */
+        }
+        
+        .id4-product-gallery-container {
+            width: 100%;
+            max-width: 820px;
+            text-align: center;
+        }
+        
+        .id4-gallery-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+        
+        .id4-control-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 44px;
+            height: 44px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            cursor: pointer;
+            font-size: 18px;
+            color: #333;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .id4-control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+        }
+        
+        .id4-nav-arrows {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .id4-main-image-wrapper {
+            margin-bottom: 25px;
+            cursor: zoom-in;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        #id4-main-image {
+            width: 55%;
+            height: auto;
+            margin: 0 auto;
+            display: block;
+            border-radius: 8px;
+        }
+        
+        .thumbnails-scroll-container {
+            overflow-x: scroll;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 10px;
+            cursor: grab;
+            user-select: none;
+        }
+        
+        .thumbnails-scroll-container.active {
+            cursor: grabbing;
+        }
+        
+        .thumbnails-scroll-container::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .thumbnails-scroll-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .thumbnails-list {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 15px;
+            padding: 0 10px;
+        }
+        
+        .thumbnails {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: border-color 0.3s ease, transform 0.2s ease;
+            padding: 5px;
+            background-color: transparent;
+            flex-shrink: 0;
+            pointer-events: none;
+        }
+        
+        .thumbnails.active {
+            border-color: #000;
+        }
+        
+        .thumbnails:hover {
+            transform: scale(1.05);
+        }
+        
+        .light_box {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            inset: 0;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            background-color: rgba(255, 255, 255, 1);
+        }
+        
+        .light_box.show {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .light_box-close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            font-size: 40px;
+            font-weight: 300;
+            color: #333;
+            cursor: pointer;
+        }
+        
+        #light_box-image {
+            max-width: 90%;
+            max-height: 85%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        
+        .light_box-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 24px;
+            color: #333;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, transform 0.3s;
+            user-select: none;
+        }
+        
+        .light_box-nav-btn:hover {
+            background-color: #fff;
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .light_box-nav-btn.prev-light_box {
+            left: 20px;
+        }
+        
+        .light_box-nav-btn.next-light_box {
+            right: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .thumbnails {
+                width: 70px;
+                height: 70px;
+            }
+            .id4-control-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+            .light_box-close {
+                top: 15px;
+                right: 20px;
+            }
+            .light_box-nav-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="id4-produc-surgical-guide-container">
+        <h1>MÁNG HƯỚNG DẪN PHẪU THUẬT</h1>
+        <p>
+            Máng hướng dẫn phẫu thuật Implant là dụng cụ chuyên dụng được thiết kế trên phần mềm kỹ thuật số dựa trên phim chụp CT Conebeam và dấu hàm của từng bệnh nhân, giúp xác định chính xác vị trí, hướng của mũi khoan đảm bảo vị trí implant phù hợp tối ưu với
+            phục hình sứ sau cùng. Máng 3D trong suốt được ứng dụng chủ yếu trong phẫu thuật implant.
+        </p>
+    </div>
+
+    <div class="id4-product-gallery-wrapper">
+        <div class="id4-product-gallery-container">
+            <div class="id4-gallery-controls">
+                <div id="zoom-icon" class="id4-control-btn">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <div class="id4-nav-arrows ">
+                    <div id="prev-btn" class="id4-control-btn">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </div>
+                    <div id="next-btn" class="id4-control-btn">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="id4-main-image-wrapper">
+                <img id="id4-main-image" src="" alt="Hình ảnh sản phẩm chính">
+            </div>
+
+            <div class="thumbnails-scroll-container" id="thumbnails-scroll-container">
+                <div class="thumbnails-list" id="thumbnails-list">
+                </div>
+            </div>
+        </div>
+
+        <div id="my-light_box" class="light_box">
+            <span class="light_box-close" id="light_box-close">&times;</span>
+            <div class="light_box-nav-btn prev-light_box" id="light_box-prev-btn">
+                <i class="fa-solid fa-chevron-left"></i>
+            </div>
+            <img id="light_box-image" src="" alt="Hình ảnh phóng to">
+            <div class="light_box-nav-btn next-light_box" id="light_box-next-btn">
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const mang1 = 'http://localhost/iD4Center/wp-content/uploads/2025/08/MHDPT-1.png';
+        const mang2 = 'http://localhost/iD4Center/wp-content/uploads/2025/08/MHDPT-2@4x.png';
+        // JavaScript code
+        document.addEventListener('DOMContentLoaded', function() {
+            // LƯU Ý: Các đường dẫn ảnh localhost sẽ không hoạt động nếu bạn chỉ mở file HTML.
+            // Bạn cần chạy file này trên một máy chủ cục bộ (local server)
+            // hoặc thay thế chúng bằng các đường dẫn ảnh online để xem kết quả.
+            const imageSources = [
+                mang1, mang2, mang1, mang2, mang1, mang2, mang1, mang2,
+
+            ];
+
+            let currentImageIndex = 0;
+            const mainImage = document.getElementById('id4-main-image');
+            const thumbnailsList = document.getElementById('thumbnails-list');
+            const thumbnailsScrollContainer = document.getElementById('thumbnails-scroll-container');
+            const light_box = document.getElementById('my-light_box');
+            const light_boxImage = document.getElementById('light_box-image');
+            const closeButton = document.getElementById('light_box-close');
+            const zoomIcon = document.getElementById('zoom-icon');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const light_boxPrevBtn = document.getElementById('light_box-prev-btn');
+            const light_boxNextBtn = document.getElementById('light_box-next-btn');
+
+            function generatethumbnailss() {
+                thumbnailsList.innerHTML = '';
+                imageSources.forEach((src, index) => {
+                    const thumb = document.createElement('img');
+                    thumb.src = src;
+                    thumb.alt = `Ảnh thu nhỏ ${index + 1}`;
+                    thumb.className = 'thumbnails';
+                    thumb.dataset.index = index;
+                    const thumbWrapper = document.createElement('div');
+                    thumbWrapper.dataset.index = index;
+                    thumbWrapper.appendChild(thumb);
+                    thumbnailsList.appendChild(thumbWrapper);
+                });
+            }
+
+            function updateMainImage(index) {
+                currentImageIndex = index;
+                mainImage.src = imageSources[currentImageIndex];
+                document.querySelectorAll('.thumbnails').forEach(thumb => {
+                    const isActive = parseInt(thumb.dataset.index) === currentImageIndex;
+                    thumb.classList.toggle('active', isActive);
+                    if (isActive) {
+                        thumb.parentElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest',
+                            inline: 'center'
+                        });
+                    }
+                });
+            }
+
+            function navigateGallery(direction) {
+                let newIndex = currentImageIndex + direction;
+                if (newIndex < 0) newIndex = imageSources.length - 1;
+                else if (newIndex >= imageSources.length) newIndex = 0;
+                updateMainImage(newIndex);
+            }
+
+            function openlight_box() {
+                document.body.appendChild(light_box);
+                light_boxImage.src = imageSources[currentImageIndex];
+                light_box.classList.add('show');
+            }
+
+            function closelight_box() {
+                light_box.classList.remove('show');
+            }
+
+            function navigatelight_box(direction) {
+                let newIndex = currentImageIndex + direction;
+                if (newIndex < 0) newIndex = imageSources.length - 1;
+                else if (newIndex >= imageSources.length) newIndex = 0;
+
+                currentImageIndex = newIndex;
+                light_boxImage.src = imageSources[currentImageIndex];
+                updateMainImage(currentImageIndex);
+            }
+
+            thumbnailsList.addEventListener('click', e => {
+                const target = e.target.closest('div[data-index]');
+                if (target) {
+                    if (!thumbnailsScrollContainer.classList.contains('is-dragging')) {
+                        updateMainImage(parseInt(target.dataset.index));
+                    }
+                }
+            });
+
+            prevBtn.addEventListener('click', () => navigateGallery(-1));
+            nextBtn.addEventListener('click', () => navigateGallery(1));
+            zoomIcon.addEventListener('click', openlight_box);
+            mainImage.addEventListener('click', openlight_box);
+            closeButton.addEventListener('click', closelight_box);
+            light_box.addEventListener('click', e => (e.target === light_box) && closelight_box());
+            document.addEventListener('keydown', e => (e.key === "Escape") && closelight_box());
+            light_boxPrevBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                navigatelight_box(-1);
+            });
+            light_boxNextBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                navigatelight_box(1);
+            });
+
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+
+            thumbnailsScrollContainer.addEventListener('mousedown', (e) => {
+                isDown = true;
+                thumbnailsScrollContainer.classList.add('active');
+                thumbnailsScrollContainer.classList.remove('is-dragging');
+                startX = e.pageX - thumbnailsScrollContainer.offsetLeft;
+                scrollLeft = thumbnailsScrollContainer.scrollLeft;
+            });
+            thumbnailsScrollContainer.addEventListener('mouseleave', () => {
+                isDown = false;
+                thumbnailsScrollContainer.classList.remove('active');
+            });
+            thumbnailsScrollContainer.addEventListener('mouseup', () => {
+                isDown = false;
+                thumbnailsScrollContainer.classList.remove('active');
+                setTimeout(() => thumbnailsScrollContainer.classList.remove('is-dragging'), 50);
+            });
+            thumbnailsScrollContainer.addEventListener('mousemove', (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                thumbnailsScrollContainer.classList.add('is-dragging');
+                const x = e.pageX - thumbnailsScrollContainer.offsetLeft;
+                const walk = (x - startX) * 2;
+                thumbnailsScrollContainer.scrollLeft = scrollLeft - walk;
+            });
+
+            generatethumbnailss();
+            updateMainImage(0);
+        });
+    </script>
+</body>
+
+</html>

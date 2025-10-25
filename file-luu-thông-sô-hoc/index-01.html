@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Component Đếm Số Tự Động</title>
+
+    <style>
+        /* --- CÀI ĐẶT CHUNG --- */
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            /* Font chữ hiện đại, dễ đọc */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f2f5;
+        }
+        /* --- COMPONENT CHÍNH --- */
+        
+        .id4-stats-counter {
+            width: 100%;
+            background-color: #e9efff;
+            /* Màu nền xanh nhạt giống trong hình */
+            padding: 60px 20px;
+            text-align: center;
+        }
+        
+        .id4-stats-counter__container {
+            display: flex;
+            justify-content: space-around;
+            /* Dàn đều các mục */
+            align-items: center;
+            flex-wrap: wrap;
+            /* Cho phép xuống dòng trên mobile */
+            gap: 20px;
+            /* Khoảng cách giữa các mục */
+            max-width: 1200px;
+            /* Giới hạn chiều rộng tối đa */
+            margin: 0 auto;
+            /* Căn giữa container */
+        }
+        
+        .id4-stats-counter__item {
+            flex: 1;
+            /* Các mục sẽ tự chia đều không gian */
+            min-width: 200px;
+            /* Chiều rộng tối thiểu để không bị quá hẹp */
+            padding: 20px;
+        }
+        
+        .id4-stats-counter__number {
+            font-size: 5rem;
+            /* Kích thước số rất lớn */
+            font-weight: 700;
+            /* In đậm */
+            color: #1e3a8a;
+            /* Màu xanh đậm */
+            display: block;
+            /* Hiển thị trên một dòng riêng */
+            margin-bottom: 8px;
+            /* Khoảng cách với chữ bên dưới */
+        }
+        
+        .id4-stats-counter__label {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #1e3a8a;
+            text-transform: uppercase;
+            /* In hoa chữ */
+            letter-spacing: 0.5px;
+            line-height: 1.5;
+            /* Thêm line-height để các dòng không bị dính vào nhau */
+        }
+        /* --- RESPONSIVE CHO TABLET --- */
+        
+        @media (max-width: 992px) {
+            .id4-stats-counter__container {
+                /* Trên tablet, hiển thị 2 cột */
+                justify-content: center;
+                gap: 30px;
+            }
+            .id4-stats-counter__item {
+                flex-basis: 40%;
+                /* Mỗi mục chiếm khoảng 40% chiều rộng */
+            }
+            .id4-stats-counter__number {
+                font-size: 4.5rem;
+            }
+        }
+        /* --- RESPONSIVE CHO MOBILE --- */
+        
+        @media (max-width: 576px) {
+            .id4-stats-counter {
+                padding: 40px 15px;
+            }
+            .id4-stats-counter__container {
+                /* Trên mobile, hiển thị 1 cột */
+                flex-direction: column;
+                gap: 20px;
+            }
+            .id4-stats-counter__item {
+                flex-basis: 100%;
+                /* Mỗi mục chiếm toàn bộ chiều rộng */
+                padding: 10px;
+            }
+            .id4-stats-counter__number {
+                font-size: 3.5rem;
+            }
+            .id4-stats-counter__label {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <section class="id4-stats-counter">
+        <div class="id4-stats-counter__container">
+            <div class="id4-stats-counter__item">
+                <span class="id4-stats-counter__number" data-target="10">0</span>
+                <p class="id4-stats-counter__label">Kỹ thuật viên Labo</p>
+            </div>
+            <div class="id4-stats-counter__item">
+                <span class="id4-stats-counter__number" data-target="30">0</span>
+                <p class="id4-stats-counter__label">Năm kinh nghiệm</p>
+            </div>
+            <div class="id4-stats-counter__item">
+                <span class="id4-stats-counter__number" data-target="500">0</span>
+                <p class="id4-stats-counter__label">Học viên đã<br>được đào tạo</p>
+            </div>
+            <div class="id4-stats-counter__item">
+                <span class="id4-stats-counter__number" data-target="600">0</span>
+                <p class="id4-stats-counter__label">Khách hàng<br>hài lòng</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            /**
+             * Hàm thực hiện hiệu ứng đếm số
+             * @param {HTMLElement} element - Phần tử span chứa con số
+             * @param {number} duration - Thời gian hoàn thành hiệu ứng (ms)
+             */
+            function animateCounter(element, duration = 2000) {
+                const target = +element.getAttribute('data-target');
+                let current = 0;
+                const increment = target / (duration / 16); // Tính toán mức tăng cho mỗi khung hình (khoảng 60fps)
+
+                const updateCounter = () => {
+                    current += increment;
+                    if (current < target) {
+                        element.innerText = Math.ceil(current).toLocaleString('en-US'); // làm tròn lên và định dạng số
+                        requestAnimationFrame(updateCounter); // Gọi lại hàm ở khung hình tiếp theo
+                    } else {
+                        element.innerText = target.toLocaleString('en-US'); // Đảm bảo số cuối cùng chính xác
+                    }
+                };
+
+                requestAnimationFrame(updateCounter);
+            }
+
+            // Sử dụng Intersection Observer để chỉ kích hoạt hiệu ứng khi người dùng cuộn tới
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    // Nếu component xuất hiện trong màn hình
+                    if (entry.isIntersecting) {
+                        const counters = entry.target.querySelectorAll('.id4-stats-counter__number');
+                        counters.forEach(counter => animateCounter(counter));
+
+                        // Ngừng theo dõi sau khi đã kích hoạt để tiết kiệm tài nguyên
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1 // Kích hoạt khi 10% component được nhìn thấy
+            });
+
+            // Bắt đầu theo dõi component
+            const counterSection = document.querySelector('.id4-stats-counter');
+            if (counterSection) {
+                observer.observe(counterSection);
+            }
+        });
+    </script>
+
+</body>
+
+</html>

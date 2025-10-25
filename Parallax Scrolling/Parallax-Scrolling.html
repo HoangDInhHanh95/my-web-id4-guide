@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiệu ứng Scroll (Final v2)</title>
+    <style>
+         :root {
+            --animation-scroll-height: 600vh;
+        }
+        
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f0ebe5;
+            color: #333;
+        }
+        /* --- Cấu trúc chính --- */
+        
+        .spacer {
+            height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        #sticky-container {
+            height: var(--animation-scroll-height);
+            position: relative;
+        }
+        
+        #animation-canvas {
+            height: 100vh;
+            width: 100%;
+            position: sticky;
+            top: 0;
+            overflow: hidden;
+            display: grid;
+            place-items: center;
+        }
+        /* --- Các lớp hiệu ứng --- */
+        
+        #bg-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        #masked-text {
+            font-size: 15vw;
+            font-weight: 800;
+            color: transparent;
+            /* === CẬP NHẬT TẠI ĐÂY === */
+            /* Sử dụng hình ảnh mới bạn gửi làm nền cho chữ */
+            background-image: url('https://i.imgur.com/AbU5i0j.png');
+            background-size: cover;
+            background-position: center;
+            -webkit-background-clip: text;
+            background-clip: text;
+            position: relative;
+            z-index: 3;
+            text-align: center;
+            transform: scale(1);
+            opacity: 1;
+        }
+        
+        #curtain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 4;
+            pointer-events: none;
+            display: flex;
+        }
+        
+        #vertical-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 1.5px;
+            height: 100%;
+            background-color: #333;
+            transform: scaleY(0);
+            transform-origin: center;
+            transition: transform 0.5s ease;
+        }
+        
+        #left-panel,
+        #right-panel {
+            width: 51%;
+            height: 100%;
+            background-color: #f0ebe5;
+            position: absolute;
+            top: 0;
+        }
+        
+        #left-panel {
+            left: 0;
+        }
+        
+        #right-panel {
+            right: 0;
+        }
+        
+        #final-content {
+            position: absolute;
+            z-index: 2;
+            width: 80%;
+            max-width: 1200px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            opacity: 0;
+        }
+        
+        #final-content .text-content {
+            flex-basis: 45%;
+        }
+        
+        #final-content .image-content {
+            flex-basis: 50%;
+        }
+        
+        #final-content img {
+            width: 100%;
+            height: auto;
+        }
+        
+        @media (max-width: 768px) {
+            #final-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            #masked-text {
+                font-size: 20vw;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="spacer">
+        <h1>Kéo xuống để bắt đầu hiệu ứng</h1>
+    </div>
+
+    <div id="sticky-container">
+        <div id="animation-canvas">
+            <video id="bg-video" loop muted autoplay playsinline>
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-white-silk-fabric-waving-3373-large.mp4" type="video/mp4">
+            </video>
+
+            <div id="final-content">
+                <div class="text-content">
+                    <p style="letter-spacing: 2px;">Lightweight</p>
+                    <h2 style="font-size: 3em; margin: 0.2em 0;">Defy gravity</h2>
+                    <p>We've designed Zenbook A14 to be lighter, so you can carry more of what matters...</p>
+                    <p style="font-size: 2em; font-weight: bold; margin-top: 1em;">980 g <span style="font-size: 0.5em; font-weight: normal;">light</span></p>
+                </div>
+                <div class="image-content">
+                    <img src="https://i.imgur.com/gK96v7D.png" alt="Woman holding a laptop">
+                </div>
+            </div>
+
+            <h1 id="masked-text">UNLOAD</h1>
+
+            <div id="curtain">
+                <div id="left-panel"></div>
+                <div id="right-panel"></div>
+                <div id="vertical-line"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="spacer">
+        <h1>Kết thúc hiệu ứng</h1>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const stickyContainer = document.getElementById('sticky-container');
+            const maskedText = document.getElementById('masked-text');
+            const bgVideo = document.getElementById('bg-video');
+            const finalContent = document.getElementById('final-content');
+            const verticalLine = document.getElementById('vertical-line');
+            const leftPanel = document.getElementById('left-panel');
+            const rightPanel = document.getElementById('right-panel');
+
+            // Các mốc thời gian của animation
+            const STATIC_END = 0.2; // Giai đoạn 1: Chữ tĩnh (0% -> 20%)
+            const MAIN_ZOOM_START = 0.2; // Giai đoạn 2: Bắt đầu phóng to
+            const FADE_OUT_END = 0.5; // Giai đoạn 2: Kết thúc mờ dần
+            const REVEAL_CONTENT_START = 0.55; // Giai đoạn 3: Hiện nội dung
+            const CURTAIN_OPEN_START = 0.7; // Giai đoạn 4: Mở rèm
+            const CURTAIN_OPEN_END = 0.95; // Giai đoạn 4: Kết thúc mở rèm
+
+            function handleScroll() {
+                const rect = stickyContainer.getBoundingClientRect();
+                const scrollableHeight = stickyContainer.scrollHeight - window.innerHeight;
+
+                let progress = (-rect.top) / scrollableHeight;
+                progress = Math.max(0, Math.min(1, progress));
+
+                // Giai đoạn 1: CHỮ TĨNH (0% -> 20%)
+                if (progress < STATIC_END) {
+                    maskedText.style.transform = 'scale(1)';
+                    maskedText.style.opacity = 1;
+                }
+
+                // Giai đoạn 2: PHÓNG TO & MỜ DẦN (20% -> 50%)
+                else if (progress >= MAIN_ZOOM_START && progress < FADE_OUT_END) {
+                    const mainZoomProgress = (progress - MAIN_ZOOM_START) / (FADE_OUT_END - MAIN_ZOOM_START);
+                    const scale = 1 + mainZoomProgress * 15;
+                    const opacity = 1 - Math.pow(mainZoomProgress, 2);
+                    maskedText.style.transform = `scale(${scale})`;
+                    maskedText.style.opacity = opacity;
+                } else if (progress >= FADE_OUT_END) {
+                    maskedText.style.opacity = 0;
+                }
+
+                // Giai đoạn 3: Hiện video nền và nội dung cuối
+                if (progress >= REVEAL_CONTENT_START) {
+                    bgVideo.style.opacity = 1;
+                    finalContent.style.opacity = 1;
+                } else {
+                    bgVideo.style.opacity = 0;
+                    finalContent.style.opacity = 0;
+                }
+
+                // Giai đoạn 4: Hiệu ứng rèm cửa
+                if (progress >= REVEAL_CONTENT_START && progress < CURTAIN_OPEN_START) {
+                    verticalLine.style.transform = 'scaleY(1)';
+                } else {
+                    verticalLine.style.transform = 'scaleY(0)';
+                }
+
+                if (progress >= CURTAIN_OPEN_START) {
+                    const curtainProgress = (progress - CURTAIN_OPEN_START) / (CURTAIN_OPEN_END - CURTAIN_OPEN_START);
+                    const translateValue = Math.min(100, curtainProgress * 100);
+
+                    leftPanel.style.transform = `translateX(-${translateValue}%)`;
+                    rightPanel.style.transform = `translateX(${translateValue}%)`;
+                    verticalLine.style.opacity = 1 - curtainProgress;
+                } else {
+                    leftPanel.style.transform = 'translateX(0%)';
+                    rightPanel.style.transform = 'translateX(0%)';
+                    verticalLine.style.opacity = 1;
+                }
+            }
+
+            window.addEventListener('scroll', () => {
+                requestAnimationFrame(handleScroll);
+            });
+
+            handleScroll();
+        });
+    </script>
+</body>
+
+</html>

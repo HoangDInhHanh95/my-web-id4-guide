@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cam kết tiêu chuẩn 5P - Cập nhật mới nhất</title>
+    <style>
+        /* --- General Styling & Font --- */
+        
+        @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        /* --- Main Container --- */
+        
+        .commitment-section {
+            width: 100%;
+            max-width: 1200px;
+            padding: 80px 20px;
+            text-align: center;
+            overflow-x: hidden;
+        }
+        
+        .commitment-section h1 {
+            font-size: 36px;
+            color: #002454;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        /* --- Layout --- */
+        
+        .content-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 120px;
+            position: relative;
+            min-height: 620px;
+        }
+        /* --- Central 5P Circle --- */
+        
+        .circle-5p {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background-color: #ffffff;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+            z-index: 10;
+            box-shadow: 0px 25px 50px rgba(0, 36, 84, 0.08);
+        }
+        
+        .circle-5p::before {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            right: 40px;
+            bottom: 40px;
+            border: 3px solid #eff3f8;
+            border-radius: 50%;
+            box-shadow: 0px 15px 40px rgba(0, 36, 84, 0.07);
+        }
+        
+        .circle-5p span {
+            font-size: 110px;
+            font-weight: 700;
+            color: #004289;
+            z-index: 1;
+        }
+        /* --- Container for the arced list --- */
+        
+        .p-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            width: 600px;
+            height: 620px;
+            position: relative;
+        }
+        /* --- UPDATED .p-item STYLE --- */
+        
+        .p-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: absolute;
+            width: 100%;
+            background-color: #fff;
+            padding: 10px;
+            /* Padding for the white card */
+            border-radius: 80px;
+            /* Pill shape for the entire item */
+            box-shadow: 0px 9px 6px rgba(0, 36, 84, 0.03);
+            border: 1px solid #f0f4f9;
+            /* Animation: Initial State */
+            opacity: 0;
+            transform-origin: center center;
+            transform: translate(-120px, 0) scale(0.5);
+            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        /* --- Arc Positioning (Adjusted for new layout) --- */
+        
+        .p-item:nth-child(1) {
+            top: 0;
+            left: -200px;
+        }
+        
+        .p-item:nth-child(2) {
+            top: 140px;
+            left: -100px;
+        }
+        
+        .p-item:nth-child(3) {
+            top: 280px;
+            left: -80px;
+        }
+        
+        .p-item:nth-child(4) {
+            top: 420px;
+            left: -100px;
+        }
+        
+        .p-item:nth-child(5) {
+            top: 560px;
+            left: -200px;
+        }
+        /* --- UPDATED .p-number STYLE --- */
+        
+        .p-number {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: #004d9e;
+            color: white;
+            font-size: 40px;
+            font-weight: 700;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+            /* Shadow removed as it's now on the parent */
+        }
+        /* --- UPDATED .p-description STYLE --- */
+        
+        .p-description {
+            /* All background/border styles moved to .p-item */
+            text-align: left;
+            padding-right: 20px;
+            /* Add some space on the right */
+        }
+        
+        .p-description h3 {
+            margin: 0 0 6px 0;
+            font-size: 16px;
+            color: #0056b8;
+            font-weight: 700;
+        }
+        
+        .p-description p {
+            margin: 0;
+            font-size: 14px;
+            color: #4b5871;
+            line-height: 1.65;
+        }
+        /* --- Animation: Visible State --- */
+        
+        .commitment-section.is-visible .p-item {
+            opacity: 1;
+            transform: translate(0, 0) scale(1);
+        }
+        /* Staggered animation delay */
+        
+        .commitment-section.is-visible .p-item:nth-child(1) {
+            transition-delay: 0s;
+        }
+        
+        .commitment-section.is-visible .p-item:nth-child(2) {
+            transition-delay: 0.1s;
+        }
+        
+        .commitment-section.is-visible .p-item:nth-child(3) {
+            transition-delay: 0.2s;
+        }
+        
+        .commitment-section.is-visible .p-item:nth-child(4) {
+            transition-delay: 0.3s;
+        }
+        
+        .commitment-section.is-visible .p-item:nth-child(5) {
+            transition-delay: 0.4s;
+        }
+        /* --- Responsive Design --- */
+        
+        @media (max-width: 1024px) {
+            .content-wrapper {
+                flex-direction: column;
+                gap: 50px;
+                min-height: auto;
+            }
+            .p-list {
+                position: static;
+                width: 100%;
+                max-width: 550px;
+                height: auto;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+            .p-item {
+                position: static;
+                width: auto;
+                transform: translateY(50px) scale(0.8);
+            }
+            .commitment-section.is-visible .p-item {
+                transform: translateY(0) scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- <div style="height: 100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding: 20px;">
+        <h2 style="font-size: 2rem; color: #ccc;">Phần đầu trang</h2>
+        <p style="color: #999;">Cuộn xuống để xem hiệu ứng</p>
+        <span style="font-size: 3rem; color: #ddd; margin-top: 20px;">&darr;</span>
+    </div> -->
+
+    <section class="commitment-section" id="commitment-section">
+        <h1>Cam kết tiêu chuẩn 5P – iD-4™ GUIDE Center</h1>
+        <div class="content-wrapper">
+
+            <div class="circle-5p">
+                <span>5P</span>
+            </div>
+
+            <ul class="p-list">
+                <li class="p-item">
+                    <div class="p-number">1</div>
+                    <div class="p-description">
+                        <h3>Precision – Chính xác tuyệt đối</h3>
+                        <p>Mỗi máng hướng dẫn đều được thiết kế dựa trên dữ liệu kỹ thuật số chuẩn xác từ phim CBCT và dấu hàm 3D, đảm bảo vị trí, hướng và độ sâu Implant hoàn toàn khớp với kế hoạch điều trị.</p>
+                    </div>
+                </li>
+                <li class="p-item">
+                    <div class="p-number">2</div>
+                    <div class="p-description">
+                        <h3>Performance – Hiệu suất tối ưu</h3>
+                        <p>Tối giản thao tác phẫu thuật, rút ngắn thời gian điều trị nhờ thiết kế ergonomic và vật liệu kim loại bền vững Titanium/Cobalt-Chrome, giúp phẫu thuật viên tự tin trong mọi tình huống.</p>
+                    </div>
+                </li>
+                <li class="p-item">
+                    <div class="p-number">3</div>
+                    <div class="p-description">
+                        <h3>Patient Safety – An toàn tuyệt đối</h3>
+                        <p>Cam kết tuân thủ chuẩn vô khuẩn và kiểm soát chất lượng nghiêm ngặt ở mọi công đoạn thiết kế – sản xuất, đảm bảo tối đa an toàn cho bệnh nhân và bác sĩ.</p>
+                    </div>
+                </li>
+                <li class="p-item">
+                    <div class="p-number">4</div>
+                    <div class="p-description">
+                        <h3>Partnership – Hợp tác chuyên nghiệp</h3>
+                        <p>Luôn đồng hành cùng nha sĩ trước, trong và sau phẫu thuật với đội ngũ chuyên viên hỗ trợ thiết kế, kỹ thuật và lâm sàng nhiệt tình, đảm bảo mọi ca Implant đều thành công trọn vẹn.</p>
+                    </div>
+                </li>
+                <li class="p-item">
+                    <div class="p-number">5</div>
+                    <div class="p-description">
+                        <h3>Progress – Cải tiến liên tục</h3>
+                        <p>Không ngừng nghiên cứu và ứng dụng công nghệ mới trong lĩnh vực Digital Dentistry, từ thiết kế 3D đến in kim loại và phục hình kỹ thuật số, đưa máng hướng dẫn iD-4™ luôn dẫn đầu về độ chính xác và hiệu quả.</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <div style="height: 50vh;"></div>
+
+    <script>
+        const commitmentSection = document.getElementById('commitment-section');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    commitmentSection.classList.add('is-visible');
+                    observer.unobserve(commitmentSection);
+                }
+            });
+        }, {
+            threshold: 0.3
+        });
+        observer.observe(commitmentSection);
+    </script>
+
+</body>
+
+</html>

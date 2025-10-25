@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trình diễn Tính năng iPhone</title>
+    <style>
+         :root {
+            --text-color: #1d1d1f;
+            --secondary-text-color: #6e6e73;
+            --background-color: #ffffff;
+            --pill-bg-color: #f5f5f7;
+            --bubble-active-bg: #f5f5f7;
+            --transition-speed: 0.8s;
+            /* Tốc độ cho hiệu ứng mở rộng */
+        }
+        
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+        
+        .product-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            padding: 0 5vw;
+            gap: 5vw;
+            align-items: start;
+            height: 100vh;
+            /* Quan trọng: Giữ cho layout ban đầu nằm trong màn hình */
+        }
+        /* --- Cột bên trái: Danh sách tính năng --- */
+        
+        .features-list {
+            /* Trạng thái mặc định (sau khi mở rộng) */
+            padding-top: 45vh;
+            padding-bottom: 45vh;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: padding var(--transition-speed) ease-in-out;
+        }
+        /* Trạng thái ban đầu, trước khi cuộn */
+        
+        body.intro-state .features-list {
+            padding-top: 15vh;
+            padding-bottom: 15vh;
+            justify-content: center;
+            /* Căn giữa các mục theo chiều dọc */
+        }
+        
+        .color-selector,
+        .feature-item {
+            margin-bottom: 30vh;
+            /* Khoảng cách lớn để cuộn */
+            transition: margin-bottom var(--transition-speed) ease-in-out;
+        }
+        /* Trạng thái ban đầu, các mục xếp gần nhau */
+        
+        body.intro-state .color-selector,
+        body.intro-state .feature-item {
+            margin-bottom: 15px;
+        }
+        
+        .color-selector {
+            display: flex;
+            align-items: center;
+            padding: 14px 24px;
+            background-color: var(--pill-bg-color);
+            border-radius: 999px;
+            font-size: 17px;
+            font-weight: 600;
+        }
+        
+        .color-selector-radio {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--secondary-text-color);
+            border-radius: 50%;
+            margin-right: 15px;
+            background-color: white;
+            box-sizing: border-box;
+        }
+        
+        .feature-item {
+            background-color: var(--pill-bg-color);
+            border-radius: 999px;
+            /* Mặc định là hình con nhộng */
+            padding: 14px 24px;
+            width: auto;
+            max-width: 450px;
+            box-sizing: border-box;
+            transition: border-radius 0.6s ease, padding 0.6s ease, opacity 0.4s ease, margin-bottom var(--transition-speed) ease-in-out;
+        }
+        
+        .feature-item.active {
+            border-radius: 22px;
+            /* Chuyển thành hình bong bóng */
+            padding: 24px;
+        }
+        
+        .feature-title {
+            display: flex;
+            align-items: center;
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .feature-icon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--secondary-text-color);
+            border-radius: 50%;
+            margin-right: 15px;
+            flex-shrink: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .feature-item.active .feature-icon {
+            opacity: 0;
+            width: 0;
+            margin-right: 0;
+        }
+        
+        .feature-description {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.6s ease-out, margin-top 0.6s ease-out;
+            color: var(--secondary-text-color);
+            line-height: 1.5;
+            font-size: 17px;
+            font-weight: 400;
+        }
+        
+        .feature-item.active .feature-description {
+            max-height: 1000px;
+            margin-top: 10px;
+        }
+        
+        .feature-description b {
+            color: var(--text-color);
+        }
+        /* --- Cột bên phải: Hình ảnh sản phẩm --- */
+        
+        .product-image-viewer {
+            /* Trạng thái mặc định (sau khi mở rộng) là sticky */
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        /* Trạng thái ban đầu, ảnh chỉ là một phần của layout tĩnh */
+        
+        body.intro-state .product-image-viewer {
+            position: static;
+        }
+        
+        .product-image {
+            max-width: 90%;
+            max-height: 90vh;
+            object-fit: contain;
+            transition: opacity 0.4s ease-in-out;
+        }
+    </style>
+</head>
+
+<body class="intro-state">
+
+    <main class="product-section">
+        <div class="features-list">
+
+            <div class="color-selector">
+                <div class="color-selector-radio"></div>
+                <span>Màu</span>
+            </div>
+
+            <div class="feature-item" data-image="https://www.apple.com/v/iphone-15-pro/c/images/overview/design/design_pro_titanium__e3c2pldtv2a_large.jpg">
+                <div class="feature-title"><span class="feature-icon">+</span><span>Khung titan</span></div>
+                <div class="feature-description">
+                    <p><b>Khung titan.</b> Khung titan Cấp 5 được làm từ 80% titan tái chế, giúp iPhone Air vừa bền vừa đẹp.</p>
+                </div>
+            </div>
+
+            <div class="feature-item" data-image="https://www.apple.com/v/iphone-15-pro/c/images/overview/design/design_pro_back__b8 unclaimed5v154gi_large.jpg">
+                <div class="feature-title"><span class="feature-icon">+</span><span>Thiết kế bền trong đầy sáng tạo</span></div>
+                <div class="feature-description">
+                    <p>Nhiều công nghệ được chứa đựng trong phần nhỏ liền của iPhone Air, giúp tối đa hóa hiệu năng và tạo không gian cho pin cỡ lớn, mật độ cao.</p>
+                </div>
+            </div>
+
+            <div class="feature-item" data-image="https://www.apple.com/v/iphone-15-pro/c/images/overview/display/display_pro__d32xry9i2vuy_large.jpg">
+                <div class="feature-title"><span class="feature-icon">+</span><span>Màn hình pro sống động</span></div>
+                <div class="feature-description">
+                    <p><b>Dynamic Island.</b> Hiển thị các cảnh báo và Hoạt Động Trực Tiếp – nhờ vậy bạn sẽ không bỏ lỡ thông tin khi đang làm việc khác.</p>
+                </div>
+            </div>
+
+            <div class="feature-item" data-image="https://www.apple.com/v/iphone-15-pro/c/images/overview/design/design_pro_display__ff62ur2k3oie_large.jpg">
+                <div class="feature-title"><span class="feature-icon">+</span><span>Ceramic Shield</span></div>
+                <div class="feature-description">
+                    <p><b>Cứng hơn kính của bất kỳ điện thoại thông minh nào.</b> Chất liệu Ceramic Shield mang lại sự bền bỉ vượt trội.</p>
+                </div>
+            </div>
+
+            <div class="feature-item" data-image="https://www.apple.com/v/iphone-15-pro/c/images/overview/camera/camera_pro__f2f9cqr2kzyy_large.jpg">
+                <div class="feature-title"><span class="feature-icon">+</span><span>Điều Khiển Camera</span></div>
+                <div class="feature-description">
+                    <p><b>Quyền năng sáng tạo hoang dã.</b> Xem bạn có thể làm gì với hệ thống camera mạnh mẽ nhất trên iPhone.</p>
+                </div>
+            </div>
+
+            <div class="feature-item" data-image="https://www.apple.com/v/iphone-15-pro/c/images/overview/action_button/action_button_pro__e2pf6td0k1m6_large.jpg">
+                <div class="feature-title"><span class="feature-icon">+</span><span>Nút Tác Vụ</span></div>
+                <div class="feature-description">
+                    <p><b>Đi Tắt Đến Tính Năng Bạn Yêu Thích.</b> Nút Tác Vụ mới đưa bạn đến thẳng tính năng bạn dùng nhiều nhất.</p>
+                </div>
+            </div>
+
+            <div class="feature-item">
+                <div class="feature-title"><span class="feature-icon">+</span><span>Phụ kiện</span></div>
+                <div class="feature-description">
+                    <p>Khám phá thế giới phụ kiện MagSafe giúp bạn gắn kết phụ kiện và sạc không dây nhanh hơn.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="product-image-viewer">
+            <img src="https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/iphone-15-pro-finish-select-202309-6-1inch-whitetitanium?wid=5120&hei=2880&fmt=p-jpg&qlt=80&.v=1692845703961" alt="iPhone 15 Pro" class="product-image" id="main-product-image">
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const featureItems = document.querySelectorAll('.feature-item');
+            const mainProductImage = document.getElementById('main-product-image');
+
+            // --- Logic cho hiệu ứng mở rộng ---
+            // Chỉ chạy một lần duy nhất khi người dùng cuộn lần đầu tiên
+            window.addEventListener('scroll', function() {
+                document.body.classList.remove('intro-state');
+            }, {
+                once: true
+            });
+
+
+            // --- Logic cho việc kích hoạt mục và đổi ảnh khi cuộn ---
+            function changeImage(newSrc) {
+                if (!newSrc || mainProductImage.src.includes(newSrc)) return;
+                mainProductImage.style.opacity = 0;
+                setTimeout(() => {
+                    mainProductImage.src = newSrc;
+                    mainProductImage.style.opacity = 1;
+                }, 400);
+            }
+
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        featureItems.forEach(item => item.classList.remove('active'));
+                        entry.target.classList.add('active');
+                        const newImageSrc = entry.target.dataset.image;
+                        changeImage(newImageSrc);
+                    }
+                });
+            }, {
+                rootMargin: '-45% 0px -45% 0px',
+                threshold: 0
+            });
+
+            featureItems.forEach(item => observer.observe(item));
+        });
+    </script>
+
+</body>
+
+</html>

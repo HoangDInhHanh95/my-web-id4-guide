@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banner Hoàn Chỉnh</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: sans-serif;
+        }
+        
+        .box-container {
+            position: relative;
+            width: 100%;
+        }
+        
+        .vd-mang {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 32 / 15;
+            overflow: hidden;
+            background-color: #000;
+            /* Thêm màu nền phòng khi video không tải được */
+        }
+        
+        .vd-mang video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .test-img-phu {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            /* Đảm bảo lớp phủ cao bằng container */
+            pointer-events: none;
+            /* Cho phép click xuyên qua ảnh này vào video nếu cần */
+        }
+        
+        .test-img-phu img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .img-tiep {
+            width: 100%;
+            /* Đường dẫn tới ảnh của bạn */
+            background-image: url('http://localhost/iD4Center/wp-content/uploads/2025/10/bg-1.1.png');
+            /* Các thuộc tính bổ sung để ảnh đẹp hơn */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="box-container">
+        <div class="vd-mang">
+            <video id="myVideo" src="http://localhost/iD4Center/wp-content/uploads/2025/10/nen-banner-vd-trang-chu-01.mp4" autoplay muted playsinline loop>
+                </video>
+        </div>
+
+        <div class="test-img-phu">
+            <img src="http://localhost/iD4Center/wp-content/uploads/2025/10/trang-tri-1.1.png" alt="Lớp phủ trang trí">
+        </div>
+    </div>
+
+    <div class="img-tiep">
+    </div>
+
+</body>
+
+</html>

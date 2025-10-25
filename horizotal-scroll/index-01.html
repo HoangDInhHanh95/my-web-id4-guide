@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horizontal Scroll</title>
+    <style>
+         :root {
+            --id4-font-size-title: 2rem;
+            --id4-font-size-title-left: 40px;
+            --font-size-des: 16px;
+            --color-tilet: #02518a;
+            --id4-color-bg-section: #f9fdfe;
+            --id4-text-color: #fff;
+            --id4-font-family: 'SVN-Effra';
+            /* width 820px */
+            --max-width-section: 820px;
+            --maxw: 1200px;
+            /* background pop-up */
+            --id4-bg-card: rgba(239, 240, 241, 0.2);
+            --id4-dot-inactive-color: #555;
+            --id4-border-radius: 28px;
+            /* bg card */
+            --id4-url-bg-card: url('http://localhost/iD4Center/wp-content/uploads/2025/09/bg-card-MHDPT@4x.png');
+        }
+        
+        .id4-horizontal-scroll-container {
+            margin: 0;
+            font-family: var(--id4-font-family);
+            color: var(--id4-text-color);
+            transition: background-color 0.4s ease;
+            background-color: var(--id4-color-bg-sectin);
+        }
+        
+        .id4-horizontal-scroll-container.id4-horizontal-scroll-modal-open {
+            overflow: hidden;
+        }
+        
+        .id4-horizontal-scroll-section {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+        
+        .id4-horizontal-scroll-section h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+        }
+        
+        .id4-horizontal-scroll-progress-bar-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background-color: #02518a;
+            z-index: 10;
+        }
+        
+        .id4-horizontal-scroll-progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--id4-accent-color);
+            transition: width 0.1s linear;
+        }
+        
+        .id4-horizontal-scroll-horizontal-track {
+            height: 400vh;
+            position: relative;
+        }
+        
+        .id4-horizontal-scroll-sticky-container {
+            position: sticky;
+            top: 5vh;
+            height: 100vh;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+        
+        .id4-horizontal-scroll-horizontal-content {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            padding: 0 calc(50vw - 340px);
+        }
+        
+        .id4-horizontal-scroll-card {
+            width: clamp(300px, 60vw, 980px);
+            height: 600px;
+            max-height: 600px;
+            margin: 0 clamp(10px, 3vw, 30px);
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 20px;
+            border-radius: 20px;
+            border: 1px solid var(--id4-dot-inactive-color);
+            padding: clamp(20px, 5vw, 40px);
+            box-sizing: border-box;
+            flex-shrink: 0;
+            cursor: pointer;
+            transform: scale(1);
+            opacity: 1;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            position: relative;
+            background-size: cover;
+            background-position: center center;
+        }
+        /* Lớp phủ cho card để chữ dễ đọc hơn */
+        
+        .id4-horizontal-scroll-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--id4-bg-card);
+            border-radius: 20px;
+            z-index: 1;
+        }
+        /* Đẩy nội dung lên trên lớp phủ */
+        
+        .id4-horizontal-scroll-card-text,
+        .id4-horizontal-scroll-card-image {
+            position: relative;
+            z-index: 2;
+        }
+        /* Thêm ảnh nền cho từng card */
+        
+        .id4-horizontal-scroll-card:nth-child(1) {
+            background-image: var(--id4-url-bg-card);
+        }
+        
+        .id4-horizontal-scroll-card:nth-child(2) {
+            background-image: var(--id4-url-bg-card);
+        }
+        
+        .id4-horizontal-scroll-card:nth-child(3) {
+            background-image: var(--id4-url-bg-card);
+        }
+        
+        .id4-horizontal-scroll-card:nth-child(4) {
+            background-image: var(--id4-url-bg-card);
+        }
+        
+        .id4-horizontal-scroll-card:nth-child(5) {
+            background-image: var(--id4-url-bg-card);
+        }
+        
+        .id4-horizontal-scroll-card-text {
+            flex: 1 1 55%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .id4-horizontal-scroll-card-image {
+            flex: 1 1 45%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .id4-horizontal-scroll-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+            /* transition: transform 0.5s ease-out; */
+        }
+        
+        .id4-horizontal-scroll-card h2 {
+            font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+            margin-top: 0;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        
+        .id4-horizontal-scroll-card p {
+            font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+            line-height: 1.6;
+            opacity: 0.8;
+            text-align: left;
+            color: #000;
+        }
+        
+        .id4-horizontal-scroll-pagination-dots {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            flex-direction: row;
+            justify-content: center;
+            gap: 12px;
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 8px 15px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .id4-horizontal-scroll-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--id4-dot-inactive-color);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .id4-horizontal-scroll-dot.id4-horizontal-scroll-active {
+            background-color: var(--id4-text-color);
+            transform: scale(1.2);
+        }
+        
+        .id4-horizontal-scroll-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: rgba(26, 26, 26, 0.3);
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .id4-horizontal-scroll-modal-overlay.id4-horizontal-scroll-active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .id4-horizontal-scroll-modal-content {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transform: scale(0.9);
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .id4-horizontal-scroll-modal-content .id4-horizontal-scroll-card-text {
+            flex: 1 1 55%;
+        }
+        
+        .id4-horizontal-scroll-modal-content .id4-horizontal-scroll-card-image {
+            flex: 1 1 45%;
+        }
+        
+        .id4-horizontal-scroll-modal-content .id4-horizontal-scroll-card-image img {
+            width: 100%;
+            border-radius: 15px;
+        }
+        
+        .id4-horizontal-scroll-modal-content h2,
+        .id4-horizontal-scroll-modal-content p {
+            text-align: left;
+        }
+        
+        .id4-horizontal-scroll-modal-overlay.id4-horizontal-scroll-active .id4-horizontal-scroll-modal-content {
+            transform: scale(1);
+        }
+        
+        .id4-horizontal-scroll-modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 3rem;
+            line-height: 1;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        
+        .id4-horizontal-scroll-modal-close:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        /* Responsive cho Tablet */
+        
+        @media (max-width: 1024px) {
+            .id4-horizontal-scroll-card {
+                width: clamp(350px, 70vw, 570px);
+                height: 440px;
+                max-height: 440px;
+                padding: clamp(30px, 4vw, 35px);
+                gap: 20px;
+            }
+            .id4-horizontal-scroll-card h2 {
+                font-size: clamp(1.4rem, 4vw, 2rem);
+            }
+        }
+        /* Responsive cho Mobile */
+        
+        @media (max-width: 768px) {
+            .id4-horizontal-scroll-pagination-dots {
+                display: flex;
+            }
+            .id4-horizontal-scroll-progress-bar-container {
+                display: none;
+            }
+            .id4-horizontal-scroll-card,
+            .id4-horizontal-scroll-modal-content {
+                flex-direction: column;
+                text-align: center;
+                height: auto;
+                max-height: 80vh;
+                padding: 30px;
+                width: 90vw;
+            }
+            .id4-horizontal-scroll-card-image,
+            .id4-horizontal-scroll-modal-content .id4-horizontal-scroll-card-image {
+                order: -1;
+                width: 100%;
+                height: 200px;
+                margin-bottom: 20px;
+            }
+            .id4-horizontal-scroll-card h2,
+            .id4-horizontal-scroll-card p,
+            .id4-horizontal-scroll-modal-content h2,
+            .id4-horizontal-scroll-modal-content p {
+                text-align: center;
+            }
+            .id4-horizontal-scroll-modal-content {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="id4-horizontal-scroll-container">
+
+        <div class="id4-horizontal-scroll-horizontal-track">
+
+            <div class="id4-horizontal-scroll-progress-bar-container">
+
+                <div class="id4-horizontal-scroll-progress-bar"></div>
+            </div>
+
+            <div class="id4-horizontal-scroll-sticky-container">
+
+                <div class="id4-horizontal-scroll-horizontal-content">
+                </div>
+            </div>
+        </div>
+
+        <div class="id4-horizontal-scroll-pagination-dots"></div>
+
+        <div class="id4-horizontal-scroll-modal-overlay">
+
+            <div class="id4-horizontal-scroll-modal-content"></div>
+            <button class="id4-horizontal-scroll-modal-close" aria-label="Đóng">&times;</button>
+        </div>
+    </div>
+
+    <script>
+        // nơi chưa link và nội dung
+        const image1 = 'http://localhost/iD4Center/wp-content/uploads/2025/09/MHDPT-1.png';
+        document.addEventListener("DOMContentLoaded", function() {
+            const cardData = [{
+                title: '',
+                description: 'Vị trí hạ mào xương/ Vị trí Implant/ Abutment / Phục hình: Tất cả đều được phân tích lên kế hoạch và thiết kế chính xác.',
+                imageUrl: image1
+            }, {
+                title: '🚀 Hiệu năng cao',
+                description: 'Sử dụng Intersection Observer và các kỹ thuật hiện đại để đảm bảo độ mượt tối đa.',
+                imageUrl: image1
+            }, {
+                title: '🎨 Giàu tương tác',
+                description: 'Phản hồi với thao tác di chuột, click và điều hướng bàn phím một cách thông minh.',
+                imageUrl: image1
+            }, {
+                title: '♿ Dễ tiếp cận',
+                description: 'Hỗ trợ điều hướng bằng bàn phím, giúp mọi người dùng đều có thể trải nghiệm trọn vẹn.',
+                imageUrl: image1
+            }, {
+                title: '📱 Đồng nhất',
+                description: 'Trải nghiệm cuộn dọc-ngang độc đáo được đồng bộ trên mọi thiết bị, từ lớn đến nhỏ.',
+                imageUrl: image1
+            }];
+            const contentContainer = document.querySelector('.id4-horizontal-scroll-horizontal-content');
+            contentContainer.innerHTML = cardData.map(data => `
+                        <div class="id4-horizontal-scroll-card">
+                            <div class="id4-horizontal-scroll-card-text">
+                                <h2>${data.title}</h2>
+                                <p>${data.description}</p>
+                            </div>
+                            <div class="id4-horizontal-scroll-card-image">
+                                <img src="${data.imageUrl}" alt="${data.title}" loading="lazy">
+                            </div>
+                        </div>
+                    `).join('');
+            const cards = Array.from(contentContainer.children);
+            const track = document.querySelector('.id4-horizontal-scroll-horizontal-track');
+            const modalOverlay = document.querySelector('.id4-horizontal-scroll-modal-overlay');
+            const modalContent = document.querySelector('.id4-horizontal-scroll-modal-content');
+            const modalClose = document.querySelector('.id4-horizontal-scroll-modal-close');
+            const mainContainer = document.querySelector('.id4-horizontal-scroll-container');
+
+            function openModal(contentHTML) {
+                modalContent.innerHTML = contentHTML;
+                modalOverlay.classList.add('id4-horizontal-scroll-active');
+                mainContainer.classList.add('id4-horizontal-scroll-modal-open');
+            }
+
+            function closeModal() {
+                modalOverlay.classList.remove('id4-horizontal-scroll-active');
+                mainContainer.classList.remove('id4-horizontal-scroll-modal-open');
+            }
+            cards.forEach(card => card.addEventListener('click', () => openModal(card.innerHTML)));
+            modalClose.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) closeModal();
+            });
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modalOverlay.classList.contains(
+                        'id4-horizontal-scroll-active')) closeModal();
+            });
+            const progressBar = document.querySelector('.id4-horizontal-scroll-progress-bar');
+            const paginationContainer = document.querySelector('.id4-horizontal-scroll-pagination-dots');
+            let dots = [];
+            if (paginationContainer) {
+                cards.forEach((card, index) => {
+                    const dot = document.createElement('div');
+                    dot.classList.add('id4-horizontal-scroll-dot');
+                    dot.addEventListener('click', () => {
+                        const scrollableDistance = track.offsetHeight - window.innerHeight;
+                        const progressPerCard = 1 / (cards.length - 1);
+                        const targetScrollTop = track.offsetTop + (scrollableDistance *
+                            progressPerCard * index);
+                        window.scrollTo({
+                            top: targetScrollTop,
+                            behavior: 'smooth'
+                        });
+                    });
+                    paginationContainer.appendChild(dot);
+                });
+                dots = Array.from(paginationContainer.children);
+            }
+            let currentX = 0,
+                targetX = 0,
+                easingFactor = 0.08,
+                isTrackInView = false;
+
+            function lerp(start, end, t) {
+                return start * (1 - t) + end * t;
+            }
+
+            function updateActiveDot(progress) {
+                if (dots.length > 0) {
+                    const activeIndex = Math.min(dots.length - 1, Math.round(progress * (cards.length - 1)));
+                    dots.forEach((dot, index) => dot.classList.toggle('id4-horizontal-scroll-active', index ===
+                        activeIndex));
+                }
+            }
+
+            function updatePositions() {
+                const trackRect = track.getBoundingClientRect();
+                if (trackRect.top <= 0 && trackRect.bottom >= window.innerHeight) {
+                    const scrollInTrack = -trackRect.top;
+                    const scrollableDistance = trackRect.height - window.innerHeight;
+                    const scrollProgress = Math.max(0, Math.min(1, scrollInTrack / scrollableDistance));
+                    const firstCard = cards[0],
+                        lastCard = cards[cards.length - 1];
+                    const contentScrollWidth = lastCard.offsetLeft - firstCard.offsetLeft;
+                    targetX = -contentScrollWidth * scrollProgress;
+                    if (progressBar) progressBar.style.width = (scrollProgress * 100) + '%';
+                    updateActiveDot(scrollProgress);
+                    const activeIndex = Math.round(scrollProgress * (cards.length - 1));
+                    cards.forEach((card, index) => {
+                        card.classList.toggle('id4-horizontal-scroll-active', index === activeIndex);
+                    });
+                } else {
+                    cards.forEach(card => card.classList.remove('id4-horizontal-scroll-active'));
+                }
+                currentX = lerp(currentX, targetX, easingFactor);
+                contentContainer.style.transform = `translateX(${currentX}px)`;
+            }
+
+            function applyParallax() {
+                const windowCenterX = window.innerWidth / 2;
+                cards.forEach(card => {
+                    const rect = card.getBoundingClientRect();
+                    const cardCenterX = rect.left + rect.width / 2;
+                    const distance = (cardCenterX - windowCenterX) / windowCenterX;
+                    const parallaxOffset = -distance * 30;
+                    const img = card.querySelector('.id4-horizontal-scroll-card-image img');
+                    if (img) {
+                        img.style.transform = `translateX(${parallaxOffset}px)`;
+                    }
+                });
+            }
+
+            function animationLoop() {
+                if (isTrackInView) {
+                    updatePositions();
+                    applyParallax();
+                }
+                requestAnimationFrame(animationLoop);
+            }
+            const trackObserver = new IntersectionObserver((entries) => isTrackInView = entries[0]
+                .isIntersecting);
+            trackObserver.observe(track);
+            animationLoop();
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                    if (modalOverlay.classList.contains('id4-horizontal-scroll-active')) return;
+                    const trackRect = track.getBoundingClientRect();
+                    if (trackRect.top > 0 || trackRect.bottom < window.innerHeight) return;
+                    e.preventDefault();
+                    const scrollableDistance = track.offsetHeight - window.innerHeight;
+                    const progressPerCard = 1 / (cards.length - 1);
+                    const currentProgress = -trackRect.top / scrollableDistance;
+                    const currentIndex = Math.round(currentProgress / progressPerCard);
+                    let targetIndex = currentIndex;
+                    if (e.key === 'ArrowRight') targetIndex = Math.min(cards.length - 1, currentIndex +
+                        1);
+                    else if (e.key === 'ArrowLeft') targetIndex = Math.max(0, currentIndex - 1);
+                    if (targetIndex !== currentIndex) {
+                        const targetScrollTop = track.offsetTop + (scrollableDistance *
+                            progressPerCard * targetIndex);
+                        window.scrollTo({
+                            top: targetScrollTop,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>
