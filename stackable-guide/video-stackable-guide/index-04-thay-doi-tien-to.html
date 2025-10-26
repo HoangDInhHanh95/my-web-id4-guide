@@ -7,21 +7,15 @@
     <title>ID-4 STACKABLE GUIDE</title>
     <style>
         /* CSS Reset and Basic Styles */
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
-        body,
-        html {
-            height: 100%;
-            font-family: Arial, sans-serif;
-            background-color: #000;
-        }
+
         /* Container for the video and content */
-        
+
         .CBSD-id4-stackable-guide {
             position: relative;
             width: 100%;
@@ -31,8 +25,9 @@
             align-items: center;
             justify-content: center;
         }
+
         /* Background Video */
-        
+
         #CBSD-id4-stackable-guide__background-video {
             position: absolute;
             top: 50%;
@@ -45,8 +40,9 @@
             transform: translateX(-50%) translateY(-50%);
             background: #000;
         }
+
         /* Content Overlay */
-        
+
         .CBSD-id4-stackable-guide__content-overlay {
             position: relative;
             z-index: 2;
@@ -59,48 +55,54 @@
             /* Aligns text to the left */
             color: white;
         }
+
         /* Left side text content */
-        
+
         .CBSD-id4-stackable-guide__text-content {
             flex-basis: 45%;
         }
-        
+
         .CBSD-id4-stackable-guide__text-content h1 {
             font-size: 2.5rem;
             margin-bottom: 1rem;
             line-height: 1.2;
             font-weight: 600;
         }
-        
+
         .CBSD-id4-stackable-guide__text-content p {
             font-size: 1rem;
             line-height: 1.6;
             max-width: 450px;
         }
+
         /* --- Responsive Design --- */
         /* Tablet view */
-        
+
         @media (max-width: 992px) {
             .CBSD-id4-stackable-guide__text-content h1 {
                 font-size: 2rem;
             }
+
             .CBSD-id4-stackable-guide__text-content p {
                 font-size: 0.9rem;
             }
         }
+
         /* Mobile View (Portrait) */
-        
+
         @media (max-width: 768px) {
             .CBSD-id4-stackable-guide {
                 height: 100vh;
                 min-height: 600px;
             }
+
             .CBSD-id4-stackable-guide__content-overlay {
                 flex-direction: column;
                 justify-content: center;
                 text-align: center;
                 padding: 1.5rem;
             }
+
             .CBSD-id4-stackable-guide__text-content {
                 order: 1;
                 width: 100%;
@@ -108,9 +110,11 @@
                 flex-basis: auto;
                 /* Reset flex-basis for mobile */
             }
+
             .CBSD-id4-stackable-guide__text-content h1 {
                 font-size: 1.8rem;
             }
+
             .CBSD-id4-stackable-guide__text-content p {
                 font-size: 0.9rem;
                 margin-left: auto;
@@ -128,13 +132,15 @@
         <div class="CBSD-id4-stackable-guide__content-overlay">
             <div class="CBSD-id4-stackable-guide__text-content">
                 <h1>CÁC BƯỚC SỬ DỤNG<br>ID-4 STACKABLE GUIDE</h1>
-                <p>Máng hướng dẫn phẫu thuật Implant là dụng cụ chuyên dụng, được thiết kế dựa trên phim chụp CT Conebeam và dấu hàm của từng bệnh nhân. Máng 3D trong suốt được ứng dụng chủ yếu trong phẫu thuật Implant.</p>
+                <p>Máng hướng dẫn phẫu thuật Implant là dụng cụ chuyên dụng, được thiết kế dựa trên phim chụp CT
+                    Conebeam và dấu hàm của từng bệnh nhân. Máng 3D trong suốt được ứng dụng chủ yếu trong phẫu thuật
+                    Implant.</p>
             </div>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const CBSD_id4_stackable_guide_videoPlayer = document.getElementById('CBSD-id4-stackable-guide__background-video');
 
             // --- THAY ĐỔI LINK VIDEO TẠI ĐÂY ---

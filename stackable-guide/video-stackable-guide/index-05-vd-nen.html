@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID-4 STACKABLE GUIDE (Fluid Typography)</title>
+
+    <style>
+        :root {
+            --padding-global: 2rem;
+            --content-max-width: 1200px;
+            --text-max-width: 450px;
+
+            /* === CẬP NHẬT FONT-SIZE === */
+            /* Chữ tự động co dãn mượt mà */
+            --font-size-h1: clamp(1.8rem, 1.2rem + 3vw, 2.5rem);
+            --font-size-p: clamp(0.9rem, 0.8rem + 0.5vw, 1rem);
+
+            --breakpoint-medium: 992px;
+            --breakpoint-small: 768px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .video-hero {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            max-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            background: #000;
+        }
+
+        #hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            object-fit: cover;
+        }
+
+        .video-hero__overlay {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: var(--content-max-width);
+            padding: var(--padding-global);
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .video-hero__content {
+            flex-basis: 45%;
+        }
+
+        .video-hero__content h1 {
+            /* Dùng biến clamp() */
+            font-size: var(--font-size-h1);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            font-weight: 600;
+        }
+
+        .video-hero__content p {
+            /* Dùng biến clamp() */
+            font-size: var(--font-size-p);
+            line-height: 1.6;
+            max-width: var(--text-max-width);
+        }
+
+        /* Media query giờ chỉ tập trung vào BỐ CỤC */
+        @media (max-width: var(--breakpoint-medium)) {
+            /* Không cần khai báo font-size ở đây nữa */
+        }
+
+        @media (max-width: var(--breakpoint-small)) {
+            .video-hero {
+                aspect-ratio: 9 / 16;
+                min-height: 600px;
+            }
+
+            .video-hero__overlay {
+                flex-direction: column;
+                justify-content: center;
+                text-align: center;
+                padding: 1.5rem;
+            }
+
+            .video-hero__content {
+                order: 1;
+                width: 100%;
+                margin-bottom: 2rem;
+                flex-basis: auto;
+            }
+
+            .video-hero__content p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            /* Không cần khai báo font-size ở đây nữa */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="video-hero">
+
+        <video autoplay muted loop playsinline id="hero-video"
+            data-desktop-src="http://localhost/iD4Center/wp-content/uploads/2025/09/0001.mp4"
+            data-mobile-src="https://assets.mixkit.co/videos/preview/mixkit-vertical-shot-of-a-lake-near-a-forest-31158-large.mp4">
+        </video>
+
+        <div class="video-hero__overlay">
+            <div class="video-hero__content">
+                <h1>CÁC BƯỚC SỬ DỤNG<br>ID-4 STACKABLE GUIDE</h1>
+                <p>Máng hướng dẫn phẫu thuật Implant là dụng cụ chuyên dụng, được thiết kế dựa trên phim chụp CT
+                    Conebeam và dấu hàm của từng bệnh nhân. Máng 3D trong suốt được ứng dụng chủ yếu trong phẫu thuật
+                    Implant.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const videoPlayer = document.getElementById('hero-video');
+
+            if (!videoPlayer) {
+                console.error('Không tìm thấy video player với ID #hero-video');
+                return;
+            }
+
+            const desktopSrc = videoPlayer.dataset.desktopSrc;
+            const mobileSrc = videoPlayer.dataset.mobileSrc;
+
+            function switchVideoSource() {
+                const screenWidth = window.innerWidth;
+
+                const targetSrc = (screenWidth <= 768) ? mobileSrc : desktopSrc;
+
+                if (videoPlayer.currentSrc !== targetSrc && videoPlayer.src !== targetSrc) {
+                    videoPlayer.src = targetSrc;
+                    videoPlayer.load();
+
+                    videoPlayer.play().catch(error => {
+                        console.warn("Lỗi tự động phát video:", error);
+                    });
+                }
+            }
+
+            function debounce(func, wait) {
+                let timeout;
+                return function (...args) {
+                    const context = this;
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(context, args), wait);
+                };
+            }
+
+            switchVideoSource();
+            window.addEventListener('resize', debounce(switchVideoSource, 250));
+        });
+    </script>
+</body>
+
+</html>
