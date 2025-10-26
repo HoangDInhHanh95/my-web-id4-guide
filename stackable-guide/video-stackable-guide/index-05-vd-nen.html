@@ -4,176 +4,288 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ID-4 STACKABLE GUIDE (Fluid Typography)</title>
-
+    <title>ID-4 STACKABLE GUIDE</title>
     <style>
-        :root {
-            --padding-global: 2rem;
-            --content-max-width: 1200px;
-            --text-max-width: 450px;
-
-            /* === CẬP NHẬT FONT-SIZE === */
-            /* Chữ tự động co dãn mượt mà */
-            --font-size-h1: clamp(1.8rem, 1.2rem + 3vw, 2.5rem);
-            --font-size-p: clamp(0.9rem, 0.8rem + 0.5vw, 1rem);
-
-            --breakpoint-medium: 992px;
-            --breakpoint-small: 768px;
-        }
-
+        /* --- CSS Reset --- */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        .video-hero {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            max-height: 100vh;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            background: #000;
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            /* Màu nền chung */
         }
 
-        #hero-video {
+        /* ======================================= */
+        /* === KHỐI 1: BANNER VIDEO RESPONSIVE === */
+        /* ======================================= */
+
+        .video-banner-container {
+            position: relative;
+            width: 100%;
+            /* Tỷ lệ 16/9 cho Desktop / Tablet */
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            background-color: #000;
+            /* Nền đen dự phòng */
+        }
+
+        #background-video {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1;
             object-fit: cover;
+            /* Đảm bảo video lấp đầy khung */
+            z-index: 1;
         }
 
-        .video-hero__overlay {
+        .video-content-overlay {
             position: relative;
             z-index: 2;
+            /* Nằm đè lên video */
             width: 100%;
-            max-width: var(--content-max-width);
-            padding: var(--padding-global);
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: flex-start;
+            padding: 2rem 5%;
+            /* 5% lề trái/phải */
+            color: white;
+            /* Màu chữ */
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 100%);
+            /* Lớp phủ mờ bên trái cho chữ dễ đọc */
         }
 
-        .video-hero__content {
-            flex-basis: 45%;
+        .video-text-content {
+            flex-basis: 50%;
+            /* Chữ chiếm 50% bên trái */
         }
 
-        .video-hero__content h1 {
-            /* Dùng biến clamp() */
-            font-size: var(--font-size-h1);
+        .video-text-content h1 {
+            /* Dùng clamp() để font-size co giãn mượt mà */
+            /* Cỡ chữ từ 2rem (nhỏ nhất) -> 4vw (linh hoạt) -> 3.5rem (lớn nhất) */
+            font-size: clamp(2rem, 4vw, 3.5rem);
             margin-bottom: 1rem;
             line-height: 1.2;
             font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
-        .video-hero__content p {
-            /* Dùng biến clamp() */
-            font-size: var(--font-size-p);
-            line-height: 1.6;
-            max-width: var(--text-max-width);
+        .video-text-content p {
+            /* Cỡ chữ từ 0.9rem -> 1.5vw -> 1.1rem */
+            font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+            max-width: 500px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
-        /* Media query giờ chỉ tập trung vào BỐ CỤC */
-        @media (max-width: var(--breakpoint-medium)) {
-            /* Không cần khai báo font-size ở đây nữa */
-        }
-
-        @media (max-width: var(--breakpoint-small)) {
-            .video-hero {
+        /* --- Media Query cho Banner Video (Mobile) --- */
+        @media (max-width: 768px) {
+            .video-banner-container {
+                /* ĐỔI TỶ LỆ SANG 9/16 CHO MOBILE */
                 aspect-ratio: 9 / 16;
-                min-height: 600px;
             }
 
-            .video-hero__overlay {
-                flex-direction: column;
+            .video-content-overlay {
+                /* Căn chữ ra giữa trên mobile */
                 justify-content: center;
                 text-align: center;
                 padding: 1.5rem;
+                background: rgba(0, 0, 0, 0.4);
+                /* Lớp phủ mờ toàn màn hình */
             }
 
-            .video-hero__content {
-                order: 1;
-                width: 100%;
-                margin-bottom: 2rem;
-                flex-basis: auto;
+            .video-text-content {
+                flex-basis: 100%;
+                /* Chữ chiếm toàn bộ */
             }
 
-            .video-hero__content p {
-                margin-left: auto;
-                margin-right: auto;
+            .video-text-content h1 {
+                font-size: clamp(1.8rem, 8vw, 2.5rem);
+                /* Chỉnh lại cỡ chữ cho mobile */
             }
 
-            /* Không cần khai báo font-size ở đây nữa */
+            .video-text-content p {
+                font-size: clamp(0.85rem, 4vw, 1rem);
+                /* Chỉnh lại cỡ chữ cho mobile */
+            }
+        }
+
+
+        /* ================================================== */
+        /* === KHỐI 2: GIỚI THIỆU (TỪ HÌNH ẢNH CỦA BẠN) === */
+        /* ================================================== */
+
+        .guide-section {
+            background-color: #2a2a2a;
+            /* Màu nền tối */
+            color: #FFFFFF;
+            /* Màu chữ trắng */
+            padding: 60px 20px;
+            /* Đệm */
+        }
+
+        .guide-container {
+            max-width: 1200px;
+            /* Giới hạn chiều rộng nội dung */
+            margin: 0 auto;
+            /* Căn giữa */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            /* Khoảng cách giữa 2 cột */
+        }
+
+        .guide-text {
+            flex-basis: 50%;
+            /* Cột chữ chiếm 50% */
+        }
+
+        .guide-text h2 {
+            /* Responsive font-size */
+            font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+            font-weight: bold;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+
+        .guide-text p {
+            /* Responsive font-size */
+            font-size: clamp(0.9rem, 1.5vw, 1.05rem);
+            line-height: 1.7;
+            /* Giãn dòng cho dễ đọc */
+        }
+
+        .guide-image {
+            flex-basis: 45%;
+            /* Cột ảnh chiếm 45% */
+            text-align: center;
+        }
+
+        .guide-image img {
+            width: 100%;
+            max-width: 500px;
+            /* Giới hạn kích thước tối đa của ảnh */
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            /* Căn giữa ảnh trong cột */
+        }
+
+        /* --- Media Query cho Khối Giới Thiệu (Mobile) --- */
+        @media (max-width: 768px) {
+            .guide-container {
+                flex-direction: column;
+                /* Xếp chồng 2 cột theo chiều dọc */
+                text-align: center;
+                /* Căn giữa chữ */
+            }
+
+            .guide-text {
+                margin-bottom: 30px;
+                /* Đẩy ảnh xuống dưới */
+            }
+
+            .guide-image {
+                text-align: center;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="video-hero">
-
-        <video autoplay muted loop playsinline id="hero-video"
-            data-desktop-src="http://localhost/iD4Center/wp-content/uploads/2025/09/0001.mp4"
-            data-mobile-src="https://assets.mixkit.co/videos/preview/mixkit-vertical-shot-of-a-lake-near-a-forest-31158-large.mp4">
+    <!-- ======================= -->
+    <!-- === KHỐI 1: BANNER VIDEO === -->
+    <!-- ======================= -->
+    <div class="video-banner-container">
+        <!-- Thẻ video sẽ được JS thêm source (src) vào -->
+        <video autoplay muted loop playsinline id="background-video">
+            <!-- Trình duyệt không hỗ trợ video. -->
         </video>
 
-        <div class="video-hero__overlay">
-            <div class="video-hero__content">
+        <div class="video-content-overlay">
+            <div class="video-text-content">
                 <h1>CÁC BƯỚC SỬ DỤNG<br>ID-4 STACKABLE GUIDE</h1>
                 <p>Máng hướng dẫn phẫu thuật Implant là dụng cụ chuyên dụng, được thiết kế dựa trên phim chụp CT
                     Conebeam và dấu hàm của từng bệnh nhân. Máng 3D trong suốt được ứng dụng chủ yếu trong phẫu thuật
-                    Implant.
-                </p>
+                    Implant.</p>
             </div>
         </div>
     </div>
 
+    <!-- ============================ -->
+    <!-- === KHỐI 2: GIỚI THIỆU === -->
+    <!-- ============================ -->
+    <div class="guide-section">
+        <div class="guide-container">
+
+            <!-- CỘT BÊN TRÁI (VĂN BẢN) -->
+            <div class="guide-text">
+                <h2>CÁC BƯỚC SỬ DỤNG ID-4 STACKABLE GUIDE</h2>
+                <p>
+                    Máng hướng dẫn phẫu thuật Implant là dụng cụ chuyên dụng,
+                    được thiết kế dựa trên phim chụp CT Conebeam và dấu hàm của từng bệnh nhân.
+                    Máng 3D trong suốt được ứng dụng chủ yếu trong phẫu thuật Implant.
+                </p>
+            </div>
+
+            <!-- CỘT BÊN PHẢI (HÌNH ẢNH) -->
+            <div class="guide-image">
+                <!-- ⚠️ THAY ĐƯỜNG DẪN NÀY bằng đường dẫn ảnh 3D của bạn -->
+                <img src="https://placehold.co/500x400/3D3D3D/FFFFFF?text=Hinh+Anh+3D"
+                    alt="Mô hình ID-4 Stackable Guide">
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ======================= -->
+    <!-- === JAVASCRIPT === -->
+    <!-- ======================= -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const videoPlayer = document.getElementById('background-video');
 
-            const videoPlayer = document.getElementById('hero-video');
-
-            if (!videoPlayer) {
-                console.error('Không tìm thấy video player với ID #hero-video');
-                return;
-            }
-
-            const desktopSrc = videoPlayer.dataset.desktopSrc;
-            const mobileSrc = videoPlayer.dataset.mobileSrc;
+            // --- THAY ĐỔI LINK VIDEO TẠI ĐÂY ---
+            // Video 16/9 cho Desktop/Tablet
+            const desktopVideoURL = 'http://localhost/iD4Center/wp-content/uploads/2025/09/0001.mp4';
+            // Video 9/16 cho Mobile (dạng dọc)
+            const mobileVideoURL = 'https://assets.mixkit.co/videos/preview/mixkit-vertical-shot-of-a-lake-near-a-forest-31158-large.mp4'; // Link video mẫu
 
             function switchVideoSource() {
+                const currentSrc = videoPlayer.currentSrc;
                 const screenWidth = window.innerWidth;
 
-                const targetSrc = (screenWidth <= 768) ? mobileSrc : desktopSrc;
-
-                if (videoPlayer.currentSrc !== targetSrc && videoPlayer.src !== targetSrc) {
-                    videoPlayer.src = targetSrc;
-                    videoPlayer.load();
-
-                    videoPlayer.play().catch(error => {
-                        console.warn("Lỗi tự động phát video:", error);
-                    });
+                if (screenWidth <= 768) {
+                    // Chuyển sang giao diện Mobile
+                    if (!currentSrc.includes(mobileVideoURL)) {
+                        videoPlayer.src = mobileVideoURL;
+                        videoPlayer.load();
+                        videoPlayer.play().catch(error => console.warn("Video play failed:", error));
+                    }
+                } else {
+                    // Chuyển sang giao diện Desktop/Tablet
+                    if (!currentSrc.includes(desktopVideoURL)) {
+                        videoPlayer.src = desktopVideoURL;
+                        videoPlayer.load();
+                        videoPlayer.play().catch(error => console.warn("Video play failed:", error));
+                    }
                 }
             }
 
-            function debounce(func, wait) {
-                let timeout;
-                return function (...args) {
-                    const context = this;
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => func.apply(context, args), wait);
-                };
-            }
-
+            // Gọi hàm khi tải trang lần đầu
             switchVideoSource();
-            window.addEventListener('resize', debounce(switchVideoSource, 250));
+
+            // Gọi hàm mỗi khi thay đổi kích thước cửa sổ
+            window.addEventListener('resize', switchVideoSource);
         });
     </script>
 </body>
