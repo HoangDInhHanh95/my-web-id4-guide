@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ID-4 STACKABLE GUIDE</title>
+    <style>
+        /* --- CSS Reset --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            /* Màu nền chung */
+        }
+
+        /* ======================================= */
+        /* === KHỐI 1: BANNER VIDEO RESPONSIVE === */
+        /* ======================================= */
+
+        .video-banner-container {
+            position: relative;
+            width: 100%;
+            /* Tỷ lệ 16/9 cho Desktop / Tablet */
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            background-color: #000;
+            /* Nền đen dự phòng */
+        }
+
+        #background-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Đảm bảo video lấp đầy khung */
+            z-index: 1;
+        }
+
+        .video-content-overlay {
+            position: relative;
+            z-index: 2;
+            /* Nằm đè lên video */
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 2rem 5%;
+            /* 5% lề trái/phải */
+            color: white;
+            /* Màu chữ */
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 100%);
+            /* Lớp phủ mờ bên trái cho chữ dễ đọc */
+        }
+
+        .video-text-content {
+            flex-basis: 50%;
+            /* Chữ chiếm 50% bên trái */
+        }
+
+        .video-text-content h1 {
+            /* Dùng clamp() để font-size co giãn mượt mà */
+            /* Cỡ chữ từ 2rem (nhỏ nhất) -> 4vw (linh hoạt) -> 3.5rem (lớn nhất) */
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .video-text-content p {
+            /* Cỡ chữ từ 0.9rem -> 1.5vw -> 1.1rem */
+            font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+            max-width: 500px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        /* --- Media Query cho Banner Video (Mobile) --- */
+        @media (max-width: 768px) {
+            .video-banner-container {
+                /* ĐỔI TỶ LỆ SANG 9/16 CHO MOBILE */
+                aspect-ratio: 9 / 16;
+            }
+
+            .video-content-overlay {
+                /* Căn chữ ra giữa trên mobile */
+                justify-content: center;
+                text-align: center;
+                padding: 1.5rem;
+                background: rgba(0, 0, 0, 0.4);
+                /* Lớp phủ mờ toàn màn hình */
+            }
+
+            .video-text-content {
+                flex-basis: 100%;
+                /* Chữ chiếm toàn bộ */
+            }
+
+            .video-text-content h1 {
+                font-size: clamp(1.8rem, 8vw, 2.5rem);
+                /* Chỉnh lại cỡ chữ cho mobile */
+            }
+
+            .video-text-content p {
+                font-size: clamp(0.85rem, 4vw, 1rem);
+                /* Chỉnh lại cỡ chữ cho mobile */
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ======================= -->
+    <!-- === KHỐI 1: BANNER VIDEO === -->
+    <!-- ======================= -->
+    <div class="video-banner-container">
+        <!-- Thẻ video sẽ được JS thêm source (src) vào -->
+        <video autoplay muted loop playsinline id="background-video">
+            <!-- Trình duyệt không hỗ trợ video. -->
+        </video>
+
+        <div class="video-content-overlay">
+            <div class="video-text-content">
+                <h1>CÁC BƯỚC SỬ DỤNG<br>ID-4 STACKABLE GUIDE</h1>
+                <p>Máng hướng dẫn phẫu thuật Implant là dụng cụ chuyên dụng, được thiết kế dựa trên phim chụp CT
+                    Conebeam và dấu hàm của từng bệnh nhân. Máng 3D trong suốt được ứng dụng chủ yếu trong phẫu thuật
+                    Implant.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- KHỐI 2 ĐÃ BỊ XÓA THEO YÊU CẦU -->
+
+
+    <!-- ======================= -->
+    <!-- === JAVASCRIPT === -->
+    <!-- ======================= -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const videoPlayer = document.getElementById('background-video');
+
+            // --- THAY ĐỔI LINK VIDEO TẠI ĐÂY ---
+            // Video 16/9 cho Desktop/Tablet
+            const desktopVideoURL = 'http://localhost/iD4Center/wp-content/uploads/2025/09/0001.mp4';
+            // Video 9/16 cho Mobile (dạng dọc)
+            const mobileVideoURL = 'https://assets.mixkit.co/videos/preview/mixkit-vertical-shot-of-a-lake-near-a-forest-31158-large.mp4'; // Link video mẫu
+
+            function switchVideoSource() {
+                const currentSrc = videoPlayer.currentSrc;
+                const screenWidth = window.innerWidth;
+
+                if (screenWidth <= 768) {
+                    // Chuyển sang giao diện Mobile
+                    if (!currentSrc.includes(mobileVideoURL)) {
+                        videoPlayer.src = mobileVideoURL;
+                        videoPlayer.load();
+                        videoPlayer.play().catch(error => console.warn("Video play failed:", error));
+                    }
+                } else {
+                    // Chuyển sang giao diện Desktop/Tablet
+                    if (!currentSrc.includes(desktopVideoURL)) {
+                        videoPlayer.src = desktopVideoURL;
+                        videoPlayer.load();
+                        videoPlayer.play().catch(error => console.warn("Video play failed:", error));
+                    }
+                }
+            }
+
+            // Gọi hàm khi tải trang lần đầu
+            switchVideoSource();
+
+            // Gọi hàm mỗi khi thay đổi kích thước cửa sổ
+            window.addEventListener('resize', switchVideoSource);
+        });
+    </script>
+</body>
+
+</html>
