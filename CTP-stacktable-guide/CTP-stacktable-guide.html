@@ -23,6 +23,7 @@
             --id4-bg-section-STACKABLE-GUIDE: #007bff;
             --id4-border-radius: 28px;
             --id4-autoplay-delay: 2s;
+            --size-width-card: 850px;
         }
 
         .id4-image-MHDPT-container {
@@ -47,6 +48,12 @@
             text-align: center;
         }
 
+        .id4-CTP-STACKABLE-GUIDE-inner {
+            width: 100%;
+            max-width: var(--maxw);
+            text-align: center;
+        }
+
         .id4-CTP-STACKABLE-GUIDE-title {
             margin: 0;
             color: var(--color-tilet);
@@ -56,8 +63,10 @@
             font-size: var(--id4-font-size-title);
             line-height: 1.3;
             letter-spacing: 0.2px;
-            padding-bottom: 2px;
+            padding-top: calc(var(--space-in-block) - 30px);
+            padding-bottom: calc(var(--space-in-block) - 12px);
         }
+
 
         @media (min-width:768px) {
             .id4-CTP-STACKABLE-GUIDE-wrap {
@@ -132,8 +141,9 @@
             border-radius: 24px;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
             width: 80%;
-            max-width: 1000px;
-            height: 562px;
+            max-width: var(--size-width-card);
+            /* height: 562px;462px */
+            height: calc(var(--size-width-card)/2);
             transition: transform 0.4s ease, opacity 0.4s ease;
             will-change: transform;
             cursor: pointer;
@@ -167,7 +177,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 24px;
+            border-radius: 28px;
         }
 
         .id4-image-MHDPT__slide-inner {
@@ -354,7 +364,6 @@
         }
 
         /* === Media Query cho Mobile & Tablet (Dưới 1024px) === */
-
         @media (max-width: 1023.98px) {
             .id4-image-MHDPT .swiper-slide {
                 width: 85%;
@@ -406,37 +415,30 @@
 
 
             <div class="id4-image-MHDPT__swiper swiper">
-
                 <div class="swiper-wrapper">
-
                     <div class="swiper-slide">
                         <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-5@4x.png"
                             alt="Slide 1 Image" class="slide-image">
-
                     </div>
 
                     <div class="swiper-slide">
                         <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-5@4x.png"
                             alt="Slide 2 Image" class="slide-image">
-
                     </div>
 
                     <div class="swiper-slide">
                         <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-1@4x.png"
                             alt="Slide 3 Image" class="slide-image">
-
                     </div>
 
                     <div class="swiper-slide">
                         <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-1@4x.png"
                             alt="Slide 4 Image" class="slide-image">
-
                     </div>
 
                     <div class="swiper-slide">
                         <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-1@4x.png"
                             alt="Slide 5 Image" class="slide-image">
-
                     </div>
                 </div>
             </div>
