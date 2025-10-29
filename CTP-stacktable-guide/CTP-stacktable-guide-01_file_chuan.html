@@ -61,7 +61,6 @@
         /* === SWIPER STYLES === */
         .id4-image-MHDPT__swiper {
             width: 100%;
-            /* padding: 20px 0; */
             overflow: visible;
         }
 
@@ -78,52 +77,25 @@
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
             width: 100%;
             max-width: var(--size-width-card);
-            /* height: 562px;462px */
             height: calc(var(--size-width-card)/2);
             transition: transform 0.4s ease, opacity 0.4s ease;
             will-change: transform;
+            overflow: hidden;
+            /* (THÊM MỚI) Thêm để bo góc thẻ img bên trong */
         }
 
-        .id4-image-MHDPT .swiper-slide {
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
+        /* (THAY ĐỔI) Đã xóa các quy tắc :nth-child(n) */
 
-        .id4-image-MHDPT .swiper-slide .id4-image-MHDPT__slide-inner {
-            border-radius: 28px;
-            height: 100%;
+        /* (THÊM MỚI) Quy tắc cho thẻ img bên trong slide */
+        .id4-image-MHDPT .swiper-slide img {
+            display: block;
             width: 100%;
+            height: 100%;
+            object-fit: fill;
+            /* Giãn ảnh để khớp 100% 100% như code cũ */
         }
 
-        .id4-image-MHDPT .swiper-slide:nth-child(1) {
-            background-image: url('http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-1@4x.png');
-            background-size: 100% 100%;
-        }
-
-        .id4-image-MHDPT .swiper-slide:nth-child(2) {
-            background-image: url('http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-2@4x.png');
-            background-size: 100% 100%;
-        }
-
-        .id4-image-MHDPT .swiper-slide:nth-child(3) {
-            background-image: url('http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-3@4x.png');
-            background-size: 100% 100%;
-        }
-
-        .id4-image-MHDPT .swiper-slide:nth-child(4) {
-            background-image: url('http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-4@4x.png');
-            background-size: 100% 100%;
-        }
-
-        .id4-image-MHDPT .swiper-slide:nth-child(5) {
-            background-image: url('http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-5@4x.png');
-            background-size: 100% 100%;
-        }
-
-        .id4-image-MHDPT__slide-inner {
-            box-sizing: border-box;
-        }
+        /* (ĐÃ XÓA) Xóa class .id4-image-MHDPT__slide-inner */
 
         /* === CONTROLS & PAGINATION === */
         .id4-image-MHDPT__controls {
@@ -131,7 +103,6 @@
             align-items: center;
             justify-content: center;
             gap: 12px;
-            /* margin-top: 20px; */
             width: 100%;
             position: relative;
             z-index: 10;
@@ -160,8 +131,7 @@
             background-color: var(--control-icon-color);
         }
 
-        .id4-image-MHDPT__pagination .swiper-pagination-bullet-active::after {
-            content: '';
+        .id4-image-MHDPT__progress-bar {
             position: absolute;
             top: 0;
             left: 0;
@@ -170,25 +140,6 @@
             background-color: var(--progress-bar-color);
             transform: scaleX(0);
             transform-origin: left;
-            animation-name: id4-image-MHDPT-progressFill;
-            animation-timing-function: linear;
-            animation-fill-mode: forwards;
-            animation-duration: var(--id4-autoplay-delay, 5s);
-            animation-play-state: running;
-        }
-
-        .id4-image-MHDPT.autoplay-paused .swiper-pagination-bullet-active::after {
-            animation-play-state: paused;
-        }
-
-        @keyframes id4-image-MHDPT-progressFill {
-            from {
-                transform: scaleX(0);
-            }
-
-            to {
-                transform: scaleX(1);
-            }
         }
 
         .id4-image-MHDPT__autoplay-control {
@@ -213,34 +164,28 @@
             display: block;
         }
 
-        /* === MOBILE POPUP === */
+        /* === MOBILE POPUP (Giữ nguyên) === */
         .id4-image-MHDPT__popup-mobile {
             display: none;
-            /* Mặc định ẩn trên desktop */
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
             z-index: 1000;
-            /* Đảm bảo nằm trên mọi thứ */
             background-color: white;
-            /* Màu nền pop-up */
             border-top-left-radius: 12px;
             border-top-right-radius: 12px;
             box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
             padding: 15px;
             transform: translateY(100%);
-            /* Bắt đầu ẩn dưới màn hình */
             transition: transform 0.3s ease-out;
         }
 
         .id4-image-MHDPT__popup-mobile.is-open {
             transform: translateY(0);
-            /* Hiện pop-up */
         }
 
         .id4-image-MHDPT__popup-content {
-            /* Tùy chỉnh nội dung pop-up */
             font-family: var(--id4-font-family);
             color: var(--progress-bar-color);
             text-align: center;
@@ -256,7 +201,7 @@
             color: var(--control-icon-color);
         }
 
-        /* === RESPONSIVE (MOBILE) === */
+        /* === RESPONSIVE (Giữ nguyên) === */
         @media (max-width: 768px) {
             .id4-image-MHDPT .swiper-slide {
                 width: 90%;
@@ -266,21 +211,13 @@
             .id4-image-MHDPT__pagination .swiper-pagination-bullet {
                 width: 25px;
                 height: 6px;
-                border-radius: 3px;
-                background-color: var(--control-icon-color);
-                opacity: 1;
-                position: relative;
-                overflow: hidden;
-                transition: background-color 0.3s;
             }
 
-            /* Hiển thị pop-up trên mobile */
             .id4-image-MHDPT__popup-mobile {
                 display: block;
             }
         }
 
-        /* === RESPONSIVE (TABLET) === */
         @media (min-width:768px) {
             .id4-CTP-STACKABLE-GUIDE-wrap {
                 padding: 0px 20px;
@@ -293,7 +230,6 @@
             }
         }
 
-        /* === RESPONSIVE (DESKTOP) === */
         @media (min-width:1024px) {
             .id4-CTP-STACKABLE-GUIDE-wrap {
                 padding: 0px 24px;
@@ -311,7 +247,6 @@
 <body>
 
     <div class="id4-image-MHDPT">
-
         <section class="id4-CTP-STACKABLE-GUIDE-wrap">
             <div class="id4-CTP-STACKABLE-GUIDE-inner">
                 <h1 class="id4-CTP-STACKABLE-GUIDE-title">
@@ -323,19 +258,24 @@
         <div class="id4-image-MHDPT__swiper swiper">
             <div class="swiper-wrapper">
                 <div class="swiper-slide">
-                    <div class="id4-image-MHDPT__slide-inner"></div>
+                    <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-1@4x.png"
+                        alt="Stackable Guide 1">
                 </div>
                 <div class="swiper-slide">
-                    <div class="id4-image-MHDPT__slide-inner"></div>
+                    <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-2@4x.png"
+                        alt="Stackable Guide 2">
                 </div>
                 <div class="swiper-slide">
-                    <div class="id4-image-MHDPT__slide-inner"></div>
+                    <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-3@4x.png"
+                        alt="Stackable Guide 3">
                 </div>
                 <div class="swiper-slide">
-                    <div class="id4-image-MHDPT__slide-inner"></div>
+                    <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-4@4x.png"
+                        alt="Stackable Guide 4">
                 </div>
                 <div class="swiper-slide">
-                    <div class="id4-image-MHDPT__slide-inner"></div>
+                    <img src="http://localhost/iD4Center/wp-content/uploads/2025/09/ID-4-STACKABLE-GUIDE-5@4x.png"
+                        alt="Stackable Guide 5">
                 </div>
             </div>
         </div>
@@ -359,19 +299,11 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <script>
-        // 
-
         function initId4ImageMHDPT() {
             const container = document.querySelector('.id4-image-MHDPT');
             if (!container) return;
 
-            // ===================================================
-            // SỬA TRỰC TIẾP SỐ NÀY ĐỂ THAY ĐỔI THỜI GIAN (ms)
-            // ===================================================
-            const autoplayDelay = 2000; // 3000 = 3 giây
-
-            // Gán giá trị delay cho biến CSS (đổi từ ms sang giây)
-            container.style.setProperty('--id4-autoplay-delay', (autoplayDelay / 1000) + 's');
+            const autoplayDelay = 2000; // 2000 = 2 giây
 
             const swiper = new Swiper('.id4-image-MHDPT__swiper', {
                 speed: 500,
@@ -388,7 +320,41 @@
                 pagination: {
                     el: '.id4-image-MHDPT__pagination',
                     clickable: true,
+                    renderBullet: function (index, className) {
+                        return '<span class="' + className + '"><span class="id4-image-MHDPT__progress-bar"></span></span>';
+                    }
                 },
+
+                on: {
+                    init: function (swiper) {
+                        swiper.pagination.bullets.forEach(bullet => {
+                            bullet.progressbar = bullet.querySelector('.id4-image-MHDPT__progress-bar');
+                        });
+                    },
+                    autoplayStart: function (swiper) {
+                        swiper.pagination.bullets.forEach(bullet => {
+                            if (bullet.progressbar) {
+                                bullet.progressbar.style.transform = 'scaleX(0)';
+                            }
+                        });
+                    },
+                    autoplayTimeLeft: function (swiper, timeLeft, percentage) {
+                        const progress = 1 - percentage;
+                        const currentRealIndex = swiper.realIndex;
+
+                        swiper.pagination.bullets.forEach((bullet, index) => {
+                            if (!bullet.progressbar) return;
+
+                            if (index === currentRealIndex) {
+                                bullet.progressbar.style.transform = `scaleX(${progress})`;
+                                bullet.progressbar.style.transition = 'transform 0.05s linear';
+                            } else {
+                                bullet.progressbar.style.transform = 'scaleX(0)';
+                                bullet.progressbar.style.transition = 'none';
+                            }
+                        });
+                    },
+                }
             });
 
             const controlButton = container.querySelector('.id4-image-MHDPT__autoplay-control');
